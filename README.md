@@ -6,6 +6,7 @@
 There are two major goals with this project:
 1. Create a fun and interesting game
 2. Learn about OOP structure and design
+
 To accomplish the first goal, a game proposal was required to help flesh out the snippets of ideas from my head. This can be viewed below.
 To accomplish the second goal, the game code is written with many OOP "best practices" in mind. The codebase is/will be designed so that new features can easily be added to the game, even multiplayer.
 
