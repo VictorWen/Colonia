@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4d4b5f8f60cbfb43af38910dd721047, type: 3}
+  m_Name: Ice Biome
+  m_EditorClassIdentifier: 
+  tiles:
+  - height: 0.269
+    tile: {fileID: 11400000, guid: 0df90ab4de0fa2c40ae5e41fe7c1303b, type: 2}
+    waterAdjacent: 0
+  - height: 0.672
+    tile: {fileID: 11400000, guid: 4f3bebea3d16a764a9b2eda35f5916db, type: 2}
+    waterAdjacent: 0
+  - height: 0.917
+    tile: {fileID: 11400000, guid: ee1d526a655feb14f8f638ec2a25a733, type: 2}
+    waterAdjacent: 0
+  - height: 1
+    tile: {fileID: 11400000, guid: 87e5671401b51eb4d88993c6a21b1b31, type: 2}
+    waterAdjacent: 0

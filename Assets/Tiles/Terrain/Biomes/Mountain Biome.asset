@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4d4b5f8f60cbfb43af38910dd721047, type: 3}
+  m_Name: Mountain Biome
+  m_EditorClassIdentifier: 
+  tiles:
+  - height: 0.225
+    tile: {fileID: 11400000, guid: d22b922b4bb654847869f491f3b90318, type: 2}
+    waterAdjacent: 0
+  - height: 0.482
+    tile: {fileID: 11400000, guid: b62df5e1a9dc3194c8842ba6486a64d3, type: 2}
+    waterAdjacent: 0
+  - height: 0.746
+    tile: {fileID: 11400000, guid: 87a4c5a45c50a4649af146b5122a7288, type: 2}
+    waterAdjacent: 0
+  - height: 1
+    tile: {fileID: 11400000, guid: 87e5671401b51eb4d88993c6a21b1b31, type: 2}
+    waterAdjacent: 0
