@@ -11,5 +11,5 @@ To accomplish the second goal, the game code is written with many OOP "best prac
 
 ## Game Proposal
 The game is based off an earlier project of mine called Colonia. This new version of Colonia hopes of expand upon my earlier work and try new things.
- [Proposal Google Doc]https://docs.google.com/document/d/1-hmO8fDkX74iQyiYXJ7D4FY8i4apOaRtEBQpPi2sWok/edit?usp=sharing
+ [Proposal Google Doc](https://docs.google.com/document/d/1-hmO8fDkX74iQyiYXJ7D4FY8i4apOaRtEBQpPi2sWok/edit?usp=sharing)
 
