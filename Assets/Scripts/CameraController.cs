@@ -9,11 +9,13 @@ public class CameraController : MonoBehaviour
     public float maxSize;
     public Camera cam;
 
+    public GUIMaster gui;
+
     private Vector3 lastMousePos;
 
     private void Update()
     {
-        if (GUIMaster.main.GUIState == GameState.MAP)
+        if (gui.GUIState.CameraControl)
         {
             float dx = Input.GetAxis("Horizontal") * cam.orthographicSize;
             float dy = Input.GetAxis("Vertical") * cam.orthographicSize;

@@ -10,18 +10,20 @@ public class CityGUIScript : MonoBehaviour
 
     public Text cityName;
 
+    public GUIMaster gui;
+
     //Tabs
     public HorizontalLayoutGroup buttons;
     private TabScript defaultTab;
     private TabScript selectedTab;
 
-    private void Awake()
+    public void Awake()
     {
         TabScript[] tabs = buttons.GetComponentsInChildren<TabScript>();
         for (int i = 0; i < tabs.Length; i++)
         {
             TabScript tab = tabs[i];
-            tab.Setup(this);
+            tab.button.onClick.AddListener(() => ChangeTab(tab));
             if (i == 0)
             {
                 defaultTab = tab;
@@ -41,11 +43,18 @@ public class CityGUIScript : MonoBehaviour
         selectedTab = tab;
     }
 
-    public void Enable(City city)
+    public void OpenCityGUI(City city)
     {
         gameObject.SetActive(true);
         this.city = city;
         cityName.text = city.Name;
         ChangeTab(defaultTab);
+        gui.GUIState.SetState(GUIStateManager.CITY);
+    }
+
+    public void CloseCityGUI()
+    {
+        gameObject.SetActive(false);
+        gui.GUIState.SetState(GUIStateManager.MAP);
     }
 }

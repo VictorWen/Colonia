@@ -23,7 +23,7 @@ public class CityConstruction
     }
 
     // TODO: formalize construction tick
-    public void UpdateConstruction()
+    public void UpdateConstruction(GUIMaster gui)
     {
         if (selectedProjectID != null)
         {
@@ -37,11 +37,11 @@ public class CityConstruction
             //Project is completed
             if (constructionProgress >= requiredConstructionProgress)
             {
-                project.Complete(city);
+                project.Complete(city, gui);
                 int pop = GlobalProjectDictionary.GetProjectData(selectedProjectID).Employment;
                 city.idlePop -= pop;
                 city.workingPop += pop;
-                SetProject(null, false);
+                SetProject(null, gui, false);
             }
         }
     }
@@ -81,12 +81,11 @@ public class CityConstruction
     }
 
     // TODO: formalize project setting
-    public void SetProject(string id, bool deselect = true)
+    public void SetProject(string id, GUIMaster gui, bool deselect = true)
     {
-        // TODO: Return resources to inventory
         if (project != null && deselect)
         {
-            project.OnDeselect(city);
+            project.OnDeselect(city, gui);
             foreach (KeyValuePair<string, int> resource in allocatedResources)
             {
                 city.inv.AddItem(new ResourceItem(resource.Key, resource.Value));
@@ -101,7 +100,7 @@ public class CityConstruction
         {
             ProjectData data = GlobalProjectDictionary.GetProjectData(id);
             project = data.Project;
-            project.OnSelect(city);
+            project.OnSelect(city, gui);
             UpdateConstructionProgressCost();
 
             //TODO: Incorporate modifiers

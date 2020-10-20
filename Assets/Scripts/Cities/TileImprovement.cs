@@ -35,22 +35,22 @@ public class TileImprovement : IProject
         this.validTiles = validTiles;
     }
 
-    public void Complete(City city)
+    public void Complete(City city, GUIMaster gui)
     {
         position = pointer.Position;
         Object.Destroy(pointer.gameObject);
-        GUIMaster.main.world.cities.SetTile(position, Resources.Load<UnityEngine.Tilemaps.Tile>("Tiles" + System.IO.Path.DirectorySeparatorChar + ID));
+        gui.Game.world.cities.SetTile(position, Resources.Load<UnityEngine.Tilemaps.Tile>("Tiles" + System.IO.Path.DirectorySeparatorChar + ID));
         city.AddTileImprovement(this);
     }
 
-    public void OnSelect(City city)
+    public void OnSelect(City city, GUIMaster gui)
     {
-        pointer = Object.Instantiate(GUIMaster.main.tileImprovementGhostScript);
-        city.UpdateCityRange();
-        pointer.PlaceTileImprovement(city, GUIMaster.main.world, this);
+        pointer = Object.Instantiate(gui.tileImprovementGhostScript);
+        city.UpdateCityRange(gui.Game.world);
+        pointer.PlaceTileImprovement(city, gui.Game.world, this, gui.GUIState);
     }
 
-    public void OnDeselect(City city)
+    public void OnDeselect(City city, GUIMaster gui)
     {
         Object.Destroy(pointer.gameObject);
     }
@@ -66,9 +66,9 @@ public class TileImprovement : IProject
         return copy;
     }
     
-    public void OnNextTurn(City city)
+    public void OnNextTurn(City city, WorldTerrain world)
     {
-        float tilePower = UseFertility ? GUIMaster.main.world.GetFertilityAtTile(position) : GUIMaster.main.world.GetRichnessAtTile(position);
+        float tilePower = UseFertility ? world.GetFertilityAtTile(position) : world.GetRichnessAtTile(position);
         //TODO: add modifiers
         city.AddResource(resourceID, tilePower / GlobalResourceDictionary.GetResourceData(resourceID).hardness);
     }
@@ -78,8 +78,8 @@ public class TileImprovement : IProject
         return "TILE IMPROVEMENT TEST DESCRIPTION";
     }
 
-    public bool IsValidTile(Vector3Int position)
+    public bool IsValidTile(Vector3Int position, WorldTerrain world)
     {
-        return validTiles.Contains(GUIMaster.main.world.terrain.GetTile(position).name);
+        return validTiles.Contains(world.terrain.GetTile(position).name);
     }
 }

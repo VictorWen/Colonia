@@ -9,8 +9,6 @@ using UnityEngine.UI;
 // TODO: determine Capital implementation
 public class GUIMaster : MonoBehaviour
 {
-    public static GUIMaster main { get; private set; }
-
     public WorldTerrain world;
     public CityGUIScript cityGUI;
     //public static CapitalCity capital;
@@ -20,10 +18,10 @@ public class GUIMaster : MonoBehaviour
     
     public Canvas mapHUD;
 
-    //TODO: add Hero control game state?
-    public GameState GUIState { get; private set; }
+    public GUIStateManager GUIState { get; private set; }
+    public GameMaster Game { get; private set; }
 
-    private GameMaster GameMaster;
+    //TESTING!
     //private City openedCity;
     private City capital;
     //TODO: formalize city script text updating
@@ -31,83 +29,33 @@ public class GUIMaster : MonoBehaviour
 
     public void Awake()
     {
-        main = this;
-        //capital = new CapitalCity();
-        //loadedCity = capital;
-
-        //OpenCityGUI(testCity);
-        //loadedCity = testCity;
+        Debug.Log("GAME START");
+        Game = new GameMaster(world);
+        GUIState = new GUIStateManager(cityGUI, mapHUD);
     }
 
     public void Start()
     {
-        Debug.Log("GAME START");
+        cityGUI.gui = this;
+
+        //--TESTING--------
         Inventory inv = new Inventory(-1);
         inv.AddItem(new ResourceItem("wood", 100));
         inv.AddItem(new ResourceItem("food", 150));
         inv.AddItem(new ResourceItem("stone", 25));
 
-        capitalScript = CreateCity("Test", new Vector3(-1, 0, 0));
+        capitalScript = CityScript.Create("Test", new Vector3(-1, 0, 0), this);
         capital = capitalScript.city;
         capital.inv = inv;
-    }
-
-    //TODO: move to CityScript?
-    public CityScript CreateCity(string name, Vector3 position)
-    {
-        CityScript script = Instantiate(cityPrefab, position, new Quaternion());
-        script.city = new City(name, world.grid.WorldToCell(position));
-        script.title.text = name + "(" + script.city.population + ")";
-        return script;
+        //-------------------
     }
 
     //Called by End Turn Button
     public void NextTurn()
     {
-        //TODO: switch to list based
-        capital.OnNextTurn();
-        capitalScript.title.text = capital.Name + "(" + capital.population + ")";
+        Game.NextTurn(this);
+        capitalScript.title.text = capital.Name + "(" + capital.population + ")"; //TODO:
     }
-
-    public void OpenCityGUI(City city)
-    {
-        cityGUI.Enable(city);
-        SetGameState(GameState.CITY);
-    }
-
-    public void CloseCityGUI(GameState exitState = GameState.MAP)
-    {
-        cityGUI.gameObject.SetActive(false);
-        SetGameState(exitState);
-    }
-
-    public void SetGameState(GameState gameState)
-    {
-        switch (GUIState)
-        {
-            case GameState.MAP:
-                mapHUD.gameObject.SetActive(false);
-                break;
-            case GameState.CITY:
-                //pass
-                break;
-        }
-        switch (gameState)
-        {
-            case GameState.MAP:
-                mapHUD.gameObject.SetActive(true);
-                break;
-            case GameState.CITY:
-                //pass
-                break;
-        }
-        GUIState = gameState;
-    }
-}
-
-public enum GameState
-{
-    MAP, CITY
 }
 
 /*[CustomEditor(typeof(GameMaster))]

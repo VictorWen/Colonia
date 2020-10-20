@@ -35,7 +35,7 @@ public class Building : IProject
         this.nextTurnEffects = nextTurnEffects;
     }
 
-    public void Complete(City city)
+    public void Complete(City city, GUIMaster gui)
     {
         foreach (BuildingEffect effect in completionEffects){
             effect.Apply(city);
@@ -63,12 +63,12 @@ public class Building : IProject
         return descr;
     }
 
-    public void OnDeselect(City city)
+    public void OnDeselect(City city, GUIMaster gui)
     {
         //pass
     }
 
-    public void OnSelect(City city)
+    public void OnSelect(City city, GUIMaster gui)
     {
         //pass
         //TODO: District selection?

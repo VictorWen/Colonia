@@ -13,6 +13,8 @@ public class HeroController : MonoBehaviour
     public TileBase gold;
     public TileBase cyan;
 
+    public GUIMaster gui; // TODO: change to GUIStateManager
+
     public Text pedometer;
     private int steps = 0;
 
@@ -28,7 +30,7 @@ public class HeroController : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (GUIMaster.main.GUIState == GameState.MAP)
+        if (gui.GUIState.UnitControl)
         {
             if (Input.GetMouseButtonUp(0))
             {

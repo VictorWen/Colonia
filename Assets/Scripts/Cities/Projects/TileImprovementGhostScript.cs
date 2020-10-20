@@ -20,14 +20,15 @@ public class TileImprovementGhostScript : MonoBehaviour
         }
     }
 
-    public void PlaceTileImprovement(City city, WorldTerrain world, TileImprovement tileImprovement)
+    public void PlaceTileImprovement(City city, WorldTerrain world, TileImprovement tileImprovement, GUIStateManager state)
     {
-        StartCoroutine(WaitForPlacement(city, world, tileImprovement));
+        StartCoroutine(WaitForPlacement(city, world, tileImprovement, state));
     }
 
-    private IEnumerator WaitForPlacement(City city, WorldTerrain world, TileImprovement tileImprovement)
+    private IEnumerator WaitForPlacement(City city, WorldTerrain world, TileImprovement tileImprovement, GUIStateManager state)
     {
-        GUIMaster.main.cityGUI.gameObject.SetActive(false);
+        state.SetState(GUIStateManager.TILE_IMPROVEMENT);
+
         this.world = world;
         spriteRenderer.sprite = Resources.Load<Sprite>("Projects" + System.IO.Path.DirectorySeparatorChar + tileImprovement.ID);
         spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f);
@@ -36,14 +37,14 @@ public class TileImprovementGhostScript : MonoBehaviour
         Vector3Int gridPos = world.grid.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
         yield return new WaitForSeconds(0.1f);
-        while (!Input.GetMouseButtonUp(0) || !city.WithinCityRange(gridPos) || !tileImprovement.IsValidTile(gridPos))
+        while (!Input.GetMouseButtonUp(0) || !city.WithinCityRange(gridPos) || !tileImprovement.IsValidTile(gridPos, world))
         {
             gridPos = world.grid.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
             transform.position = world.grid.CellToWorld(gridPos);
             float aspect = tileImprovement.UseFertility ? world.GetFertilityAtTile(gridPos) : world.GetRichnessAtTile(gridPos);
             string title = tileImprovement.UseFertility ? "Fertility: " : "Richness: ";
             aspectText.text = title + Mathf.Round(aspect * 100) / 100;
-            if (!city.WithinCityRange(gridPos) || !tileImprovement.IsValidTile(gridPos))
+            if (!city.WithinCityRange(gridPos) || !tileImprovement.IsValidTile(gridPos, world))
             {
                 spriteRenderer.color = new Color(0, 0, 0);
             }
@@ -54,6 +55,7 @@ public class TileImprovementGhostScript : MonoBehaviour
             yield return null;
         }
         canvas.gameObject.SetActive(false);
-        GUIMaster.main.cityGUI.gameObject.SetActive(true);
+
+        state.SetState(GUIStateManager.CITY);
     }
 }

@@ -10,10 +10,13 @@ public class ConstructionPanelScript : CityPanelScript
 {
     [Header("GameObjects")]
     public WorldTerrain world;
+    public GUIMaster gui;
 
     public GameObject availableProjectList;
     public GameObject unavailableProjectsList;
     public GameObject projectDescriptorPanel;
+
+    public Button confirmButton;
 
     //public Text cityName;
     public Text selectionTitle;
@@ -21,7 +24,7 @@ public class ConstructionPanelScript : CityPanelScript
     public Text currentDesc;
 
     [Header("Prefabs")]
-    public GameObject projectButtonPrefab;
+    public ProjectButton projectButtonPrefab;
     public TileImprovementGhostScript tileImprovementPrefab;
 
     private City selectedCity;
@@ -32,10 +35,7 @@ public class ConstructionPanelScript : CityPanelScript
         this.selectedCity = city;
         this.selectedButton = null;
         base.Enable(city);
-    }
 
-    private void OnEnable()
-    {
         //Clear List Entries and Texts
         selectionTitle.text = "";
         selectionDesc.text = "";
@@ -52,14 +52,15 @@ public class ConstructionPanelScript : CityPanelScript
         //Populate project lists
         foreach (string projectID in selectedCity.construction.GetAvailableProjects())
         {
-            GameObject button = Instantiate(projectButtonPrefab);
-            button.transform.SetParent(availableProjectList.transform);
-            button.GetComponent<ProjectButton>().ProjectSelector = this;
+            ProjectButton pb = Instantiate(projectButtonPrefab);
+            pb.transform.SetParent(availableProjectList.transform);
+            pb.ProjectSelector = this;
             //TODO: combine both properties VVVV
-            button.GetComponentInChildren<Text>().text = GlobalProjectDictionary.GetProjectData(projectID).Name;
-            button.GetComponent<ProjectButton>().ProjectID = projectID;
+            pb.text.text = GlobalProjectDictionary.GetProjectData(projectID).Name;
+            pb.ProjectID = projectID;
         }
 
+        confirmButton.onClick.AddListener(() => ConfirmProject());
         UpdateGUI();
     }
 
@@ -81,7 +82,7 @@ public class ConstructionPanelScript : CityPanelScript
         if (selectedButton != null)
         {
             //ProjectData project = GlobalProjectDictionary.GetProjectData();
-            selectedCity.construction.SetProject(selectedButton.ProjectID);
+            selectedCity.construction.SetProject(selectedButton.ProjectID, gui);
         }
         UpdateGUI();
     }
@@ -91,8 +92,4 @@ public class ConstructionPanelScript : CityPanelScript
         currentDesc.text = selectedCity.construction.ToString();
     }
 
-    public void Close()
-    {
-        GUIMaster.main.CloseCityGUI();
-    }
 }

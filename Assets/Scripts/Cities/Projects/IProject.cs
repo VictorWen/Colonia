@@ -6,11 +6,11 @@ public interface IProject
 {
     string Type { get; }
 
-    void Complete(City city);
+    void Complete(City city, GUIMaster game);
 
-    void OnSelect(City city);
+    void OnSelect(City city, GUIMaster game);
 
-    void OnDeselect(City city);
+    void OnDeselect(City city, GUIMaster game);
 
     IProject Copy();
 

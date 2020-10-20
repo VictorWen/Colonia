@@ -43,12 +43,12 @@ public class City
         tileImprovements = new List<TileImprovement>();
     }
 
-    public void OnNextTurn()
+    public void OnNextTurn(GUIMaster gui)
     {
-        construction.UpdateConstruction();
+        construction.UpdateConstruction(gui);
         foreach (TileImprovement ti in tileImprovements)
         {
-            ti.OnNextTurn(this);
+            ti.OnNextTurn(this, gui.Game.world);
         }
 
         //TODO: TEMPORARY POPULATION GROWTH IMPLEMENTATION, REMOVE
@@ -86,14 +86,14 @@ public class City
     }
 
     //TODO: Add CityRange visual
-    public void UpdateCityRange()
+    public void UpdateCityRange(WorldTerrain world)
     {
         cityRange = new HashSet<Vector3Int>();
         //TODO: Formalize cityRadius
         int cityRadius = 5;
         
         Vector2[] checks = new Vector2[] { new Vector2(-1, 0), new Vector2(-0.5f, 0.75f), new Vector2(0.5f, 0.75f), new Vector2(1, 0), new Vector2(0.5f, -0.75f), new Vector2(-0.5f, -0.75f) };
-        Grid grid = GUIMaster.main.world.grid;
+        Grid grid = world.grid;
 
         List<Vector3> queue = new List<Vector3>();
         List<float> moves = new List<float>();
@@ -107,7 +107,7 @@ public class City
             foreach (Vector2 v in checks)
             {
                 Vector3 tilePos = queue[0] + (Vector3)v;
-                float cost = GUIMaster.main.world.IsReachable(cityRadius - moves[0], grid.WorldToCell(tilePos));
+                float cost = world.IsReachable(cityRadius - moves[0], grid.WorldToCell(tilePos));
                 Vector3Int gridTilePos = grid.WorldToCell(tilePos);
                 if (!cityRange.Contains(gridTilePos) && cost >= 0)
                 {
