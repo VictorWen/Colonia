@@ -2,21 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Cities;
 
 [CreateAssetMenu(fileName = "Tile", menuName = "ScriptableObjects/City Tile", order = 1)]
 public class CityTile : Tile
 {
-    public GameObject cityGUI;
+    public City City { get; private set; }
 
-    private City city;
+    public string Type { get; private set; }
 
-    public void SetCity(City c)
+    public void FinishConstruction(City city, string type)
     {
-        this.city = c;
-    }
-
-    public void OpenCityGUI()
-    {
-        cityGUI.SetActive(true);
+        Debug.Log("City Tile Construction Finished: " + type);
+        City = city;
+        Type = type;
     }
 }

@@ -2,20 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Cities;
+using Cities.Construction;
 
 // Handles foreground game state (client). Also used for testing purposes
 // Global client side, instantized server side
-// TODO: Solve encapsulation
 // TODO: determine Capital implementation
 public class GUIMaster : MonoBehaviour
 {
+    [Obsolete("Should be created on new/load game. Use Game.world instead")]
     public WorldTerrain world;
     public CityGUIScript cityGUI;
     //public static CapitalCity capital;
     //public InventoryGUI invManager;
     public CityScript cityPrefab;
-    public TileImprovementGhostScript tileImprovementGhostScript;
-    
+    public ConstructedTileGhost ghostPrefab;
+
+    public DistrictSelectorScript districtSelectorScript;
+
     public Canvas mapHUD;
 
     public GUIStateManager GUIState { get; private set; }
@@ -47,6 +51,9 @@ public class GUIMaster : MonoBehaviour
         capitalScript = CityScript.Create("Test", new Vector3(-1, 0, 0), this);
         capital = capitalScript.city;
         capital.inv = inv;
+
+        //cityGUI.OpenCityGUI(capital);
+        //districtSelectorScript.Enable(capital);
         //-------------------
     }
 
@@ -54,7 +61,7 @@ public class GUIMaster : MonoBehaviour
     public void NextTurn()
     {
         Game.NextTurn(this);
-        capitalScript.title.text = capital.Name + "(" + capital.population + ")"; //TODO:
+        capitalScript.title.text = capital.Name + "(" + capital.population + ")"; //TODO: move population text update location
     }
 }
 

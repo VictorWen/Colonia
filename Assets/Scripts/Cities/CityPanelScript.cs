@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
+using Cities;
 
 public abstract class CityPanelScript : MonoBehaviour
 {
-    public virtual void Enable(City city)
+    protected GUIMaster gui;
+
+    public virtual void Enable(City city, GUIMaster gui)
     {
+        this.gui = gui;
         gameObject.SetActive(true);
     }
 }

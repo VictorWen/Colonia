@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using Cities;
+
 public class GUIStateManager
 {
     // ---CONTROLS---
@@ -20,11 +22,11 @@ public class GUIStateManager
 
     //----PRESETS-----
     // GameState for when player is viewin the map
-    public static readonly GUIStatePreset MAP = new GUIStatePreset(true, true, true, true);
+    public static readonly GUIStatePreset MAP = new GUIStatePreset("map", true, true, true, true);
     // GameState for when the player has a City panel open
-    public static readonly GUIStatePreset CITY = new GUIStatePreset(false, false, false, false, true);
+    public static readonly GUIStatePreset CITY = new GUIStatePreset("city", false, false, false, false, true);
     // GameState for when the player is placing a tile improvement
-    public static readonly GUIStatePreset TILE_IMPROVEMENT = new GUIStatePreset(true);
+    public static readonly GUIStatePreset GHOST_TILE = new GUIStatePreset("ghost tile", true);
 
     public struct GUIStatePreset
     {
@@ -35,8 +37,11 @@ public class GUIStateManager
         public readonly bool mapHUD;
         public readonly bool cityPanel;
 
-        public GUIStatePreset(bool cam, bool unit = false, bool tile = false, bool map = false, bool city = false)
+        public readonly string name;
+
+        public GUIStatePreset(string name, bool cam, bool unit = false, bool tile = false, bool map = false, bool city = false)
         {
+            this.name = name;
             camCtrl = cam;
             unitCtrl = unit;
             tileIntr = tile;
@@ -55,6 +60,7 @@ public class GUIStateManager
 
     public void SetState(GUIStatePreset preset)
     {
+        Debug.Log("GUI State Changed: " + preset.name);
         CameraControl = preset.camCtrl;
         UnitControl = preset.unitCtrl;
         TileInteraction = preset.tileIntr;

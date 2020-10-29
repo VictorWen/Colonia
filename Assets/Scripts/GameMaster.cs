@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cities;
 
 //Handles background game state (Server)
 public class GameMaster
 {
-    public WorldTerrain world;
+    public WorldTerrain world { get; private set; }
 
     public Inventory GlobalInventory { get; private set; }
 

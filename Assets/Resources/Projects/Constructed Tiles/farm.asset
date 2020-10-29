@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: quarry
+  m_Script: {fileID: 11500000, guid: f857bba04a5884c4fbba2150af90ae0f, type: 3}
+  m_Name: farm
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: 2787c069ec6810c4284107dda447f716, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3037240d8cbaf1840ab466d74c886876, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

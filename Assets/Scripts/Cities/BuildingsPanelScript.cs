@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildingsPanelScript : CityPanelScript
+namespace Cities
 {
-    public override void Enable(City city)
+    public class BuildingsPanelScript : CityPanelScript
     {
-        base.Enable(city);
+        public override void Enable(City city, GUIMaster gui)
+        {
+            base.Enable(city, gui);
+        }
     }
 }

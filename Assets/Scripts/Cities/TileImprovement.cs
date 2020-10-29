@@ -2,84 +2,80 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TileImprovement : IProject
+namespace Cities.Construction
 {
-    private string resourceID;
-    public bool UseFertility { get; private set; }
-    //TODO: Formalize tile identification
-    private HashSet<string> validTiles;
-
-    private TileImprovementGhostScript pointer;
-    private Vector3Int position;
-
-    public string Type { get { return "Tile Improvement"; } }
-    public string ID { get; private set; }
-
-    public TileImprovement(string id, string resource, bool fertility, string[] validTiles/*, Range from city?*/)
+    public class TileImprovement : ConstructedTileProject
     {
-        this.ID = id;
-        resourceID = resource;
-        UseFertility = fertility;
-        this.validTiles = new HashSet<string>();
-        foreach (string tileName in validTiles)
+        private string resourceID;
+        public bool UseFertility { get; private set; }
+        //TODO: Formalize tile identification
+        private HashSet<string> validTiles;
+
+        public override string Type { get { return "Tile Improvement"; } }
+
+        public TileImprovement(string id, string resource, bool fertility, string[] validTiles/*, Range from city?*/) : base(id)
         {
-            this.validTiles.Add(tileName);
+            resourceID = resource;
+            UseFertility = fertility;
+            this.validTiles = new HashSet<string>();
+            foreach (string tileName in validTiles)
+            {
+                this.validTiles.Add(tileName);
+            }
         }
-    }
 
-    private TileImprovement(string id, string resource, bool fertility, HashSet<string> validTiles/*, Range from city?*/)
-    {
-        this.ID = id;
-        resourceID = resource;
-        UseFertility = fertility;
-        this.validTiles = validTiles;
-    }
-
-    public void Complete(City city, GUIMaster gui)
-    {
-        position = pointer.Position;
-        Object.Destroy(pointer.gameObject);
-        gui.Game.world.cities.SetTile(position, Resources.Load<UnityEngine.Tilemaps.Tile>("Tiles" + System.IO.Path.DirectorySeparatorChar + ID));
-        city.AddTileImprovement(this);
-    }
-
-    public void OnSelect(City city, GUIMaster gui)
-    {
-        pointer = Object.Instantiate(gui.tileImprovementGhostScript);
-        city.UpdateCityRange(gui.Game.world);
-        pointer.PlaceTileImprovement(city, gui.Game.world, this, gui.GUIState);
-    }
-
-    public void OnDeselect(City city, GUIMaster gui)
-    {
-        Object.Destroy(pointer.gameObject);
-    }
-
-    public IProject Copy()
-    {
-        //same validtiles reference, but should be okay
-        //TODO: check if validTile reference matters
-        TileImprovement copy = new TileImprovement(ID, resourceID, UseFertility, validTiles)
+        private TileImprovement(string id, string resource, bool fertility, HashSet<string> validTiles/*, Range from city?*/) : base (id)
         {
-            pointer = pointer
-        };
-        return copy;
-    }
-    
-    public void OnNextTurn(City city, WorldTerrain world)
-    {
-        float tilePower = UseFertility ? world.GetFertilityAtTile(position) : world.GetRichnessAtTile(position);
-        //TODO: add modifiers
-        city.AddResource(resourceID, tilePower / GlobalResourceDictionary.GetResourceData(resourceID).hardness);
-    }
+            ID = id;
+            resourceID = resource;
+            UseFertility = fertility;
+            this.validTiles = validTiles;
+        }
 
-    public string GetDescription()
-    {
-        return "TILE IMPROVEMENT TEST DESCRIPTION";
-    }
+        public override void Complete(City city, GUIMaster gui)
+        {
+            base.Complete(city, gui);
+            city.AddTileImprovement(this);
+        }
 
-    public bool IsValidTile(Vector3Int position, WorldTerrain world)
-    {
-        return validTiles.Contains(world.terrain.GetTile(position).name);
+        public override IProject Copy()
+        {
+            //same validtiles reference, but should be okay
+            //TODO: check if validTile reference matters
+            TileImprovement copy = new TileImprovement(ID, resourceID, UseFertility, validTiles)
+            {
+                position = position
+            };
+            return copy;
+        }
+
+        public void OnNextTurn(City city, GameMaster game)
+        {
+            float tilePower = UseFertility ? game.world.GetFertilityAtTile(position) : game.world.GetRichnessAtTile(position);
+            //TODO: add modifiers
+            city.AddResource(resourceID, tilePower / GlobalResourceDictionary.GetResourceData(resourceID).hardness);
+        }
+
+        public override string GetDescription()
+        {
+            return "TILE IMPROVEMENT TEST DESCRIPTION";
+        }
+
+        public override bool IsValidTile(Vector3Int position, WorldTerrain world, City city)
+        {
+            return validTiles.Contains(world.terrain.GetTile(position).name);
+        }
+
+        public override string GetTooltipText(Vector3Int position, WorldTerrain world)
+        {
+            float aspect = UseFertility ? world.GetFertilityAtTile(position) : world.GetRichnessAtTile(position);
+            return (UseFertility ? "Fertility: " : "Richness: ") + System.Math.Round(aspect, 2);
+        }
+
+        public override string GetSelectionInfo(GUIMaster gui)
+        {
+            float aspect = UseFertility ? gui.Game.world.GetFertilityAtTile(position) : gui.Game.world.GetRichnessAtTile(position);
+            return (UseFertility ? "Fertility: " : "Richness: ") + System.Math.Round(aspect, 2);
+        }
     }
 }

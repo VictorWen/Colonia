@@ -3,53 +3,57 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-//TODO: formalize CityScript and City relationship
-public class CityScript : MonoBehaviour
+namespace Cities
 {
-    public SpriteRenderer spriteRend;
-    public Text title;
-
-    private GUIStateManager state;
-    public City city; //TODO: change back to private after testing
-    private CityGUIScript panel;
-
-    public static CityScript Create(string name, Vector3 position, GUIMaster gui)
+    public class CityScript : MonoBehaviour
     {
-        CityScript script = Instantiate(gui.cityPrefab, position, new Quaternion());
-        script.state = gui.GUIState;
-        script.city = new City(name, gui.Game.world.grid.WorldToCell(position));
-        script.panel = gui.cityGUI;
-        
-        gui.Game.AddNewCity(script.city);
-        //TODO: move city title text to an automatic update cycle
-        script.title.text = name + "(" + script.city.population + ")";
-        return script;
-    }
+        public SpriteRenderer spriteRend;
+        public Text title;
 
-    public void OnMouseOver()
-    {
-        if (state.TileInteraction)
+        private GUIStateManager state;
+        public City city; //TODO: change back to private after testing
+        private CityGUIScript panel;
+
+        public static CityScript Create(string name, Vector3 position, GUIMaster gui)
         {
-            if (Input.GetMouseButtonDown(0))
+            CityScript script = Instantiate(gui.cityPrefab, position, new Quaternion());
+            script.state = gui.GUIState;
+            script.city = new City(name, gui.Game.world.grid.WorldToCell(position));
+            script.panel = gui.cityGUI;
+
+            gui.Game.AddNewCity(script.city);
+            //TODO: move city title text to an automatic update cycle
+            script.title.text = name + "(" + script.city.population + ")";
+            return script;
+        }
+
+        public void OnMouseOver()
+        {
+            if (state.TileInteraction)
             {
-                spriteRend.color = new Color(0.5f, 0.5f, 0.5f);
-            }
-            if (Input.GetMouseButtonUp(0))
-            {
-                spriteRend.color = new Color(0.8f, 0.8f, 0.8f);
-                panel.OpenCityGUI(city);
+                if (Input.GetMouseButtonDown(0))
+                {
+                    spriteRend.color = new Color(0.5f, 0.5f, 0.5f);
+                }
+                if (Input.GetMouseButtonUp(0))
+                {
+                    spriteRend.color = new Color(0.8f, 0.8f, 0.8f);
+                    panel.OpenCityGUI(city);
+                }
             }
         }
-    }
 
-    //TODO: make SpriteButtonScript class
-    public void OnMouseEnter()
-    {
-        spriteRend.color = new Color(0.8f, 0.8f, 0.8f);
-    }
+        //TODO: make SpriteButtonScript class
+        public void OnMouseEnter()
+        {
+            if (state.TileInteraction)
+                spriteRend.color = new Color(0.8f, 0.8f, 0.8f);
+        }
 
-    public void OnMouseExit()
-    {
-        spriteRend.color = new Color(1, 1, 1);
+        public void OnMouseExit()
+        {
+            if (state.TileInteraction)
+                spriteRend.color = new Color(1, 1, 1);
+        }
     }
 }

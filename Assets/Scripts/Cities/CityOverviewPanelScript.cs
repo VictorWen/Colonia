@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CityOverviewPanelScript : CityPanelScript
+namespace Cities
 {
-    public Text cityInfoText;
-    public Text currentConstructionText;
-
-    public override void Enable(City city)
+    public class CityOverviewPanelScript : CityPanelScript
     {
-        base.Enable(city);
-        cityInfoText.text = city.ToString();
-        currentConstructionText.text = city.construction.ToString();
+        public Text cityInfoText;
+        public Text currentConstructionText;
+
+        public override void Enable(City city, GUIMaster gui)
+        {
+            base.Enable(city, gui);
+            cityInfoText.text = city.ToString();
+            currentConstructionText.text = city.construction.GetDescription(this.gui);
+        }
     }
 }

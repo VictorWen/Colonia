@@ -10,7 +10,6 @@ public class WorldTerrain : MonoBehaviour
 {
     public Grid grid;
     public Tilemap terrain;
-    //TODO: Confirm practicality
     public Tilemap cities;
 
     [Header("Generation Settings")]
