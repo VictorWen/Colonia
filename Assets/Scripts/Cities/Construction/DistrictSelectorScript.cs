@@ -87,12 +87,14 @@ namespace Cities.Construction
         public void ConfirmSelection()
         {
             building.SetDistrict(selectedDistrict);
+            gui.cityGUI.UpdateGUI();
             gameObject.SetActive(false);
         }
 
         public void CancelSelection()
         {
             city.construction.SetProject(null, gui);
+            gui.cityGUI.UpdateGUI();
             gameObject.SetActive(false);
         }
     }

@@ -16,5 +16,6 @@ namespace Cities
             cityInfoText.text = city.ToString();
             currentConstructionText.text = city.construction.GetDescription(this.gui);
         }
+
     }
 }

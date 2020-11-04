@@ -18,10 +18,11 @@ namespace Cities
         public HorizontalLayoutGroup buttons;
         private TabScript defaultTab;
         private TabScript selectedTab;
+        private TabScript[] tabs;
 
         public void Awake()
         {
-            TabScript[] tabs = buttons.GetComponentsInChildren<TabScript>();
+            tabs = buttons.GetComponentsInChildren<TabScript>();
             for (int i = 0; i < tabs.Length; i++)
             {
                 TabScript tab = tabs[i];
@@ -33,6 +34,11 @@ namespace Cities
                 }
             }
             //gameObject.SetActive(false);
+        }
+
+        public void OnEnable()
+        {
+            UpdateGUI();
         }
 
         public void ChangeTab(TabScript tab)
@@ -62,7 +68,10 @@ namespace Cities
 
         public void UpdateGUI()
         {
-            //TODO: update each panels' gui
+            foreach (TabScript tab in tabs)
+            {
+                tab.panel.UpdateGUI();
+            }
         }
     }
 }

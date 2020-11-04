@@ -88,7 +88,7 @@ namespace Cities.Construction
             UpdateGUI();
         }
 
-        public void UpdateGUI()
+        public override void UpdateGUI()
         {
             currentDesc.text = selectedCity.construction.GetDescription(gui);
         }

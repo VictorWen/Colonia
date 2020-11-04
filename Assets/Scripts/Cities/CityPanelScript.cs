@@ -10,4 +10,7 @@ public abstract class CityPanelScript : MonoBehaviour
         this.gui = gui;
         gameObject.SetActive(true);
     }
+
+    public virtual void UpdateGUI() { }
+
 }
