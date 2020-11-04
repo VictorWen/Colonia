@@ -26,24 +26,6 @@ public static class GlobalResourceDictionary
         return resources[id];
     }
 
-    public static float GetResourceAttribute(string id, AttributeID attr)
-    {
-        float value = 0;
-        switch (attr)
-        {
-            case AttributeID.Hardness:
-                value = GetResourceData(id).hardness;
-                break;
-            case AttributeID.Shape:
-                value = GetResourceData(id).shape;
-                break;
-            case AttributeID.Weight:
-                value = GetResourceData(id).weight;
-                break;
-        }
-        return value;
-    }
-
     public struct ResourceData
     {
         public readonly string name;
@@ -62,10 +44,5 @@ public static class GlobalResourceDictionary
             this.weight = weight;
             this.value = value;
         }
-    }
-
-    public enum AttributeID
-    {
-        Weight, Hardness, Shape
     }
 }

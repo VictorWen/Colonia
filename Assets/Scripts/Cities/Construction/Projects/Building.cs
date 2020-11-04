@@ -49,7 +49,7 @@ namespace Cities.Construction
 
         public string GetSelectionInfo(GUIMaster gui)
         {
-            return "District: " + destination.Name + "\n";
+            return "District: " + (destination != null ? destination.Name : "No District Selected");
         }
 
         public void OnDeselect(City city, GUIMaster gui)
@@ -65,6 +65,14 @@ namespace Cities.Construction
         public void SetDistrict(District destination)
         {
             this.destination = destination;
+        }
+
+        public void OnNextTurn(City city, GameMaster game)
+        {
+            foreach (BuildingEffect effect in GlobalBuildingDictionary.GetNextTurnEffects(ID))
+            {
+                effect.Apply(city);
+            }
         }
     }
 }

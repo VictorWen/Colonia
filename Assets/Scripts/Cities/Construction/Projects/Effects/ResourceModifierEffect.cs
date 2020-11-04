@@ -7,11 +7,11 @@ namespace Cities.Construction
     // Changes the effective cost of a resource
     public class ResourceModifierEffect : BuildingEffect
     {
-        private readonly GlobalResourceDictionary.AttributeID attr;
+        private readonly ModifierAttributeID attr;
         private readonly string id;
         private readonly float value;
 
-        public ResourceModifierEffect(GlobalResourceDictionary.AttributeID attr, string id, float value)
+        public ResourceModifierEffect(ModifierAttributeID attr, string id, float value)
         {
             this.id = id;
             this.attr = attr;

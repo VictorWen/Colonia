@@ -84,6 +84,7 @@ namespace Cities.Construction
         }
 
         // TODO: formalize project setting
+        // TODO: cancel project => updateGUI
         public void SetProject(string id, GUIMaster gui, bool deselect = true)
         {
             if (project != null && deselect)
@@ -135,7 +136,8 @@ namespace Cities.Construction
         public string GetDescription(GUIMaster gui)
         {
             string output = (selectedProjectID == null ? "No Selected Construction Project" : GlobalProjectDictionary.GetProjectData(selectedProjectID).ToString()) + "\n";
-            output += "\n" + project.GetSelectionInfo(gui);
+            if (project != null)
+                output += "\n" + project.GetSelectionInfo(gui);
             output += "\n<b>Progress:</b> " + constructionProgress + "/" + requiredConstructionProgress;
             return output;
         }

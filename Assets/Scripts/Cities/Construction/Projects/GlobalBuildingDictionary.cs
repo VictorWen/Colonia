@@ -10,11 +10,12 @@ namespace Cities.Construction
 
         static GlobalBuildingDictionary()
         {
-            AddNewBuilding("saw mill", "Saw Mill", new BuildingEffect[] { new ResourceModifierEffect(GlobalResourceDictionary.AttributeID.Hardness, "wood", -0.1f) });
+            buildings = new Dictionary<string, BuildingData>();
 
+            AddNewBuilding("saw mill", "Saw Mill", new BuildingEffect[] { new ResourceModifierEffect(ModifierAttributeID.HARDNESS, "wood", -0.1f) });
 
             //TODO: REMOVE TEST BUILDING
-            AddNewBuilding("test", "TEST BUILDING", new BuildingEffect[] { new ResourceModifierEffect(GlobalResourceDictionary.AttributeID.Hardness, "stone", -0.9f) });
+            AddNewBuilding("test", "TEST BUILDING", new BuildingEffect[] { new ResourceModifierEffect(ModifierAttributeID.HARDNESS, "stone", -0.9f) });
         }
 
         private static void AddNewBuilding(string id, string name, BuildingEffect[] effects)

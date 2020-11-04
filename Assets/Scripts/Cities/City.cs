@@ -54,9 +54,13 @@ namespace Cities
         public void OnNextTurn(GUIMaster gui)
         {
             construction.UpdateConstruction(gui);
-            foreach (TileImprovement ti in tileImprovements)
+            foreach (District district in Districts)
             {
-                ti.OnNextTurn(this, gui.Game);
+                district.OnNextTurn(this, gui.Game);
+            }
+            foreach (TileImprovement tileImprovement in tileImprovements)
+            {
+                tileImprovement.OnNextTurn(this, gui.Game);
             }
 
             //TODO: TEMPORARY POPULATION GROWTH IMPLEMENTATION, REMOVE
@@ -71,11 +75,11 @@ namespace Cities
             //--------------------------------------------------------
         }
 
-        public float GetResourceAttribute(string id, GlobalResourceDictionary.AttributeID attr)
+/*        public float GetResourceAttribute(string id, GlobalResourceDictionary.AttributeID attr)
         {
             //TODO: Move to ResourceModifiers?
             return Mathf.Max(GlobalResourceDictionary.GetResourceAttribute(id, attr) * ResourceMods.GetResourceMod(attr, id), 0.1f);
-        }
+        }*/
 
         public void AddTileImprovement(TileImprovement ti)
         {
@@ -147,4 +151,3 @@ namespace Cities
         }
     }
 }
-

@@ -55,11 +55,12 @@ namespace Cities.Construction
                     string name = "Empty";
                     if (b != null)
                     {
-                        name = b.ID;// TODO: Change to building.Name
+                        name = b.ID; // TODO: Change to building.Name
                     }
                     slot.GetComponentInChildren<Text>().text = name;
                     slot.SetParent(slotList.transform);
                 }
+
                 if (district.Buildings.Count == 0)
                     slotList.gameObject.SetActive(false);
             }

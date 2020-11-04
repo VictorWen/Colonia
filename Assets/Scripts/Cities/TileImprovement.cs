@@ -52,8 +52,9 @@ namespace Cities.Construction
         public void OnNextTurn(City city, GameMaster game)
         {
             float tilePower = UseFertility ? game.world.GetFertilityAtTile(position) : game.world.GetRichnessAtTile(position);
-            //TODO: add modifiers
-            city.AddResource(resourceID, tilePower / GlobalResourceDictionary.GetResourceData(resourceID).hardness);
+            float hardnessModifier = game.GetResourceModifier(ModifierAttributeID.HARDNESS, resourceID, city);
+            float efficienyModifier = game.GetResourceModifier(ModifierAttributeID.EFFICIENCY, resourceID, city);
+            city.AddResource(resourceID, (tilePower * efficienyModifier) / (GlobalResourceDictionary.GetResourceData(resourceID).hardness * hardnessModifier));
         }
 
         public override string GetDescription()

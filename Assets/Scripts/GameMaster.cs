@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cities;
+using Cities.Construction;
 
 //Handles background game state (Server)
 public class GameMaster
@@ -12,6 +13,7 @@ public class GameMaster
 
     private Dictionary<string, float> pendingResources;
     private List<City> cities;
+    private ResourceModifiers globalModifiers;
 
     public GameMaster(WorldTerrain world)
     {
@@ -20,6 +22,7 @@ public class GameMaster
         GlobalInventory = new Inventory(-1);
         pendingResources = new Dictionary<string, float>();
         cities = new List<City>();
+        globalModifiers = new ResourceModifiers();
     }
 
     public void NextTurn(GUIMaster gui)
@@ -45,5 +48,10 @@ public class GameMaster
         {
             pendingResources.Add(id, value);
         }
+    }
+
+    public float GetResourceModifier(ModifierAttributeID attr, string id, City city = null, District district = null)
+    {
+        return globalModifiers.GetResourceMod(attr, id) + (city != null ? city.ResourceMods.GetResourceMod(attr, id) : 0) + (district != null ? district.ResourceMods.GetResourceMod(attr, id) : 0);
     }
 }

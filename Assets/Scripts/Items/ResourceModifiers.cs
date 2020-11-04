@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class ResourceModifiers
 {
-    private Dictionary<GlobalResourceDictionary.AttributeID, Dictionary<string, float>> mods;
+    private Dictionary<ModifierAttributeID, Dictionary<string, float>> mods;
 
     public ResourceModifiers()
     {
-        mods = new Dictionary<GlobalResourceDictionary.AttributeID, Dictionary<string, float>>();
-        foreach (GlobalResourceDictionary.AttributeID attr in Enum.GetValues(typeof(GlobalResourceDictionary.AttributeID)))
+        mods = new Dictionary<ModifierAttributeID, Dictionary<string, float>>();
+        foreach (ModifierAttributeID attr in Enum.GetValues(typeof(ModifierAttributeID)))
         {
             mods.Add(attr, new Dictionary<string, float>());
         }
     }
 
-    public void AddResourceMod(GlobalResourceDictionary.AttributeID attr, string id, float value)
+    public void AddResourceMod(ModifierAttributeID attr, string id, float value)
     {
         if (mods[attr].ContainsKey(id))
         {
@@ -28,8 +28,11 @@ public class ResourceModifiers
         }
     }
 
-    public float GetResourceMod(GlobalResourceDictionary.AttributeID attr, string id)
+    public float GetResourceMod(ModifierAttributeID attr, string id)
     {
-        return mods[attr][id];
+        if (mods[attr].ContainsKey(id))
+            return mods[attr][id];
+        else
+            return 1;
     }
 }

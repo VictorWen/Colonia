@@ -6,7 +6,7 @@ namespace Cities.Construction
 {
     public class District : ConstructedTileProject
     {
-        private ResourceModifiers rmods;
+        public ResourceModifiers ResourceMods { get; private set; }
         public List<Building> Buildings { get; private set; }
         private HashSet<string> invalidTiles;
 
@@ -18,7 +18,7 @@ namespace Cities.Construction
 
         public District(string tier, int buildingSlots, string[] InvalidTiles, string name = null) : base (tier)
         {
-            rmods = new ResourceModifiers();
+            ResourceMods = new ResourceModifiers();
             Buildings = new List<Building>();
             invalidTiles = new HashSet<string>();
             foreach (string s in InvalidTiles)
@@ -51,7 +51,7 @@ namespace Cities.Construction
             return new District(ID, BuildingSlots, new string[0])
             {
                 position = position,
-                rmods = rmods,
+                ResourceMods = ResourceMods,
                 Buildings = Buildings,
                 invalidTiles = invalidTiles
             };
@@ -100,7 +100,7 @@ namespace Cities.Construction
         // Call when district is upgraded
         public void UpgradeFrom(District old)
         {
-            rmods = old.rmods;
+            ResourceMods = old.ResourceMods;
             Buildings = old.Buildings;
             Name = old.Name;
         }
@@ -108,6 +108,14 @@ namespace Cities.Construction
         public override string GetTooltipText(Vector3Int position, WorldTerrain world)
         {
             return null;
+        }
+
+        public void OnNextTurn(City city, GameMaster game)
+        {
+            foreach (Building building in Buildings)
+            {
+                building.OnNextTurn(city, game);
+            }
         }
     }
 }
