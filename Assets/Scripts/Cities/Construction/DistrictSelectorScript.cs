@@ -15,7 +15,7 @@ namespace Cities.Construction
         public VerticalLayoutGroup districtPanelPrefab;
         public RectTransform buildingSlotPrefab;
 
-        private City city;
+        //private City city;
         private Building building;
         private Button selectedButton;
         private District selectedDistrict;
@@ -24,7 +24,7 @@ namespace Cities.Construction
 
         public void Enable(City city, Building building, GUIMaster gui)
         {
-            this.city = city;
+            //this.city = city;
             this.building = building;
             this.gui = gui;
 
@@ -69,6 +69,7 @@ namespace Cities.Construction
             gameObject.SetActive(true);
         }
 
+        //TODO: Handle selecting taken building slot
         public void SelectDistrict(District district, Button button)
         {
             if (selectedButton != null)
@@ -86,14 +87,14 @@ namespace Cities.Construction
 
         public void ConfirmSelection()
         {
-            building.SetDistrict(selectedDistrict);
+            building.FinishSelection(selectedDistrict);
             gui.cityGUI.UpdateGUI();
             gameObject.SetActive(false);
         }
 
         public void CancelSelection()
         {
-            city.construction.SetProject(null, gui);
+            building.FinishSelection(null);
             gui.cityGUI.UpdateGUI();
             gameObject.SetActive(false);
         }

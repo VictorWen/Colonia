@@ -25,6 +25,8 @@ namespace Cities.Construction
         public Text selectionDesc;
         public Text currentDesc;
 
+        public ProjectSelectionManager selectionManager;
+
         [Header("Prefabs")]
         public ProjectButton projectButtonPrefab;
 
@@ -56,7 +58,6 @@ namespace Cities.Construction
                 ProjectButton pb = Instantiate(projectButtonPrefab);
                 pb.transform.SetParent(availableProjectList.transform);
                 pb.ProjectSelector = this;
-                //TODO: combine both properties VVVV
                 pb.text.text = GlobalProjectDictionary.GetProjectData(projectID).Name;
                 pb.ProjectID = projectID;
             }
@@ -71,10 +72,12 @@ namespace Cities.Construction
             {
                 selectedButton.button.interactable = true;
             }
+
             ProjectData p = GlobalProjectDictionary.GetProjectData(b.ProjectID);
             selectionTitle.text = p.Name;
-            selectionDesc.text = p.ToString();
+            selectionDesc.text = p.GetDescription(selectedCity, gui.Game);
             selectedButton = b;
+            confirmButton.interactable = p.IsConstructable(selectedCity, gui.Game);
         }
 
         public void ConfirmProject()
@@ -83,9 +86,22 @@ namespace Cities.Construction
             if (selectedButton != null)
             {
                 //ProjectData project = GlobalProjectDictionary.GetProjectData();
-                selectedCity.construction.SetProject(selectedButton.ProjectID, gui);
+                Debug.Log("Project Selection Started");
+                ProjectData data = GlobalProjectDictionary.GetProjectData(selectedButton.ProjectID);
+                IProject selection = data.Project;
+                selectionManager.StartSelection(selection, this, selectedCity, gui);
+            }
+        }
+
+        public void FinishSelection(IProject selection)
+        {
+            if (selection.IsSelected())
+            {
+                Debug.Log("Project Selected");
+                selectedCity.construction.SetProject(selectedButton.ProjectID, selection, gui);
             }
             UpdateGUI();
+            Debug.Log("Project Selection Finished");
         }
 
         public override void UpdateGUI()

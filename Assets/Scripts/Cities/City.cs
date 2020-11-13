@@ -10,12 +10,8 @@ namespace Cities
         public ResourceModifiers ResourceMods { get; private set; }
 
         // Construction fields
-        // TODO: formalize construction
         public readonly CityConstruction construction;
         public List<string> AvailableProjects { get { return construction.GetAvailableProjects(); } }
-
-        //TODO: Temporary! Formalize city inventory
-        public Inventory inv;
 
         //TODO: TEMPORARY POPULATION IMPLEMENTATION, REMOVE
         public int population;
@@ -23,7 +19,7 @@ namespace Cities
         public int idlePop;
         public int workingPop;
 
-        private List<TileImprovement> tileImprovements;
+        private readonly List<TileImprovement> tileImprovements;
 
         // Districts
         //private int availableDistricts = 0; //TODO: implement available district
@@ -47,8 +43,7 @@ namespace Cities
             ResourceMods = new ResourceModifiers();
             construction = new CityConstruction(this);
             tileImprovements = new List<TileImprovement>();
-            Districts = new List<District>();
-            Districts.Add(new District("city center", 5, new string[0], "Test City Center"));
+            Districts = new List<District>() { new District("city center", 5, new Dictionary<string, int>(), new string[0], "Test City Center")};
         }
 
         public void OnNextTurn(GUIMaster gui)
@@ -65,9 +60,9 @@ namespace Cities
 
             //TODO: TEMPORARY POPULATION GROWTH IMPLEMENTATION, REMOVE
             int foodCost = Mathf.RoundToInt(population / 10f);
-            if (inv.GetResourceCount("food") >= foodCost)
+            if (gui.Game.GlobalInventory.GetResourceCount("food") >= foodCost)
             {
-                inv.AddItem(new ResourceItem("food", -foodCost));
+                gui.Game.GlobalInventory.AddItem(new ResourceItem("food", -foodCost));
                 int delta = Mathf.RoundToInt(population * popGrowthRate);
                 population += delta;
                 idlePop += delta;
@@ -75,22 +70,17 @@ namespace Cities
             //--------------------------------------------------------
         }
 
-/*        public float GetResourceAttribute(string id, GlobalResourceDictionary.AttributeID attr)
-        {
-            //TODO: Move to ResourceModifiers?
-            return Mathf.Max(GlobalResourceDictionary.GetResourceAttribute(id, attr) * ResourceMods.GetResourceMod(attr, id), 0.1f);
-        }*/
-
         public void AddTileImprovement(TileImprovement ti)
         {
             tileImprovements.Add(ti);
         }
 
-        public void AddResource(string id, float value)
+/*        public void AddResource(string id, float value)
         {
             //GameMaster.capital.GetInventory().AddItem(new ResourceItem(id, (int)(value / GlobalResourceDictionary.GetResourceData(id).hardness)));
+            // TODO: add improper use case handle for AddResource
             inv.AddItem(new ResourceItem(id, Mathf.RoundToInt(value)));
-        }
+        }*/
 
         public bool WithinCityRange(Vector3Int tilePos)
         {
@@ -136,7 +126,13 @@ namespace Cities
             cityRange.Remove(grid.WorldToCell(Position));
         }
 
-        public override string ToString()
+        public HashSet<Vector3Int> GetCityRange(WorldTerrain world)
+        {
+            UpdateCityRange(world);
+            return cityRange;
+        }
+
+        public string GetDescription(GameMaster game)
         {
             string output = "<b>City Info</b>\n";
             //TOOD: formalize population
@@ -145,8 +141,8 @@ namespace Cities
             output += "Working Population: " + workingPop + "\n";
             output += "Wealth: WIP" + "\n";
             output += "<b>Construction Resources</b>\n";
-            output += "Wood: " + inv.GetResourceCount("wood") + "\n";
-            output += "Stone: " + inv.GetResourceCount("stone") + "\n";
+            output += "Wood: " + game.GlobalInventory.GetResourceCount("wood") + "\n";
+            output += "Stone: " + game.GlobalInventory.GetResourceCount("stone") + "\n";
             return output;
         }
     }

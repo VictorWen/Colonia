@@ -6,8 +6,8 @@ namespace Cities.Construction
     // Tracks project completion progress and manages project event handling
     public class CityConstruction
     {
-        private List<string> completedProjects;
-        private int constructionDev = 2;
+        private readonly List<string> completedProjects;
+        private readonly int constructionDev = 2;
         private IProject project;
         private string selectedProjectID;
         private Dictionary<string, int> allocatedResources;
@@ -15,7 +15,7 @@ namespace Cities.Construction
         private float requiredConstructionProgress;
         private float constructionProgress;
 
-        private City city;
+        private readonly City city;
 
         public CityConstruction(City city)
         {
@@ -30,7 +30,7 @@ namespace Cities.Construction
         {
             if (selectedProjectID != null)
             {
-                UpdateConstructionProgressCost();
+                UpdateConstructionProgressCost(gui.Game);
                 constructionProgress += constructionDev;
 
                 //FOR TESTING---------------------------------------
@@ -44,7 +44,7 @@ namespace Cities.Construction
                     int pop = GlobalProjectDictionary.GetProjectData(selectedProjectID).Employment;
                     city.idlePop -= pop;
                     city.workingPop += pop;
-                    SetProject(null, gui, false);
+                    CloseProject(gui);
                 }
             }
         }
@@ -66,14 +66,6 @@ namespace Cities.Construction
                         break;
                     }
                 }
-                foreach (KeyValuePair<string, int> resource in pair.Value.Costs)
-                {
-                    if (city.inv.GetResourceCount(resource.Key) < resource.Value)
-                    {
-                        available = false;
-                        break;
-                    }
-                }
                 if (available)
                 {
                     list.Add(pair.Key);
@@ -83,59 +75,55 @@ namespace Cities.Construction
             return list;
         }
 
-        // TODO: formalize project setting
-        // TODO: cancel project => updateGUI
-        public void SetProject(string id, GUIMaster gui, bool deselect = true)
+        public void SetProject(string id, IProject selectedProject, GUIMaster gui)
         {
-            if (project != null && deselect)
-            {
-                project.OnDeselect(city, gui);
-                foreach (KeyValuePair<string, int> resource in allocatedResources)
-                {
-                    city.inv.AddItem(new ResourceItem(resource.Key, resource.Value));
-                }
-            }
-            project = null;
+            CloseProject(gui);
 
-            selectedProjectID = id;
+            // Reset counters;
             allocatedResources = new Dictionary<string, int>();
             requiredConstructionProgress = 0;
-            if (id != null)
-            {
-                ProjectData data = GlobalProjectDictionary.GetProjectData(id);
-                project = data.Project;
-                project.OnSelect(city, gui);
-                UpdateConstructionProgressCost();
-
-                //TODO: Incorporate modifiers
-                //Assumes enough resources in inventory
-                foreach (KeyValuePair<string, int> resource in data.Costs)
-                {
-                    city.inv.AddItem(new ResourceItem(resource.Key, -resource.Value));
-                    allocatedResources.Add(resource.Key, resource.Value);
-                }
-            }
             constructionProgress = 0;
+
+            // Update values
+            selectedProjectID = id;
+            project = selectedProject;
+            UpdateConstructionProgressCost(gui.Game);
+
+            // Take needed resources
+            //TODO: Incorporate modifiers
+            //Assumes enough resources in inventory
+            foreach (KeyValuePair<string, int> resource in selectedProject.GetResourceCost(city, gui.Game))
+            {
+                gui.Game.GlobalInventory.AddItem(new ResourceItem(resource.Key, -resource.Value));
+                allocatedResources.Add(resource.Key, resource.Value);
+            }
         }
 
-        private void UpdateConstructionProgressCost()
+        public void CloseProject(GUIMaster gui)
+        {
+            if (project != null)
+            {
+                project.OnCancel(city, gui);
+                foreach (KeyValuePair<string, int> resource in allocatedResources)
+                {
+                    gui.Game.GlobalInventory.AddItem(new ResourceItem(resource.Key, resource.Value));
+                }
+            }
+            //TODO: SetProject to the None Project on CloseProject
+        }
+
+        private void UpdateConstructionProgressCost(GameMaster game)
         {
             requiredConstructionProgress = 0;
-            foreach (KeyValuePair<string, int> cost in GlobalProjectDictionary.GetProjectData(selectedProjectID).Costs)
+            foreach (KeyValuePair<string, int> cost in project.GetResourceCost(city, game))
             {
                 requiredConstructionProgress += GlobalResourceDictionary.GetResourceData(cost.Key).weight * cost.Value;
             }
         }
 
-        //TODO: change to a property?
-        public string GetSelectedProjectID()
-        {
-            return selectedProjectID;
-        }
-
         public string GetDescription(GUIMaster gui)
         {
-            string output = (selectedProjectID == null ? "No Selected Construction Project" : GlobalProjectDictionary.GetProjectData(selectedProjectID).ToString()) + "\n";
+            string output = (selectedProjectID == null ? "No Selected Construction Project" : GlobalProjectDictionary.GetProjectData(selectedProjectID).GetDescription(city, gui.Game)) + "\n";
             if (project != null)
                 output += "\n" + project.GetSelectionInfo(gui);
             output += "\n<b>Progress:</b> " + constructionProgress + "/" + requiredConstructionProgress;

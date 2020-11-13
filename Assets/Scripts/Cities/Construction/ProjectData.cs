@@ -10,29 +10,32 @@ namespace Cities.Construction
     {
         public string ID { get; private set; }
         public string Name { get; private set; }
-        public Dictionary<string, int> Costs { get; private set; }
         //TODO: implement employment
         public int Employment { get; private set; }
         public int WorkingPopPreReq { get; private set; }
         public string[] ProjectPreReqs { get; private set; }
 
-        private IProject project;
+        private readonly IProject project;
         public IProject Project { get { return project.Copy(); } }
         public string Type { get; private set; }
 
-        public ProjectData(string id, string name, Dictionary<string, int> costs, int employment, int workPopPreReq, string[] projPreReq, IProject project)
+        public ProjectData(string id, string name, int employment, int workPopPreReq, string[] projPreReq, IProject project)
         {
             this.ID = id;
             this.Name = name;
-            this.Costs = costs;
             this.Employment = employment;
             this.WorkingPopPreReq = workPopPreReq;
             this.ProjectPreReqs = projPreReq;
             this.project = project;
-            this.Type = project.Type;
+            this.Type = project.ProjectType;
         }
 
-        public override string ToString()
+        public bool IsConstructable(City city, GameMaster game)
+        {
+            return project.IsConstructable(city, game);
+        }
+
+        public string GetDescription(City city, GameMaster game)
         {
             string output = "<b>" + Name + "</b>\n";
             if (WorkingPopPreReq > 0 || ProjectPreReqs.Length > 0)
@@ -48,7 +51,7 @@ namespace Cities.Construction
                 }
             }
             output += "Cost:\n";
-            foreach (KeyValuePair<string, int> resource in Costs)
+            foreach (KeyValuePair<string, int> resource in project.GetResourceCost(city, game))
             {
                 output += "\t" + GlobalResourceDictionary.GetResourceData(resource.Key).name + " (" + resource.Value + ")\n";
             }
@@ -56,6 +59,12 @@ namespace Cities.Construction
             output += "<b>" + Type + "</b>\n";
             output += "Description: \n" + project.GetDescription();
             return output;
+        }
+
+
+        public override string ToString()
+        {
+            return "";
         }
     }
 }

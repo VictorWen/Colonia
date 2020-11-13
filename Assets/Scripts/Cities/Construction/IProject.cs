@@ -6,11 +6,20 @@ namespace Cities.Construction
 {
     public interface IProject
     {
-        string Type { get; }
+        string ProjectType { get; }
 
-        void OnSelect(City city, GUIMaster gui);
+        Dictionary<string, int> GetResourceCost(City city, GameMaster game);
 
-        void OnDeselect(City city, GUIMaster gui);
+        // Returns if there is any availability to construct this Project in the given City
+        bool IsConstructable(City city, GameMaster game);
+
+        // Coroutine started when the Project is selected by the ConstructionPanelScript
+        IEnumerator OnSelect(City city, GUIMaster gui);
+
+        // Return whether the Project has completed the selection process
+        bool IsSelected();
+
+        void OnCancel(City city, GUIMaster gui);
 
         void Complete(City city, GUIMaster gui);
 

@@ -13,7 +13,7 @@ namespace Cities
         public override void Enable(City city, GUIMaster gui)
         {
             base.Enable(city, gui);
-            cityInfoText.text = city.ToString();
+            cityInfoText.text = city.GetDescription(gui.Game);
             currentConstructionText.text = city.construction.GetDescription(this.gui);
         }
 

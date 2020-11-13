@@ -28,7 +28,7 @@ namespace Cities
         public override void Enable(City city, GUIMaster gui)
         {
             //TODO: Formalize opening city inventory
-            loaded = city.inv;
+            loaded = gui.Game.GlobalInventory;
             base.Enable(city, gui);
         }
 

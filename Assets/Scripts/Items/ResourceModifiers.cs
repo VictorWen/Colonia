@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ResourceModifiers
 {
-    private Dictionary<ModifierAttributeID, Dictionary<string, float>> mods;
+    private readonly Dictionary<ModifierAttributeID, Dictionary<string, float>> mods;
 
     public ResourceModifiers()
     {

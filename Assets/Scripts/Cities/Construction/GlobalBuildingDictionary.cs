@@ -6,7 +6,7 @@ namespace Cities.Construction
 {
     public class GlobalBuildingDictionary
     {
-        private static Dictionary<string, BuildingData> buildings;
+        private static readonly Dictionary<string, BuildingData> buildings;
 
         static GlobalBuildingDictionary()
         {

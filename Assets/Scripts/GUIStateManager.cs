@@ -17,7 +17,7 @@ public class GUIStateManager
     private Canvas mapHUD;
     // Whether the cityPanel is displayed
     public bool CityPanel { get; private set; }
-    private CityGUIScript cityPanel;
+    private readonly CityGUIScript cityPanel;
 
 
     //----PRESETS-----

@@ -10,13 +10,13 @@ namespace Cities.Construction
         public List<Building> Buildings { get; private set; }
         private HashSet<string> invalidTiles;
 
-        public override string Type { get { return "District"; } }
+        public override string ProjectType { get { return "District"; } }
 
         public string Name { get; private set; }
 
         public int BuildingSlots { get; private set; }
 
-        public District(string tier, int buildingSlots, string[] InvalidTiles, string name = null) : base (tier)
+        public District(string tier, int buildingSlots, Dictionary<string, int> baseCost, string[] InvalidTiles, string name = null) : base (tier, baseCost)
         {
             ResourceMods = new ResourceModifiers();
             Buildings = new List<Building>();
@@ -48,7 +48,7 @@ namespace Cities.Construction
 
         public override IProject Copy()
         {
-            return new District(ID, BuildingSlots, new string[0])
+            return new District(ID, BuildingSlots, baseResourceCost, new string[0])
             {
                 position = position,
                 ResourceMods = ResourceMods,
@@ -86,7 +86,7 @@ namespace Cities.Construction
             foreach (Vector3 check in checks)
             {
                 Vector3Int checkPos = world.grid.WorldToCell(world.grid.CellToWorld(gridPos) + check);
-                CityTile tile = (CityTile) world.cities.GetTile(checkPos);
+                ConstructedTile tile = (ConstructedTile) world.cities.GetTile(checkPos);
                 if (checkPos.Equals(city.Position) || (tile != null && tile.City == city && tile.Type.Equals("District")))
                 {
                     validBorder = true;
@@ -98,8 +98,9 @@ namespace Cities.Construction
         }
 
         // Call when district is upgraded
-        public void UpgradeFrom(District old)
+        public override void OnUpgrade(ConstructedTileProject upgradee)
         {
+            District old = (District)upgradee;
             ResourceMods = old.ResourceMods;
             Buildings = old.Buildings;
             Name = old.Name;
@@ -116,6 +117,30 @@ namespace Cities.Construction
             {
                 building.OnNextTurn(city, game);
             }
+        }
+
+        public override bool IsUpgradeableTile(Vector3Int position, WorldTerrain world)
+        {
+            if (((ConstructedTile)world.cities.GetTile(position)).Completed)
+            {
+                ConstructedTileProject old = ((ConstructedTile)world.cities.GetTile(position)).Project;
+                //TODO: move district levels to a higher level class
+                string[] levels = { "lower district", "middle district", "upper district" };
+                if (old.ProjectType == "District")
+                {
+                    int level = -1;
+                    for (int i = 0; i < levels.Length - 1; i++)
+                    {
+                        if (ID == levels[i])
+                        {
+                            level = i;
+                            break;
+                        }
+                    }
+                    return levels[level + 1] == old.ID;
+                }
+            }
+            return false;
         }
     }
 }

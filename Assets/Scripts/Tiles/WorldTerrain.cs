@@ -11,6 +11,7 @@ public class WorldTerrain : MonoBehaviour
     public Grid grid;
     public Tilemap terrain;
     public Tilemap cities;
+    public Tilemap movement;
 
     [Header("Generation Settings")]
     public bool autoUpdate;

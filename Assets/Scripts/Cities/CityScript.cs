@@ -18,11 +18,10 @@ namespace Cities
         {
             CityScript script = Instantiate(gui.cityPrefab, position, new Quaternion());
             script.state = gui.GUIState;
-            script.city = new City(name, gui.Game.world.grid.WorldToCell(position));
+            script.city = new City(name, gui.Game.World.grid.WorldToCell(position));
             script.panel = gui.cityGUI;
 
             gui.Game.AddNewCity(script.city);
-            //TODO: move city title text to an automatic update cycle
             script.title.text = name + "(" + script.city.population + ")";
             return script;
         }

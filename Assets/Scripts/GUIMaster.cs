@@ -43,14 +43,14 @@ public class GUIMaster : MonoBehaviour
         cityGUI.gui = this;
 
         //--TESTING--------
-        Inventory inv = new Inventory(-1);
+        Inventory inv = Game.GlobalInventory;
         inv.AddItem(new ResourceItem("wood", 100));
         inv.AddItem(new ResourceItem("food", 150));
         inv.AddItem(new ResourceItem("stone", 25));
 
         capitalScript = CityScript.Create("Test", new Vector3(-1, 0, 0), this);
         capital = capitalScript.city;
-        capital.inv = inv;
+        //capital.inv = inv;
 
         //cityGUI.OpenCityGUI(capital);
         //districtSelectorScript.Enable(capital);

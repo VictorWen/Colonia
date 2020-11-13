@@ -6,14 +6,16 @@ namespace Cities.Construction
 {
     public class TileImprovement : ConstructedTileProject
     {
-        private string resourceID;
+        private readonly string resourceID;
         public bool UseFertility { get; private set; }
         //TODO: Formalize tile identification
-        private HashSet<string> validTiles;
+        private readonly HashSet<string> validTiles;
+        private readonly HashSet<string> validUpgrades;
 
-        public override string Type { get { return "Tile Improvement"; } }
+        public override string ProjectType { get { return "Tile Improvement"; } }
 
-        public TileImprovement(string id, string resource, bool fertility, string[] validTiles/*, Range from city?*/) : base(id)
+        // validUpgrades should be a string array of TileImprovement IDs that can be replaced with this TileImprovement
+        public TileImprovement(string id, string resource, bool fertility, Dictionary<string, int> baseCost, string[] validTiles, string[] validUpgrades = null/*, Range from city?*/) : base(id, baseCost)
         {
             resourceID = resource;
             UseFertility = fertility;
@@ -22,14 +24,22 @@ namespace Cities.Construction
             {
                 this.validTiles.Add(tileName);
             }
+            this.validUpgrades = new HashSet<string>();
+            if (validUpgrades != null)
+            {
+                foreach (string tileID in validUpgrades)
+                {
+                    this.validUpgrades.Add(tileID);
+                }
+            }
         }
 
-        private TileImprovement(string id, string resource, bool fertility, HashSet<string> validTiles/*, Range from city?*/) : base (id)
+        private TileImprovement(TileImprovement copy) : base (copy.ID, copy.baseResourceCost)
         {
-            ID = id;
-            resourceID = resource;
-            UseFertility = fertility;
-            this.validTiles = validTiles;
+            resourceID = copy.resourceID;
+            UseFertility = copy.UseFertility;
+            validTiles = copy.validTiles;
+            validUpgrades =copy.validUpgrades;
         }
 
         public override void Complete(City city, GUIMaster gui)
@@ -38,11 +48,16 @@ namespace Cities.Construction
             city.AddTileImprovement(this);
         }
 
+        public override void OnUpgrade(ConstructedTileProject upgradee)
+        {
+            //City.RemoveTileImprovement((Tile Improvement) upgradee);
+        }
+
         public override IProject Copy()
         {
             //same validtiles reference, but should be okay
             //TODO: check if validTile reference matters
-            TileImprovement copy = new TileImprovement(ID, resourceID, UseFertility, validTiles)
+            TileImprovement copy = new TileImprovement(this)
             {
                 position = position
             };
@@ -51,10 +66,10 @@ namespace Cities.Construction
 
         public void OnNextTurn(City city, GameMaster game)
         {
-            float tilePower = UseFertility ? game.world.GetFertilityAtTile(position) : game.world.GetRichnessAtTile(position);
+            float tilePower = UseFertility ? game.World.GetFertilityAtTile(position) : game.World.GetRichnessAtTile(position);
             float hardnessModifier = game.GetResourceModifier(ModifierAttributeID.HARDNESS, resourceID, city);
             float efficienyModifier = game.GetResourceModifier(ModifierAttributeID.EFFICIENCY, resourceID, city);
-            city.AddResource(resourceID, (tilePower * efficienyModifier) / (GlobalResourceDictionary.GetResourceData(resourceID).hardness * hardnessModifier));
+            game.GlobalInventory.AddItem(new ResourceItem(resourceID, (int) (tilePower * efficienyModifier / (GlobalResourceDictionary.GetResourceData(resourceID).hardness * hardnessModifier))));
         }
 
         public override string GetDescription()
@@ -75,8 +90,13 @@ namespace Cities.Construction
 
         public override string GetSelectionInfo(GUIMaster gui)
         {
-            float aspect = UseFertility ? gui.Game.world.GetFertilityAtTile(position) : gui.Game.world.GetRichnessAtTile(position);
+            float aspect = UseFertility ? gui.Game.World.GetFertilityAtTile(position) : gui.Game.World.GetRichnessAtTile(position);
             return (UseFertility ? "Fertility: " : "Richness: ") + System.Math.Round(aspect, 2);
+        }
+
+        public override bool IsUpgradeableTile(Vector3Int position, WorldTerrain world)
+        {
+            return ((ConstructedTile)world.cities.GetTile(position)).Completed && validUpgrades.Contains(((ConstructedTile) world.cities.GetTile(position)).Project.ID);
         }
     }
 }

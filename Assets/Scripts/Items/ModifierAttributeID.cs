@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 public enum ModifierAttributeID
 {
-    WEIGHT, SHAPE, HARDNESS, EFFICIENCY
+    WEIGHT, SHAPE, HARDNESS, EFFICIENCY, CONSTRUCTION
 }
 

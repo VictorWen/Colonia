@@ -7,17 +7,17 @@ using Cities.Construction;
 //Handles background game state (Server)
 public class GameMaster
 {
-    public WorldTerrain world { get; private set; }
+    public WorldTerrain World { get; private set; }
 
     public Inventory GlobalInventory { get; private set; }
 
-    private Dictionary<string, float> pendingResources;
-    private List<City> cities;
-    private ResourceModifiers globalModifiers;
+    private readonly Dictionary<string, float> pendingResources;
+    private readonly List<City> cities;
+    private readonly ResourceModifiers globalModifiers;
 
     public GameMaster(WorldTerrain world)
     {
-        this.world = world;
+        this.World = world;
         pendingResources = new Dictionary<string, float>();
         GlobalInventory = new Inventory(-1);
         pendingResources = new Dictionary<string, float>();
@@ -25,6 +25,7 @@ public class GameMaster
         globalModifiers = new ResourceModifiers();
     }
 
+    // TODO: Move game control methods to a separate interface or class
     public void NextTurn(GUIMaster gui)
     {
         foreach (City city in cities)

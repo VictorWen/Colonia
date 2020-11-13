@@ -68,10 +68,8 @@ namespace Cities
 
         public void UpdateGUI()
         {
-            foreach (TabScript tab in tabs)
-            {
-                tab.panel.UpdateGUI();
-            }
+            selectedTab.panel.UpdateGUI();
         }
+
     }
 }

@@ -7,44 +7,159 @@ namespace Cities.Construction
     public abstract class ConstructedTileProject : IProject
     { 
         public string ID { get; protected set; }
-        public abstract string Type { get; }
+        public abstract string ProjectType { get; }
 
+        protected bool placed;
         protected Vector3Int position;
+        protected ConstructedTileProject upgradee;
 
-        public ConstructedTileProject(string id)
+        protected Dictionary<string, int> baseResourceCost;
+
+        public ConstructedTileProject(string id, Dictionary<string, int> baseCost)
         {
             ID = id;
+            baseResourceCost = baseCost;
+
+            placed = false;
+            upgradee = null;
         }
 
-        public virtual void OnPlacement(Vector3Int position)
+        public virtual Dictionary<string, int> GetResourceCost(City city, GameMaster game)
         {
-            this.position = position;
+            Dictionary<string, int> modifiedCosts = new Dictionary<string, int>();
+            Dictionary<string, int> upgradeeCosts = null;
+            if (upgradee != null)
+                upgradeeCosts = upgradee.GetResourceCost(city, game);
+            foreach (KeyValuePair<string, int> resource in baseResourceCost)
+            {
+                float cost = resource.Value;
+                if (upgradee != null && upgradeeCosts.ContainsKey(resource.Key))
+                    cost -= Mathf.Max(0, upgradeeCosts[resource.Key]);
+                cost *= game.GetResourceModifier(ModifierAttributeID.CONSTRUCTION, resource.Key, city);
+                modifiedCosts.Add(resource.Key, (int)cost);
+            }
+            return modifiedCosts;
         }
 
-        public abstract bool IsValidTile(Vector3Int position, WorldTerrain world, City city);
-        public abstract string GetTooltipText(Vector3Int position, WorldTerrain world);
+        public virtual void OnPlacement(Vector3Int position, ConstructedTileProject upgradee = null)
+        {
+            placed = true;
+            this.position = position;
+            this.upgradee = upgradee;
+        }
 
-        public virtual void OnSelect(City city, GUIMaster gui)
+        public bool IsConstructable(City city, GameMaster game)
+        {
+            // TODO: Move to a IsAfforable(position, city, game) method
+            // Determine if an empty valid tile is affordable
+            bool normalCost = true;
+            foreach (KeyValuePair<string, int> resource in GetResourceCost(city, game))
+            {
+                if (game.GlobalInventory.GetResourceCount(resource.Key) < resource.Value)
+                {
+                    normalCost = false;
+                    break;
+                }
+            }
+
+            // Iterate through City Range and return if there is a valid and afforable tile
+            foreach (Vector3Int position in city.GetCityRange(game.World))
+            {
+                if (IsValidTile(position, game.World, city))
+                {
+                    // If the valid tile is not empty, check if it can be upgraded and afforded
+                    if (game.World.cities.GetTile(position) != null && IsUpgradeableTile(position, game.World))
+                    {
+                        upgradee = ((ConstructedTile)game.World.cities.GetTile(position)).Project;
+                        bool upgradeCost = true;
+                        foreach (KeyValuePair<string, int> resource in GetResourceCost(city, game))
+                        {
+                            if (game.GlobalInventory.GetResourceCount(resource.Key) < resource.Value)
+                            {
+                                upgradeCost = false;
+                                break;
+                            }
+                        }
+                        upgradee = null;
+
+                        if (upgradeCost)
+                        {
+                            return true;
+                        }
+                    }
+
+                    // If the valid tile is empty, check if the normal cost is affordable
+                    else if (normalCost)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public virtual IEnumerator OnSelect(City city, GUIMaster gui)
         {
             ConstructedTileGhost ghost = Object.Instantiate(gui.ghostPrefab);
-            city.UpdateCityRange(gui.Game.world);
-            ghost.Place(city, gui.Game.world, this, gui.GUIState);
+            
+            HashSet<Vector3Int> range = city.GetCityRange(gui.Game.World);
+            UnityEngine.Tilemaps.Tile green = Resources.Load<UnityEngine.Tilemaps.Tile>(System.IO.Path.Combine("Tiles", "Green"));
+            foreach (Vector3Int pos in range)
+            {
+                if (IsValidTile(pos, gui.Game.World, city))
+                    gui.Game.World.movement.SetTile(pos, green);
+            }
+
+            yield return ghost.Place(city, gui.Game.World, this, gui.GUIState);
+            Debug.Log("TEST");
+            Object.Destroy(ghost.gameObject);
+
+            foreach (Vector3Int pos in range)
+            {
+                gui.Game.World.movement.SetTile(pos, null);
+            }
+
+            yield break;
         }
 
-        public virtual void OnDeselect(City city, GUIMaster gui)
+        public bool IsSelected()
         {
-            gui.Game.world.cities.SetTile(position, null);
+            return placed;
+        }
+
+        public virtual void OnCancel(City city, GUIMaster gui)
+        {
+            gui.Game.World.cities.SetTile(position, null);
+            //TODO: Manage deselect constructed tile upgrade case
         }
         
         public virtual void Complete(City city, GUIMaster gui)
         {
-            CityTile tile = (CityTile) gui.Game.world.cities.GetTile(position);
-            tile.FinishConstruction(city, Type);
-            gui.Game.world.cities.SetColor(position, new Color(1, 1, 1));
+            ConstructedTile tile = (ConstructedTile) gui.Game.World.cities.GetTile(position);
+            tile.FinishConstruction(city, ProjectType, this);
+            gui.Game.World.cities.SetColor(position, new Color(1, 1, 1));
+
+            if (upgradee != null)
+            {
+                //TODO: Manage replacing old constructed tile after upgrade
+                OnUpgrade(upgradee);
+            }
         }
-        
+
+        public abstract void OnUpgrade(ConstructedTileProject upgradee);
+
+        public abstract bool IsValidTile(Vector3Int position, WorldTerrain world, City city);
+
+        public abstract string GetTooltipText(Vector3Int position, WorldTerrain world);
+
         public abstract IProject Copy();
+
         public abstract string GetDescription();
+
         public abstract string GetSelectionInfo(GUIMaster gui);
+
+        public abstract bool IsUpgradeableTile(Vector3Int position, WorldTerrain world);
+
     }
 }
