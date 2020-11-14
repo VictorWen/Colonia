@@ -26,6 +26,14 @@ namespace Cities.Construction
 
             Vector3Int gridPos = world.grid.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
+            HashSet<Vector3Int> range = city.GetCityRange(world);
+            UnityEngine.Tilemaps.Tile green = Resources.Load<UnityEngine.Tilemaps.Tile>(System.IO.Path.Combine("Tiles", "Green"));
+            foreach (Vector3Int pos in range)
+            {
+                if (IsValidTile(pos, city, world, project))
+                    world.movement.SetTile(pos, green);
+            }
+
             yield return new WaitForSeconds(0.1f);
 
             bool click = Input.GetMouseButtonUp(0);
@@ -76,6 +84,11 @@ namespace Cities.Construction
             world.cities.SetTileFlags(gridPos, UnityEngine.Tilemaps.TileFlags.None);
             world.cities.SetColor(gridPos, new Color(0.5f, 0.5f, 0.5f));
 
+            foreach (Vector3Int pos in range)
+            {
+                world.movement.SetTile(pos, null);
+            }
+
             Debug.Log("Tile Selected");
             state.SetState(GUIStateManager.CITY);
             yield break;
@@ -83,9 +96,7 @@ namespace Cities.Construction
 
         private bool IsValidTile(Vector3Int pos, City city, WorldTerrain world, ConstructedTileProject project)
         {
-            bool upgradeable = true;
-            if (world.cities.GetTile(pos) != null)
-                upgradeable = project.IsUpgradeableTile(pos, world);
+            bool upgradeable = world.cities.GetTile(pos) != null || project.IsUpgradeableTile(pos, world);
             return city.WithinCityRange(pos) && project.IsValidTile(pos, world, city) && world.cities.GetTile(pos) == null && upgradeable; 
         }
     }

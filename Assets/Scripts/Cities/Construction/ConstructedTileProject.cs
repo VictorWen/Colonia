@@ -102,23 +102,10 @@ namespace Cities.Construction
         public virtual IEnumerator OnSelect(City city, GUIMaster gui)
         {
             ConstructedTileGhost ghost = Object.Instantiate(gui.ghostPrefab);
-            
-            HashSet<Vector3Int> range = city.GetCityRange(gui.Game.World);
-            UnityEngine.Tilemaps.Tile green = Resources.Load<UnityEngine.Tilemaps.Tile>(System.IO.Path.Combine("Tiles", "Green"));
-            foreach (Vector3Int pos in range)
-            {
-                if (IsValidTile(pos, gui.Game.World, city))
-                    gui.Game.World.movement.SetTile(pos, green);
-            }
 
             yield return ghost.Place(city, gui.Game.World, this, gui.GUIState);
             Debug.Log("TEST");
             Object.Destroy(ghost.gameObject);
-
-            foreach (Vector3Int pos in range)
-            {
-                gui.Game.World.movement.SetTile(pos, null);
-            }
 
             yield break;
         }
