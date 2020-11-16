@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Desert Biome
   m_EditorClassIdentifier: 
   tiles:
-  - height: 0.694
+  - height: 0.657
     tile: {fileID: 11400000, guid: 920ebac3f88b8034d851f8ac82fdd00c, type: 2}
     waterAdjacent: 0
   - height: 0.762

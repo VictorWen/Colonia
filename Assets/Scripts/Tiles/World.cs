@@ -6,7 +6,8 @@ using UnityEditor.UIElements;
 
 // The interface for the terrain map
 // Generates and accesses the terrain
-public class WorldTerrain : MonoBehaviour
+// TODO: Organize World class
+public class World : MonoBehaviour
 {
     public Grid grid;
     public Tilemap terrain;
@@ -33,12 +34,23 @@ public class WorldTerrain : MonoBehaviour
     public TerrainData[] tiles;
     public BiomeTileSet[] biomes;
 
+    [Header("Resource Generation")]
+    public BiomeResources[] biomeResources;
+    public ResourceIconScript iconPrefab;
+
     private Dictionary<Vector3Int, float> fertility;
     private Dictionary<Vector3Int, float> richness;
 
+    //TODO: fix/organize this
+    private Dictionary<Vector3Int, string> resources;
+    private Vector3Int[][] biomeChunks;
+    private System.Random rand;
+
     private void Awake()
     {
-        GenerateTerrain();
+        GenerateWorld();
+        // Generate Resources
+        resources = ResourceGeneration.GenerateResources(this, biomeChunks, rand, biomeResources, iconPrefab);
     }
 
     [System.Serializable]
@@ -51,7 +63,7 @@ public class WorldTerrain : MonoBehaviour
         public bool waterAdjacent;
     }
 
-    public void GenerateTerrain()
+    public void GenerateWorld()
     {
         terrain.ClearAllTiles();
         Array.Sort(tiles, (x1, x2) => x1.height.CompareTo(x2.height));
@@ -60,7 +72,7 @@ public class WorldTerrain : MonoBehaviour
             Array.Sort(b.tiles, (x1, x2) => x1.height.CompareTo(x2.height));
         }
 
-        System.Random rand = new System.Random(seed);
+        rand = new System.Random(seed);
         int size = (worldRadius * 2 + 1) * (chunkRadius * 2 + 1);
 
         //TODO: better fertility and richness => create better biome terrain
@@ -95,8 +107,11 @@ public class WorldTerrain : MonoBehaviour
             }
         }
 
-        Vector2[] centers = GetChunkCenters(chunkRadius, worldRadius);
 
+
+        Vector2[] centers = GetChunkCenters(chunkRadius, worldRadius);
+        biomeChunks = new Vector3Int[centers.Length][];
+        int p = 0;
         // Assign Tiles
         foreach (Vector2 center in centers)
         {
@@ -123,7 +138,9 @@ public class WorldTerrain : MonoBehaviour
                 biomeTiles = biomes[index % biomes.Length].tiles;
             }
 
-            foreach (Vector3Int pos in CreateChunk(center, chunkRadius))
+            Vector3Int[] chunk = CreateChunk(center, chunkRadius);
+            biomeChunks[p++] = chunk;
+            foreach (Vector3Int pos in chunk)
             {
                 int x = pos.x;
                 int y = pos.y;

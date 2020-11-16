@@ -11,13 +11,13 @@ namespace Cities.Construction
         public Canvas canvas;
         public Text tooltipText;
 
-        public Coroutine Place(City city, WorldTerrain world, ConstructedTileProject project, GUIStateManager state)
+        public Coroutine Place(City city, World world, ConstructedTileProject project, GUIStateManager state)
         {
             gameObject.SetActive(true);
             return StartCoroutine(WaitForPlacement(city, world, project, state));
         }
 
-        private IEnumerator WaitForPlacement(City city, WorldTerrain world, ConstructedTileProject project, GUIStateManager state)
+        private IEnumerator WaitForPlacement(City city, World world, ConstructedTileProject project, GUIStateManager state)
         {
             state.SetState(GUIStateManager.GHOST_TILE);
             char sepChar = System.IO.Path.DirectorySeparatorChar;
@@ -94,10 +94,10 @@ namespace Cities.Construction
             yield break;
         }
 
-        private bool IsValidTile(Vector3Int pos, City city, WorldTerrain world, ConstructedTileProject project)
+        private bool IsValidTile(Vector3Int pos, City city, World world, ConstructedTileProject project)
         {
-            bool upgradeable = world.cities.GetTile(pos) != null || project.IsUpgradeableTile(pos, world);
-            return city.WithinCityRange(pos) && project.IsValidTile(pos, world, city) && world.cities.GetTile(pos) == null && upgradeable; 
+            bool upgradeable = world.cities.GetTile(pos) == null || project.IsUpgradeableTile(pos, world);
+            return city.WithinCityRange(pos) && project.IsValidTile(pos, world, city) && upgradeable; 
         }
     }
 }

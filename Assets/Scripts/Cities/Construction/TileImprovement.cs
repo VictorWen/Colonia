@@ -77,12 +77,12 @@ namespace Cities.Construction
             return "TILE IMPROVEMENT TEST DESCRIPTION";
         }
 
-        public override bool IsValidTile(Vector3Int position, WorldTerrain world, City city)
+        public override bool IsValidTile(Vector3Int position, World world, City city)
         {
             return validTiles.Contains(world.terrain.GetTile(position).name);
         }
 
-        public override string GetTooltipText(Vector3Int position, WorldTerrain world)
+        public override string GetTooltipText(Vector3Int position, World world)
         {
             float aspect = UseFertility ? world.GetFertilityAtTile(position) : world.GetRichnessAtTile(position);
             return (UseFertility ? "Fertility: " : "Richness: ") + System.Math.Round(aspect, 2);
@@ -94,7 +94,7 @@ namespace Cities.Construction
             return (UseFertility ? "Fertility: " : "Richness: ") + System.Math.Round(aspect, 2);
         }
 
-        public override bool IsUpgradeableTile(Vector3Int position, WorldTerrain world)
+        public override bool IsUpgradeableTile(Vector3Int position, World world)
         {
             return ((ConstructedTile)world.cities.GetTile(position)).Completed && validUpgrades.Contains(((ConstructedTile) world.cities.GetTile(position)).Project.ID);
         }

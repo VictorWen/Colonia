@@ -10,4 +10,6 @@ public class TerrainTile : Tile
     public float movementCost;
     public float baseFertility;
     public float baseRichness;
+
+    public string Biome { get; set; }
 }

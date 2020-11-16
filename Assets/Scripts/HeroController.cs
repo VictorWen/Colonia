@@ -8,7 +8,7 @@ public class HeroController : MonoBehaviour
 {
     public Camera cam;
     public Grid grid;
-    public WorldTerrain terrain;
+    public World terrain;
     public Tilemap movement;
     public TileBase gold;
     public TileBase cyan;
@@ -21,7 +21,7 @@ public class HeroController : MonoBehaviour
     public int speed;
 
     private bool selected = false;
-    private HashSet<Vector3Int> moveablePos = new HashSet<Vector3Int>();
+    private readonly HashSet<Vector3Int> moveablePos = new HashSet<Vector3Int>();
 
     private void Start()
     {

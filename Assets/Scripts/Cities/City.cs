@@ -88,7 +88,7 @@ namespace Cities
         }
 
         //TODO: Add CityRange visual
-        public void UpdateCityRange(WorldTerrain world)
+        public void UpdateCityRange(World world)
         {
             cityRange = new HashSet<Vector3Int>();
             //TODO: Formalize cityRadius
@@ -126,7 +126,7 @@ namespace Cities
             cityRange.Remove(grid.WorldToCell(Position));
         }
 
-        public HashSet<Vector3Int> GetCityRange(WorldTerrain world)
+        public HashSet<Vector3Int> GetCityRange(World world)
         {
             UpdateCityRange(world);
             return cityRange;

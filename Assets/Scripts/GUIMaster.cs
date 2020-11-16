@@ -11,7 +11,7 @@ using Cities.Construction;
 public class GUIMaster : MonoBehaviour
 {
     [Obsolete("Should be created on new/load game. Use Game.world instead")]
-    public WorldTerrain world;
+    public World world;
     public CityGUIScript cityGUI;
     //public static CapitalCity capital;
     //public InventoryGUI invManager;

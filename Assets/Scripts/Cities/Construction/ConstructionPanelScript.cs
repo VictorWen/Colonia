@@ -12,7 +12,7 @@ namespace Cities.Construction
     public class ConstructionPanelScript : CityPanelScript
     {
         [Header("GameObjects")]
-        public WorldTerrain world;
+        public World world;
 
         public GameObject availableProjectList;
         public GameObject unavailableProjectsList;

@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(WorldTerrain))]
+[CustomEditor(typeof(World))]
 public class GenerateWorldEditorButton : Editor
 {
     public override void OnInspectorGUI()
     {
-        WorldTerrain gen = (WorldTerrain)target;
+        World gen = (World)target;
 
         if (DrawDefaultInspector() && gen.autoUpdate)
         {
-            gen.GenerateTerrain();
+            gen.GenerateWorld();
         }
 
         if (GUILayout.Button("Generate World"))
         {
-            gen.GenerateTerrain();
+            gen.GenerateWorld();
         }
     }
 }

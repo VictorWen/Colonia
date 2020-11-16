@@ -6,6 +6,7 @@ public class CameraController : MonoBehaviour
 {
     public float movementSpeed;
     public float zoomSpeed;
+    public float minSize;
     public float maxSize;
     public Camera cam;
 
@@ -25,7 +26,7 @@ public class CameraController : MonoBehaviour
             }
 
             cam.orthographicSize -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
-            cam.orthographicSize = Mathf.Min(Mathf.Max(cam.orthographicSize, 1), maxSize);
+            cam.orthographicSize = Mathf.Min(Mathf.Max(cam.orthographicSize, minSize), maxSize);
 
             if (Input.GetMouseButtonDown(2))
             {

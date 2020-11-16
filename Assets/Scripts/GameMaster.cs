@@ -7,7 +7,7 @@ using Cities.Construction;
 //Handles background game state (Server)
 public class GameMaster
 {
-    public WorldTerrain World { get; private set; }
+    public World World { get; private set; }
 
     public Inventory GlobalInventory { get; private set; }
 
@@ -15,7 +15,7 @@ public class GameMaster
     private readonly List<City> cities;
     private readonly ResourceModifiers globalModifiers;
 
-    public GameMaster(WorldTerrain world)
+    public GameMaster(World world)
     {
         this.World = world;
         pendingResources = new Dictionary<string, float>();

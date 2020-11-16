@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Ice Biome
   m_EditorClassIdentifier: 
   tiles:
-  - height: 0.269
+  - height: 0.184
     tile: {fileID: 11400000, guid: 0df90ab4de0fa2c40ae5e41fe7c1303b, type: 2}
     waterAdjacent: 0
   - height: 0.672

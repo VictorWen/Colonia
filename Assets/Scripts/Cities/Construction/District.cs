@@ -79,7 +79,7 @@ namespace Cities.Construction
             return "TEST DISTRICT NAME";
         }
 
-        public override bool IsValidTile(Vector3Int gridPos, WorldTerrain world, City city)
+        public override bool IsValidTile(Vector3Int gridPos, World world, City city)
         {
             Vector3[] checks = new Vector3[] { new Vector3(-1, 0), new Vector3(-0.5f, 0.75f), new Vector3(0.5f, 0.75f), new Vector3(1, 0), new Vector3(0.5f, -0.75f), new Vector3(-0.5f, -0.75f) };
             bool validBorder = false;
@@ -106,7 +106,7 @@ namespace Cities.Construction
             Name = old.Name;
         }
 
-        public override string GetTooltipText(Vector3Int position, WorldTerrain world)
+        public override string GetTooltipText(Vector3Int position, World world)
         {
             return null;
         }
@@ -119,7 +119,7 @@ namespace Cities.Construction
             }
         }
 
-        public override bool IsUpgradeableTile(Vector3Int position, WorldTerrain world)
+        public override bool IsUpgradeableTile(Vector3Int position, World world)
         {
             if (((ConstructedTile)world.cities.GetTile(position)).Completed)
             {

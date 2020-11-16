@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Mountain Biome
   m_EditorClassIdentifier: 
   tiles:
-  - height: 0.225
+  - height: 0.164
     tile: {fileID: 11400000, guid: d22b922b4bb654847869f491f3b90318, type: 2}
     waterAdjacent: 0
-  - height: 0.482
+  - height: 0.427
     tile: {fileID: 11400000, guid: b62df5e1a9dc3194c8842ba6486a64d3, type: 2}
     waterAdjacent: 0
   - height: 0.746

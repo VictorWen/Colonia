@@ -44,7 +44,11 @@ namespace Cities.Construction
                     int pop = GlobalProjectDictionary.GetProjectData(selectedProjectID).Employment;
                     city.idlePop -= pop;
                     city.workingPop += pop;
-                    CloseProject(gui);
+                    allocatedResources = new Dictionary<string, int>();
+                    requiredConstructionProgress = 0;
+                    constructionProgress = 0;
+                    selectedProjectID = null;
+                    project = null;
                 }
             }
         }

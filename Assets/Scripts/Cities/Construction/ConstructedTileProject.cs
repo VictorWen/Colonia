@@ -104,7 +104,6 @@ namespace Cities.Construction
             ConstructedTileGhost ghost = Object.Instantiate(gui.ghostPrefab);
 
             yield return ghost.Place(city, gui.Game.World, this, gui.GUIState);
-            Debug.Log("TEST");
             Object.Destroy(ghost.gameObject);
 
             yield break;
@@ -136,9 +135,9 @@ namespace Cities.Construction
 
         public abstract void OnUpgrade(ConstructedTileProject upgradee);
 
-        public abstract bool IsValidTile(Vector3Int position, WorldTerrain world, City city);
+        public abstract bool IsValidTile(Vector3Int position, World world, City city);
 
-        public abstract string GetTooltipText(Vector3Int position, WorldTerrain world);
+        public abstract string GetTooltipText(Vector3Int position, World world);
 
         public abstract IProject Copy();
 
@@ -146,7 +145,7 @@ namespace Cities.Construction
 
         public abstract string GetSelectionInfo(GUIMaster gui);
 
-        public abstract bool IsUpgradeableTile(Vector3Int position, WorldTerrain world);
+        public abstract bool IsUpgradeableTile(Vector3Int position, World world);
 
     }
 }
