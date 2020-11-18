@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Spawnable Resource", menuName = "ScriptableObjects/SpawnableResource", order = 1)]
 public class SpawnableResource : ScriptableObject
 {
-    public Sprite resourceSprite; //TODO: automatically resource sprite retrieve from Assets/Resources folder
     public string resourceID;
     public float minDistance;
     public float maxDistance;

@@ -13,6 +13,7 @@ public static class GlobalResourceDictionary
         AddResource("stone", "Stone", 0, 2f, 1.5f, 1.5f, 1f);
         AddResource("wood", "Wood", 0, 1f, 1f, 1f, 1f);
         AddResource("food", "Food", 0, 0.5f, 1f, 0.5f, 0.5f);
+        AddResource("steel", "Steel Ingot", 1, 2f, 2f, 2f, 2f);
         //AddResources("iron", "Iron", 1, 2f, 2f, 2f, 2f);
     }
 

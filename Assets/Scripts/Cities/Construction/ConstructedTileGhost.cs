@@ -73,6 +73,7 @@ namespace Cities.Construction
             }
 
             ConstructedTile tile = Resources.Load<ConstructedTile>("Projects" + sepChar + "Constructed Tiles" + sepChar + project.ID);
+            tile.StartConstruction();
             //TODO: Manage upgrade old constructed tile case
 
             if (world.cities.GetTile(gridPos) != null)

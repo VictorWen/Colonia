@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Cities.Construction
 {
-    public class TileImprovement : ConstructedTileProject
+    public class BasicTileImprovement : ConstructedTileProject, CityNextTurnEffect
     {
         private readonly string resourceID;
         public bool UseFertility { get; private set; }
@@ -15,7 +15,7 @@ namespace Cities.Construction
         public override string ProjectType { get { return "Tile Improvement"; } }
 
         // validUpgrades should be a string array of TileImprovement IDs that can be replaced with this TileImprovement
-        public TileImprovement(string id, string resource, bool fertility, Dictionary<string, int> baseCost, string[] validTiles, string[] validUpgrades = null/*, Range from city?*/) : base(id, baseCost)
+        public BasicTileImprovement(string id, string resource, bool fertility, string[] validTiles, Dictionary<string, int> baseCost, string[] validUpgrades = null/*, Range from city?*/) : base(id, baseCost)
         {
             resourceID = resource;
             UseFertility = fertility;
@@ -34,18 +34,18 @@ namespace Cities.Construction
             }
         }
 
-        private TileImprovement(TileImprovement copy) : base (copy.ID, copy.baseResourceCost)
+        private BasicTileImprovement(BasicTileImprovement copy) : base (copy.ID, copy.baseResourceCost)
         {
             resourceID = copy.resourceID;
             UseFertility = copy.UseFertility;
             validTiles = copy.validTiles;
-            validUpgrades =copy.validUpgrades;
+            validUpgrades = copy.validUpgrades;
         }
 
         public override void Complete(City city, GUIMaster gui)
         {
             base.Complete(city, gui);
-            city.AddTileImprovement(this);
+            city.AddNextTurnEffect(this);
         }
 
         public override void OnUpgrade(ConstructedTileProject upgradee)
@@ -57,7 +57,7 @@ namespace Cities.Construction
         {
             //same validtiles reference, but should be okay
             //TODO: check if validTile reference matters
-            TileImprovement copy = new TileImprovement(this)
+            BasicTileImprovement copy = new BasicTileImprovement(this)
             {
                 position = position
             };
@@ -69,7 +69,7 @@ namespace Cities.Construction
             float tilePower = UseFertility ? game.World.GetFertilityAtTile(position) : game.World.GetRichnessAtTile(position);
             float hardnessModifier = game.GetResourceModifier(ModifierAttributeID.HARDNESS, resourceID, city);
             float efficienyModifier = game.GetResourceModifier(ModifierAttributeID.EFFICIENCY, resourceID, city);
-            game.GlobalInventory.AddItem(new ResourceItem(resourceID, (int) (tilePower * efficienyModifier / (GlobalResourceDictionary.GetResourceData(resourceID).hardness * hardnessModifier))));
+            game.AddPendingResource(resourceID, tilePower * efficienyModifier / (GlobalResourceDictionary.GetResourceData(resourceID).hardness * hardnessModifier));
         }
 
         public override string GetDescription()

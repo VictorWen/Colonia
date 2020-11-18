@@ -120930,7 +120930,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: d39c82f789f6e4640b59d40d90c68529, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -123841,15 +123841,39 @@ Tilemap:
   m_Enabled: 1
   m_Tiles: {}
   m_AnimatedTiles: {}
-  m_TileAssetArray: []
-  m_TileSpriteArray: []
-  m_TileMatrixArray: []
-  m_TileColorArray: []
+  m_TileAssetArray:
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  m_TileSpriteArray:
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  m_TileMatrixArray:
+  - m_RefCount: 0
+    m_Data:
+      e00: 0
+      e01: -6.5410914e+18
+      e02: -5.1736e-40
+      e03: -0.000000001695434
+      e10: NaN
+      e11: 4.5904e-41
+      e12: 9.02e-43
+      e13: 9e-43
+      e20: 1.04e-43
+      e21: -5.17595e-40
+      e22: 9.485807e+37
+      e23: 9.485807e+37
+      e30: 9.02e-43
+      e31: 9.02e-43
+      e32: 2.03e-43
+      e33: 2.03e-43
+  m_TileColorArray:
+  - m_RefCount: 0
+    m_Data: {r: -5.1736e-40, g: -5.1736e-40, b: -5.1736e-40, a: -5.1736e-40}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Origin: {x: 0, y: 0, z: 0}
-  m_Size: {x: 0, y: 0, z: 1}
+  m_Origin: {x: -3, y: 0, z: 0}
+  m_Size: {x: 5, y: 4, z: 1}
   m_TileAnchor: {x: 0, y: 0, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:

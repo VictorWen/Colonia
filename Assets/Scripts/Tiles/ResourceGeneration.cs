@@ -62,7 +62,7 @@ public class ResourceGeneration
                             ResourceIconScript icon = Object.Instantiate(iconPrefab);
                             icon.transform.position = world.grid.CellToWorld(validTiles[index]);
                             icon.transform.position += new Vector3(-0.5f, 0.25f);
-                            icon.SetResource(resource.resourceSprite);
+                            icon.SetResource(resource.resourceID);
                             icons.Add(icon);
 
                             count++;

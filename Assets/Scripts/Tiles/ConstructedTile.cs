@@ -16,6 +16,11 @@ public class ConstructedTile : Tile
 
     public bool Completed { get; private set; }
 
+    public void StartConstruction()
+    {
+        Completed = false;
+    }
+
     public void FinishConstruction(City city, string type, ConstructedTileProject project)
     {
         Debug.Log("City Tile Construction Finished: " + type);

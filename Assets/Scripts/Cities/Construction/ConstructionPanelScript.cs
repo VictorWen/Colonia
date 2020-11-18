@@ -98,7 +98,7 @@ namespace Cities.Construction
             if (selection.IsSelected())
             {
                 Debug.Log("Project Selected");
-                selectedCity.construction.SetProject(selectedButton.ProjectID, selection, gui);
+                selectedCity.construction.SetProject(selection, gui);
             }
             UpdateGUI();
             Debug.Log("Project Selection Finished");

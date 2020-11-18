@@ -8,6 +8,8 @@ namespace Cities.Construction
     {
         string ProjectType { get; }
 
+        string ID { get; }
+
         Dictionary<string, int> GetResourceCost(City city, GameMaster game);
 
         // Returns if there is any availability to construct this Project in the given City

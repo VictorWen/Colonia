@@ -32,6 +32,18 @@ public class GameMaster
         {
             city.OnNextTurn(gui);
         }
+
+        Dictionary<string, int> delta = new Dictionary<string, int>();
+        foreach (KeyValuePair<string, float> resource in pendingResources)
+        {
+            int amount = (int) resource.Value;
+            GlobalInventory.AddItem(new ResourceItem(resource.Key, amount));
+            delta.Add(resource.Key, amount);
+        }
+        foreach(KeyValuePair<string, int> resource in delta)
+        {
+            pendingResources[resource.Key] -= resource.Value;
+        }
     }
 
     public void AddNewCity(City city)
@@ -53,6 +65,6 @@ public class GameMaster
 
     public float GetResourceModifier(ModifierAttributeID attr, string id, City city = null, District district = null)
     {
-        return globalModifiers.GetResourceMod(attr, id) + (city != null ? city.ResourceMods.GetResourceMod(attr, id) : 0) + (district != null ? district.ResourceMods.GetResourceMod(attr, id) : 0);
+        return globalModifiers.GetResourceMod(attr, id) * (city != null ? city.ResourceMods.GetResourceMod(attr, id) : 1) * (district != null ? district.ResourceMods.GetResourceMod(attr, id) : 1);
     }
 }

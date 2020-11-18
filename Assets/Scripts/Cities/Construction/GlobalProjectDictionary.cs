@@ -20,18 +20,19 @@ namespace Cities.Construction
             {
                 //TODO: decide whether to use code or JSON files
                 //Tile Improvement Tier 0
-                { "farm", new ProjectData("farm", "Farm", 20, 0, new string[] { }, new TileImprovement("farm", "food", true, new Dictionary<string, int>() { { "wood", 20 } }, new string[] { "Grass" }))},
-                { "lumber mill", new ProjectData("lumber mill", "Lumber Mill", 20, 0, new string[] { }, new TileImprovement("lumber mill", "wood", true, new Dictionary<string, int>(){ { "wood", 10 } }, new string[] { "Forest" }))},
-                { "quarry", new ProjectData("quarry", "Quarry", 30, 0, new string[] { }, new TileImprovement("quarry", "stone", false, new Dictionary<string, int>(){ { "wood", 30 } }, new string[] {"Grass", "Hills", "Mountain" }))},
+                { "farm", new ProjectData("Farm", 20, 0, new string[] { }, new BasicTileImprovement("farm", "food", true, new string[] { "Grass" }, new Dictionary<string, int>() { { "wood", 20 } }))},
+                { "lumber mill", new ProjectData("Lumber Mill", 20, 0, new string[] { }, new BasicTileImprovement("lumber mill", "wood", true, new string[] { "Forest" }, new Dictionary<string, int>(){ { "wood", 10 } }))},
+                { "quarry", new ProjectData("Quarry", 30, 0, new string[] { }, new BasicTileImprovement("quarry", "stone", false, new string[] {"Grass", "Hills", "Mountain" }, new Dictionary<string, int>(){ { "wood", 30 } }))},
+                { "mine", new ProjectData("Mine", 40, 0, new string[] { }, new ResourceTileImprovement("mine", new string[] { "steel", "unicornite" }, false, new Dictionary<string, int>(){ { "wood", 50} }))},
 
                 // Districts
-                { "lower district", new ProjectData("lower district", "Lower District", 0, 0, new string[] { }, new District("lower district", 4, new Dictionary<string, int>() { }, new string[] { }))},
+                { "lower district", new ProjectData("Lower District", 0, 0, new string[] { }, new District("lower district", 4, new Dictionary<string, int>() { }, new string[] { }))},
 
                 // Buildings Tier 0
-                { "saw mill", new ProjectData("saw mill", "Saw Mill", 30, 100, new string[] { }, new Building("saw mill", new Dictionary<string, int>() { { "wood", 40 }, { "stone", 10 } })) },
+                { "saw mill", new ProjectData("Saw Mill", 30, 100, new string[] { }, new Building("saw mill", new Dictionary<string, int>() { { "wood", 40 }, { "stone", 10 } })) },
                 
                 // TODO: REMOVE TEST BUILDING
-                { "test", new ProjectData("test", "TEST BUILDING", 0, 0, new string[] { }, new Building("test", new Dictionary<string, int>() { { "wood", 10 }, { "stone", 10 } })) },
+                { "test", new ProjectData("TEST BUILDING", 0, 0, new string[] { }, new Building("test", new Dictionary<string, int>() { { "wood", 10 }, { "stone", 10 } })) },
             };
         }
 

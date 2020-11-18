@@ -8,7 +8,6 @@ namespace Cities.Construction
 {
     public class ProjectData
     {
-        public string ID { get; private set; }
         public string Name { get; private set; }
         //TODO: implement employment
         public int Employment { get; private set; }
@@ -19,9 +18,8 @@ namespace Cities.Construction
         public IProject Project { get { return project.Copy(); } }
         public string Type { get; private set; }
 
-        public ProjectData(string id, string name, int employment, int workPopPreReq, string[] projPreReq, IProject project)
+        public ProjectData(string name, int employment, int workPopPreReq, string[] projPreReq, IProject project)
         {
-            this.ID = id;
             this.Name = name;
             this.Employment = employment;
             this.WorkingPopPreReq = workPopPreReq;

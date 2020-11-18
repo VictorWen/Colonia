@@ -44,11 +44,7 @@ namespace Cities.Construction
                     int pop = GlobalProjectDictionary.GetProjectData(selectedProjectID).Employment;
                     city.idlePop -= pop;
                     city.workingPop += pop;
-                    allocatedResources = new Dictionary<string, int>();
-                    requiredConstructionProgress = 0;
-                    constructionProgress = 0;
-                    selectedProjectID = null;
-                    project = null;
+                    CloseProject();
                 }
             }
         }
@@ -79,17 +75,12 @@ namespace Cities.Construction
             return list;
         }
 
-        public void SetProject(string id, IProject selectedProject, GUIMaster gui)
+        public void SetProject(IProject selectedProject, GUIMaster gui)
         {
-            CloseProject(gui);
-
-            // Reset counters;
-            allocatedResources = new Dictionary<string, int>();
-            requiredConstructionProgress = 0;
-            constructionProgress = 0;
+            CancelProject(gui);
 
             // Update values
-            selectedProjectID = id;
+            selectedProjectID = selectedProject.ID;
             project = selectedProject;
             UpdateConstructionProgressCost(gui.Game);
 
@@ -103,7 +94,16 @@ namespace Cities.Construction
             }
         }
 
-        public void CloseProject(GUIMaster gui)
+        private void CloseProject()
+        {
+            allocatedResources = new Dictionary<string, int>();
+            requiredConstructionProgress = 0;
+            constructionProgress = 0;
+            selectedProjectID = null;
+            project = null;
+        }
+
+        public void CancelProject(GUIMaster gui)
         {
             if (project != null)
             {
@@ -113,7 +113,7 @@ namespace Cities.Construction
                     gui.Game.GlobalInventory.AddItem(new ResourceItem(resource.Key, resource.Value));
                 }
             }
-            //TODO: SetProject to the None Project on CloseProject
+            CloseProject();
         }
 
         private void UpdateConstructionProgressCost(GameMaster game)

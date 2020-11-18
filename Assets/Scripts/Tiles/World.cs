@@ -42,7 +42,7 @@ public class World : MonoBehaviour
     private Dictionary<Vector3Int, float> richness;
 
     //TODO: fix/organize this
-    private Dictionary<Vector3Int, string> resources;
+    public Dictionary<Vector3Int, string> ResourceTiles { get; private set; }
     private Vector3Int[][] biomeChunks;
     private System.Random rand;
 
@@ -50,7 +50,7 @@ public class World : MonoBehaviour
     {
         GenerateWorld();
         // Generate Resources
-        resources = ResourceGeneration.GenerateResources(this, biomeChunks, rand, biomeResources, iconPrefab);
+        ResourceTiles = ResourceGeneration.GenerateResources(this, biomeChunks, rand, biomeResources, iconPrefab);
     }
 
     [System.Serializable]

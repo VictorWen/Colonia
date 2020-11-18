@@ -19,7 +19,7 @@ namespace Cities
         public int idlePop;
         public int workingPop;
 
-        private readonly List<TileImprovement> tileImprovements;
+        private readonly List<CityNextTurnEffect> nextTurnEffects;
 
         // Districts
         //private int availableDistricts = 0; //TODO: implement available district
@@ -42,7 +42,7 @@ namespace Cities
 
             ResourceMods = new ResourceModifiers();
             construction = new CityConstruction(this);
-            tileImprovements = new List<TileImprovement>();
+            nextTurnEffects = new List<CityNextTurnEffect>();
             Districts = new List<District>() { new District("city center", 5, new Dictionary<string, int>(), new string[0], "Test City Center")};
         }
 
@@ -53,9 +53,9 @@ namespace Cities
             {
                 district.OnNextTurn(this, gui.Game);
             }
-            foreach (TileImprovement tileImprovement in tileImprovements)
+            foreach (CityNextTurnEffect nextTurnEffect in nextTurnEffects)
             {
-                tileImprovement.OnNextTurn(this, gui.Game);
+                nextTurnEffect.OnNextTurn(this, gui.Game);
             }
 
             //TODO: TEMPORARY POPULATION GROWTH IMPLEMENTATION, REMOVE
@@ -70,9 +70,9 @@ namespace Cities
             //--------------------------------------------------------
         }
 
-        public void AddTileImprovement(TileImprovement ti)
+        public void AddNextTurnEffect(CityNextTurnEffect effect)
         {
-            tileImprovements.Add(ti);
+            nextTurnEffects.Add(effect);
         }
 
 /*        public void AddResource(string id, float value)
@@ -94,7 +94,7 @@ namespace Cities
             //TODO: Formalize cityRadius
             int cityRadius = 5;
 
-            Vector2[] checks = new Vector2[] { new Vector2(-1, 0), new Vector2(-0.5f, 0.75f), new Vector2(0.5f, 0.75f), new Vector2(1, 0), new Vector2(0.5f, -0.75f), new Vector2(-0.5f, -0.75f) };
+/*            Vector2[] checks = new Vector2[] { new Vector2(-1, 0), new Vector2(-0.5f, 0.75f), new Vector2(0.5f, 0.75f), new Vector2(1, 0), new Vector2(0.5f, -0.75f), new Vector2(-0.5f, -0.75f) };
             Grid grid = world.grid;
 
             List<Vector3> queue = new List<Vector3>();
@@ -123,7 +123,27 @@ namespace Cities
                 queue.RemoveAt(0);
                 moves.RemoveAt(0);
             }
-            cityRange.Remove(grid.WorldToCell(Position));
+            cityRange.Remove(grid.WorldToCell(Position));*/
+
+            for (int i = 1; i <= cityRadius; i++)
+            {
+                cityRange.Add(world.grid.WorldToCell(i * new Vector3(-1, 0) + Position));
+                cityRange.Add(world.grid.WorldToCell(i * new Vector3(1, 0) + Position));
+            }
+
+            Vector3 topEdge = new Vector3(0.5f - cityRadius, 0.75f) + Position;
+            Vector3 lowerEdge = new Vector3(0.5f - cityRadius, -0.75f) + Position;
+            for (int layer = 0; layer < cityRadius; layer++)
+            {
+                // Move to next layer and fill line
+                for (int i = 0; i < cityRadius * 2 - layer; i++)
+                {
+                    cityRange.Add(world.grid.WorldToCell(i * new Vector3(1, 0) + topEdge));
+                    cityRange.Add(world.grid.WorldToCell(i * new Vector3(1, 0) + lowerEdge));
+                }
+                topEdge += new Vector3(0.5f, 0.75f);
+                lowerEdge += new Vector3(0.5f, -0.75f);
+            }
         }
 
         public HashSet<Vector3Int> GetCityRange(World world)

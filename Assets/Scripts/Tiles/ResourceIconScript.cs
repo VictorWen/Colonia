@@ -16,8 +16,8 @@ public class ResourceIconScript : MonoBehaviour
         transform.localScale += (target - transform.localScale) / scaleInertia * Time.deltaTime;
     }
 
-    public void SetResource(Sprite resourceSprite) // TODO: change to string resourceID
+    public void SetResource(string resourceID) // TODO: change to string resourceID
     {
-        resourceicon.sprite = resourceSprite;
+        resourceicon.sprite = Resources.Load<Sprite>(System.IO.Path.Combine("Items", resourceID));
     }
 }

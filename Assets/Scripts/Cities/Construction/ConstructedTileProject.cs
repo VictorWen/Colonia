@@ -137,6 +137,9 @@ namespace Cities.Construction
 
         public abstract bool IsValidTile(Vector3Int position, World world, City city);
 
+        /* <summary>
+         * Text used for hovering text above ConstructedTileGhost during project selection
+         * </summary> */
         public abstract string GetTooltipText(Vector3Int position, World world);
 
         public abstract IProject Copy();
