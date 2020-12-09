@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cities;
 using Cities.Construction;
+using Units;
 
 //Handles background game state (Server)
 public class GameMaster
@@ -15,6 +16,9 @@ public class GameMaster
     private readonly List<City> cities;
     private readonly ResourceModifiers globalModifiers;
 
+    public List<UnitEntity> Units { get { return unitManager.Units; } }
+    private readonly UnitEntityManager unitManager;
+
     public GameMaster(World world)
     {
         this.World = world;
@@ -23,6 +27,7 @@ public class GameMaster
         pendingResources = new Dictionary<string, float>();
         cities = new List<City>();
         globalModifiers = new ResourceModifiers();
+        unitManager = World.UnitManager;
     }
 
     // TODO: Move game control methods to a separate interface or class
@@ -31,6 +36,11 @@ public class GameMaster
         foreach (City city in cities)
         {
             city.OnNextTurn(gui);
+        }
+
+        foreach (UnitEntity unit in unitManager.Units)
+        {
+            unit.OnNextTurn(this);
         }
 
         Dictionary<string, int> delta = new Dictionary<string, int>();
@@ -49,6 +59,20 @@ public class GameMaster
     public void AddNewCity(City city)
     {
         cities.Add(city);
+    }
+
+    public UnitEntity AddNewTestUnit(string name, bool playerControlled, Vector3Int position, UnitEntityScript script)
+    {
+        UnitEntity unit = new UnitEntity(name, playerControlled, position, unitManager, script);
+        unitManager.AddUnit(unit);
+        return unit;
+    }
+
+    public NPCUnitEntity AddNewTestNPCUnit(string name, Vector3Int position, NPCIntelligence ai, UnitEntityScript script)
+    {
+        NPCUnitEntity unit = new NPCUnitEntity(name, position, ai, unitManager, script);
+        unitManager.AddUnit(unit);
+        return unit;
     }
     
     public void AddPendingResource(string id, float value)

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEditor.UIElements;
+using Units;
 
 // The interface for the terrain map
 // Generates and accesses the terrain
@@ -13,6 +13,12 @@ public class World : MonoBehaviour
     public Tilemap terrain;
     public Tilemap cities;
     public Tilemap movement;
+   
+    [Header("Vision")]
+    public Tilemap vision;
+    public Tile cloud;
+    public Tile fog;
+    public Dictionary<Vector3Int, int> Visible { get; private set; }
 
     [Header("Generation Settings")]
     public bool autoUpdate;
@@ -41,16 +47,19 @@ public class World : MonoBehaviour
     private Dictionary<Vector3Int, float> fertility;
     private Dictionary<Vector3Int, float> richness;
 
+    public UnitEntityManager UnitManager { get; private set; }
+
     //TODO: fix/organize this
-    public Dictionary<Vector3Int, string> ResourceTiles { get; private set; }
-    private Vector3Int[][] biomeChunks;
-    private System.Random rand;
+    public ResourceMap ResourceMap { get; private set; }
+    public Vector3Int[][] BiomeChunks { get; private set; }
+    public System.Random RNG { get; private set; }
 
     private void Awake()
     {
         GenerateWorld();
         // Generate Resources
-        ResourceTiles = ResourceGeneration.GenerateResources(this, biomeChunks, rand, biomeResources, iconPrefab);
+        ResourceMap = new ResourceMap(this, biomeResources, iconPrefab);
+        UnitManager = new UnitEntityManager();
     }
 
     [System.Serializable]
@@ -65,6 +74,7 @@ public class World : MonoBehaviour
 
     public void GenerateWorld()
     {
+        Visible = new Dictionary<Vector3Int, int>();
         terrain.ClearAllTiles();
         Array.Sort(tiles, (x1, x2) => x1.height.CompareTo(x2.height));
         foreach (BiomeTileSet b in biomes)
@@ -72,7 +82,7 @@ public class World : MonoBehaviour
             Array.Sort(b.tiles, (x1, x2) => x1.height.CompareTo(x2.height));
         }
 
-        rand = new System.Random(seed);
+        RNG = new System.Random(seed);
         int size = (worldRadius * 2 + 1) * (chunkRadius * 2 + 1);
 
         //TODO: better fertility and richness => create better biome terrain
@@ -85,7 +95,7 @@ public class World : MonoBehaviour
         float frequency = 1f;
         for (int i = 0; i < octaves; i++)
         {
-            float offset = rand.Next(-100000, 100000);
+            float offset = RNG.Next(-100000, 100000);
             for (int x = 0; x < size; x++)
             {
                 for (int y = 0; y < size; y++)
@@ -107,10 +117,8 @@ public class World : MonoBehaviour
             }
         }
 
-
-
         Vector2[] centers = GetChunkCenters(chunkRadius, worldRadius);
-        biomeChunks = new Vector3Int[centers.Length][];
+        BiomeChunks = new Vector3Int[centers.Length][];
         int p = 0;
         // Assign Tiles
         foreach (Vector2 center in centers)
@@ -139,7 +147,7 @@ public class World : MonoBehaviour
             }
 
             Vector3Int[] chunk = CreateChunk(center, chunkRadius);
-            biomeChunks[p++] = chunk;
+            BiomeChunks[p++] = chunk;
             foreach (Vector3Int pos in chunk)
             {
                 int x = pos.x;
@@ -161,7 +169,7 @@ public class World : MonoBehaviour
                     }
                 }
 
-                float noise = (float)(rand.NextDouble() * 2 - 1);
+                float noise = (float)(RNG.NextDouble() * 2 - 1);
                 // Match height to TileBase
                 for (int i = 0; i < biomeTiles.Length; i++)
                 {
@@ -171,9 +179,9 @@ public class World : MonoBehaviour
                         terrain.SetTile(pos, t.tile);
                             
                         if (!fertility.ContainsKey(pos)) 
-                            fertility.Add(pos, GetRandomAspect(rand, t.tile.baseFertility)); 
+                            fertility.Add(pos, GetRandomAspect(RNG, t.tile.baseFertility)); 
                         if (!richness.ContainsKey(pos))
-                            richness.Add(pos, GetRandomAspect(rand, t.tile.baseRichness));
+                            richness.Add(pos, GetRandomAspect(RNG, t.tile.baseRichness));
 
                         break;
                     }
@@ -182,13 +190,14 @@ public class World : MonoBehaviour
                         terrain.SetTile(pos, t.tile);
 
                         if (!fertility.ContainsKey(pos))
-                            fertility.Add(pos, GetRandomAspect(rand, t.tile.baseFertility));
+                            fertility.Add(pos, GetRandomAspect(RNG, t.tile.baseFertility));
                         if (!richness.ContainsKey(pos))
-                            richness.Add(pos, GetRandomAspect(rand, t.tile.baseRichness));
+                            richness.Add(pos, GetRandomAspect(RNG, t.tile.baseRichness));
 
                         break;
                     }
                 }
+                vision.SetTile(pos, cloud);
             }
             //terrain.SetTile(grid.WorldToCell(center), null);
         }
@@ -199,12 +208,106 @@ public class World : MonoBehaviour
         return baseAspect + (float)(rand.NextDouble() - 0.5) * baseAspect;
     }
 
-    public float IsReachable(float moves, Vector3Int destination)
+    public void AddFogOfWar(Vector3Int position, UnitEntityManager manager)
+    {
+        if (Visible.ContainsKey(position))
+        {
+            Visible[position]--;
+            if (Visible[position] == 0)
+            {
+                Visible.Remove(position);
+                vision.SetTile(position, fog);
+                if (manager.Positions.ContainsKey(position) && !manager.Positions[position].PlayerControlled)
+                    manager.Positions[position].HideScript();
+            }
+        }
+    }
+
+    public void RevealTerraIncognita(Vector3Int position)
+    {
+        TileBase tile = vision.GetTile(position);
+        if (tile != null && tile.name == "Cloud")
+        {
+            vision.SetTile(position, fog);
+            if (ResourceMap.Icons.ContainsKey(position))
+                ResourceMap.Icons[position].gameObject.SetActive(true);
+        }
+    }
+
+    public void RevealFogOfWar(Vector3Int position, UnitEntityManager manager)
+    {
+        if (Visible.ContainsKey(position))
+        {
+            Visible[position]++;
+        }
+        else
+        {
+            Visible.Add(position, 1);
+            vision.SetTile(position, null);
+            if (manager.Positions.ContainsKey(position) && !manager.Positions[position].PlayerControlled)
+                manager.Positions[position].ShowScript();
+        }
+    }
+
+    public List<Vector3Int> GetAdjacents(Vector3Int tile)
+    {
+        List<Vector3Int> adjacents = new List<Vector3Int>();
+        Vector3[] checks = new Vector3[] { new Vector3(-1, 0), new Vector3(-0.5f, 0.75f), new Vector3(0.5f, 0.75f), new Vector3(1, 0), new Vector3(0.5f, -0.75f), new Vector3(-0.5f, -0.75f) };
+        foreach (Vector3 check in checks)
+        {
+            adjacents.Add(grid.WorldToCell(check + grid.CellToWorld(tile)));
+        }
+        return adjacents;
+    }
+
+    public HashSet<Vector3Int> GetTilesInRange(Vector3Int start, int range)
+    {
+        HashSet<Vector3Int> tileRange = new HashSet<Vector3Int>
+        {
+            start
+        };
+
+        Vector3 worldStart = grid.CellToWorld(start);
+
+        for (int i = 1; i <= range; i++)
+        {
+            tileRange.Add(grid.WorldToCell(i * new Vector3(-1, 0) + worldStart));
+            tileRange.Add(grid.WorldToCell(i * new Vector3(1, 0) + worldStart));
+        }
+
+        Vector3 topEdge = new Vector3(0.5f - range, 0.75f) + worldStart;
+        Vector3 lowerEdge = new Vector3(0.5f - range, -0.75f) + worldStart;
+        for (int layer = 0; layer < range; layer++)
+        {
+            // Move to next layer and fill line
+            for (int i = 0; i < range * 2 - layer; i++)
+            {
+                tileRange.Add(grid.WorldToCell(i * new Vector3(1, 0) + topEdge));
+                tileRange.Add(grid.WorldToCell(i * new Vector3(1, 0) + lowerEdge));
+            }
+            topEdge += new Vector3(0.5f, 0.75f);
+            lowerEdge += new Vector3(0.5f, -0.75f);
+        }
+
+        return tileRange;
+    }
+
+    public float IsReachable(float moves, Vector3Int destination, bool checkUnits = false)
     {
         TerrainTile t = (TerrainTile)terrain.GetTile(destination);
-        if (t != null && !t.impassable && moves >= t.movementCost)
+        if (t != null && !t.impassable && moves >= t.movementCost && (!checkUnits || !UnitManager.Positions.ContainsKey(destination)))
         {
             return t.movementCost;
+        }
+        return -1;
+    }
+
+    public float IsViewable(float moves, Vector3Int destination)
+    {
+        TerrainTile t = (TerrainTile)terrain.GetTile(destination);
+        if (t != null && moves > 0)
+        {
+            return t.sightCost;
         }
         return -1;
     }

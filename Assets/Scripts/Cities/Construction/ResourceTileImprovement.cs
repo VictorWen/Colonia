@@ -8,9 +8,9 @@ namespace Cities.Construction
     {
         public override string ProjectType => "Resource Improvement";
 
-        private HashSet<string> resources;
-        private HashSet<string> validUpgrades;
-        private bool useFertility;
+        private readonly HashSet<string> resources;
+        private readonly HashSet<string> validUpgrades;
+        private readonly bool useFertility;
 
         public ResourceTileImprovement(string id, string[] resources, bool useFertility, Dictionary<string, int> baseCost, string[] validUpgrades = null) : base(id, baseCost)
         {
@@ -40,7 +40,7 @@ namespace Cities.Construction
 
         public void OnNextTurn(City city, GameMaster game)
         {
-            string id = game.World.ResourceTiles[position];
+            string id = game.World.ResourceMap.ResourceLocations[position];
             
             float tilePower = useFertility ? game.World.GetFertilityAtTile(position) : game.World.GetRichnessAtTile(position);
             float hardnessModifier = game.GetResourceModifier(ModifierAttributeID.HARDNESS, id, city);
@@ -89,7 +89,7 @@ namespace Cities.Construction
 
         public override bool IsValidTile(Vector3Int position, World world, City city)
         {
-            return world.ResourceTiles.ContainsKey(position) && resources.Contains(world.ResourceTiles[position]);
+            return world.ResourceMap.ResourceLocations.ContainsKey(position) && resources.Contains(world.ResourceMap.ResourceLocations[position]);
         }
     }
 }

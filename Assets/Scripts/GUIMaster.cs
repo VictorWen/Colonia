@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Cities;
 using Cities.Construction;
+using Units;
 
 // Handles foreground game state (client). Also used for testing purposes
 // Global client side, instantized server side
@@ -31,15 +32,21 @@ public class GUIMaster : MonoBehaviour
     //TODO: formalize city script text updating
     private CityScript capitalScript;
 
+    public UnitEntityScript testUnit;
+    public UnitEntityScript testEnemyUnit;
+    public UnitEntityScript unitEntityPrefab;
+    public UnitPanelScript unitPanel;
+
     public void Awake()
     {
         Debug.Log("GAME START");
-        Game = new GameMaster(world);
+        
         GUIState = new GUIStateManager(cityGUI, mapHUD);
     }
 
     public void Start()
     {
+        Game = new GameMaster(world);
         cityGUI.gui = this;
 
         //--TESTING--------
@@ -52,7 +59,15 @@ public class GUIMaster : MonoBehaviour
         capitalScript = CityScript.Create("Test", new Vector3(-1, 0, 0), this);
         capital = capitalScript.city;
         //capital.inv = inv;
+        
+        testUnit.gui = this;
+        testUnit.Unit = Game.AddNewTestUnit("TEST HERO NAME", true, Game.World.grid.WorldToCell(testUnit.transform.position), testUnit);
+        testUnit.Unit.UpdateVision(Game.World);
 
+        testEnemyUnit.gui = this;
+        testEnemyUnit.Unit = Game.AddNewTestNPCUnit("EVIL LORD", Game.World.grid.WorldToCell(testEnemyUnit.transform.position), new DummyAI(), testEnemyUnit);
+        testEnemyUnit.Unit.UpdateVision(Game.World);
+        //UpdateAllUnitVisibilities();
         //cityGUI.OpenCityGUI(capital);
         //districtSelectorScript.Enable(capital);
         //-------------------
@@ -62,8 +77,23 @@ public class GUIMaster : MonoBehaviour
     public void NextTurn()
     {
         Game.NextTurn(this);
+        unitPanel.UpdateGUI();
         capitalScript.title.text = capital.Name + "(" + capital.population + ")"; //TODO: move population text update location
+
+        //TODO: move enemy turn to new location
+        NPCUnitEntity enemy = (NPCUnitEntity) testEnemyUnit.Unit;
+        Vector3Int target = enemy.ai.GetTarget(enemy, new List<UnitEntity>() { testUnit.Unit }, Game.World);
+        Debug.Log("Enemey Target: " + target);
+        LinkedList<Vector3Int> movement = enemy.ai.GetMovement(enemy, target, Game.World);
+        foreach (Vector3Int motion in movement)
+        {
+            Debug.Log("Enemey Motion: " + motion);
+            testEnemyUnit.transform.position = Game.World.grid.CellToWorld(motion);
+            enemy.MoveTo(motion, Game.World);
+        }
+        //UpdateAllUnitVisibilities();
     }
+
 }
 
 /*[CustomEditor(typeof(GameMaster))]

@@ -14,7 +14,7 @@ public class GUIStateManager
     // -----GUI------
     // Whether the mapHUD is displayed
     public bool MapHUD { get; private set; }
-    private Canvas mapHUD;
+    private readonly Canvas mapHUD;
     // Whether the cityPanel is displayed
     public bool CityPanel { get; private set; }
     private readonly CityGUIScript cityPanel;
@@ -23,6 +23,8 @@ public class GUIStateManager
     //----PRESETS-----
     // GameState for when player is viewin the map
     public static readonly GUIStatePreset MAP = new GUIStatePreset("map", true, true, true, true);
+    // GameState for when unit is selected
+    public static readonly GUIStatePreset UNIT = new GUIStatePreset("unit", true, true, false, true);
     // GameState for when the player has a City panel open
     public static readonly GUIStatePreset CITY = new GUIStatePreset("city", false, false, false, false, true);
     // GameState for when the player is placing a tile improvement
@@ -39,14 +41,14 @@ public class GUIStateManager
 
         public readonly string name;
 
-        public GUIStatePreset(string name, bool cam, bool unit = false, bool tile = false, bool map = false, bool city = false)
+        public GUIStatePreset(string name, bool cam, bool unit = false, bool tile = false, bool mapHUD = false, bool cityPanel = false)
         {
             this.name = name;
             camCtrl = cam;
             unitCtrl = unit;
             tileIntr = tile;
-            mapHUD = map;
-            cityPanel = city;
+            this.mapHUD = mapHUD;
+            this.cityPanel = cityPanel;
         }
     }
 
