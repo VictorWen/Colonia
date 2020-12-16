@@ -267,36 +267,29 @@ public class World : MonoBehaviour
     /// </summary>
     public HashSet<Vector3Int> GetLineOfSight(Vector3Int start, int range)
     {
-        Debug.Log("LINE OF SIGHT");
+        //Debug.Log("LINE OF SIGHT");
         Vector3 worldStart = grid.CellToWorld(start);
         HashSet<Vector3Int> sight = new HashSet<Vector3Int>();
         List<List<Vector3Int>> rangeList = GetRangeList(start, range);
         sight.Add(start);
-        for (int i = 1; i <= range; i++)
+        for (int r = 1; r <= range; r++)
         {
-            float margin = Mathf.PI * 2 / (i * 6 * 2);
-            foreach (Vector3Int tile in rangeList[i])
+            float margin = Mathf.PI * 2 / (r * 6);
+            for (int i = 0; i < r * 6; i++)
             {
                 // Calculate angles
+                Vector3Int tile = rangeList[r][i];
                 Vector3 worldTile = grid.CellToWorld(tile);
                 Vector3 dVector = worldTile - worldStart;
-                float angle = Mathf.Atan2(dVector.y, dVector.x);
-                float leftRay = angle - margin;
-                if (leftRay < 0)
-                    leftRay = Mathf.PI * 2 + leftRay;
-                float rightRay = angle + margin;
-                if (rightRay < 0)
-                    rightRay = Mathf.PI * 2 + rightRay;
-                Debug.Log(tile + "\t" + leftRay + "\t" + rightRay);
-
-                bool debug = false;
-                if (tile.Equals(new Vector3Int(3, 4, 0)))
-                    debug = true;
+                float angle = margin * i;
+                float leftRay = angle - margin / 2;
+                float rightRay = angle + margin / 2;
+                //Debug.Log(tile + "\t" + leftRay + "\t" + rightRay);
 
                 // Backtrack
                 bool clear = true;
                 float pastSightCost = 1;
-                for (int j = i - 1; j > 0; j--)
+                for (int j = r - 1; j > 0; j--)
                 {
                     float layerMargin = Mathf.PI * 2 / (j * 6 * 2);
                     Vector3Int left = rangeList[j][Mathf.CeilToInt(leftRay / layerMargin) / 2 % (j*6)];
@@ -308,8 +301,8 @@ public class World : MonoBehaviour
                     }
 
                     // Determine sight cost
-                    float leftSightCost = 100;
-                    float rightSightCost = 100;
+                    float leftSightCost = 1000;
+                    float rightSightCost = 1000;
                     if (sight.Contains(left))
                         leftSightCost = ((TerrainTile)terrain.GetTile(left)).sightCost;
                     if (sight.Contains(right))
