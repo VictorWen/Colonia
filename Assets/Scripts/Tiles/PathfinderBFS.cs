@@ -18,6 +18,7 @@ class PathfinderBFS
         Dictionary<Vector3Int, float> moves = new Dictionary<Vector3Int, float>();
         queue.Add(start);
         visited.Add(start);
+        Reachables.Add(start);
         moves.Add(start, 0);
 
         while (queue.Count > 0)

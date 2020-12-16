@@ -260,6 +260,93 @@ public class World : MonoBehaviour
         return adjacents;
     }
 
+    /// <summary>
+    /// Approximates the line of sight to each hexagon within a given radius by placing
+    /// each hexagon within a angle bucket and backtracking to find any collisions
+    /// with buckets in an earlier layer
+    /// </summary>
+    public HashSet<Vector3Int> GetLineOfSight(Vector3Int start, int range)
+    {
+        Debug.Log("LINE OF SIGHT");
+        Vector3 worldStart = grid.CellToWorld(start);
+        HashSet<Vector3Int> sight = new HashSet<Vector3Int>();
+        List<List<Vector3Int>> rangeList = GetRangeList(start, range);
+        sight.Add(start);
+        for (int i = 1; i <= range; i++)
+        {
+            float margin = Mathf.PI * 2 / (i * 6 * 2);
+            foreach (Vector3Int tile in rangeList[i])
+            {
+                // Calculate angles
+                Vector3 worldTile = grid.CellToWorld(tile);
+                Vector3 dVector = worldTile - worldStart;
+                float angle = Mathf.Atan2(dVector.y, dVector.x);
+                float leftRay = angle - margin;
+                if (leftRay < 0)
+                    leftRay = Mathf.PI * 2 + leftRay;
+                float rightRay = angle + margin;
+                if (rightRay < 0)
+                    rightRay = Mathf.PI * 2 + rightRay;
+                Debug.Log(tile + "\t" + leftRay + "\t" + rightRay);
+
+                bool debug = false;
+                if (tile.Equals(new Vector3Int(3, 4, 0)))
+                    debug = true;
+
+                // Backtrack
+                bool clear = true;
+                float pastSightCost = 1;
+                for (int j = i - 1; j > 0; j--)
+                {
+                    float layerMargin = Mathf.PI * 2 / (j * 6 * 2);
+                    Vector3Int left = rangeList[j][Mathf.CeilToInt(leftRay / layerMargin) / 2 % (j*6)];
+                    Vector3Int right = rangeList[j][Mathf.CeilToInt(rightRay / layerMargin) / 2 % (j*6)];
+                    if (!(sight.Contains(left) || sight.Contains(right)))
+                    {
+                        clear = false;
+                        break;
+                    }
+
+                    // Determine sight cost
+                    float leftSightCost = 100;
+                    float rightSightCost = 100;
+                    if (sight.Contains(left))
+                        leftSightCost = ((TerrainTile)terrain.GetTile(left)).sightCost;
+                    if (sight.Contains(right))
+                        rightSightCost = ((TerrainTile)terrain.GetTile(right)).sightCost;
+                    pastSightCost += Mathf.Min(leftSightCost, rightSightCost);
+                }
+                if (clear && pastSightCost <= range)
+                {   
+                    sight.Add(tile);
+                }
+            }
+        }
+        return sight;
+    }
+
+    public List<List<Vector3Int>> GetRangeList(Vector3Int start, int range)
+    {
+        List<List<Vector3Int>> rangeList = new List<List<Vector3Int>>() { new List<Vector3Int>() { start } };
+        Vector3 worldStart = grid.CellToWorld(start);
+        
+        for (int r = 1; r <= range; r++) {
+            Vector3[] checks = new Vector3[] { new Vector3(-0.5f, 0.75f), new Vector3(-1, 0), new Vector3(-0.5f, -0.75f), new Vector3(0.5f, -0.75f), new Vector3(1, 0), new Vector3(0.5f, 0.75f)};
+            List<Vector3Int> tiles = new List<Vector3Int>();
+            Vector3 adder = r * new Vector3(1f, 0);
+            for (int i = 0; i < 6; i++)
+            {
+                for (int j = 0; j < r; j++)
+                {
+                    tiles.Add(grid.WorldToCell(worldStart + adder));
+                    adder += checks[i];
+                }
+            }
+            rangeList.Add(tiles);
+        }
+        return rangeList;
+    }
+
     public HashSet<Vector3Int> GetTilesInRange(Vector3Int start, int range)
     {
         HashSet<Vector3Int> tileRange = new HashSet<Vector3Int>

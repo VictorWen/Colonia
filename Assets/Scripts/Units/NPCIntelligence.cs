@@ -8,6 +8,6 @@ namespace Units
     {
         LinkedList<Vector3Int> GetMovement(UnitEntity self, Vector3Int target, World world);
 
-        Vector3Int GetTarget(UnitEntity self, List<UnitEntity> others, World world);
+        Vector3Int GetTarget(UnitEntity self, World world);
     }
 }

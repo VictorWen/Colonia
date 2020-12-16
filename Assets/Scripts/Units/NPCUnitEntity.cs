@@ -16,7 +16,7 @@ namespace Units
 
         public void ExecuteTurn(GameMaster game)
         {
-            ai.GetMovement(this, ai.GetTarget(this, null, game.World), game.World);
+            ai.GetMovement(this, ai.GetTarget(this, game.World), game.World);
         }
     }
 }

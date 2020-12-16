@@ -9,44 +9,51 @@ namespace Units
     ///</summary>
     class DummyAI : NPCIntelligence
     {
-
-        public Vector3Int GetTarget(UnitEntity self, List<UnitEntity> entities, World world)
+        public Vector3Int GetTarget(UnitEntity self, World world)
         {
-            HashSet<Vector3Int> entityPositions = new HashSet<Vector3Int>();
-            foreach (UnitEntity entity in entities)
+            foreach (Vector3Int gridPos in self.VisibleTiles)
             {
-                entityPositions.Add(entity.Position);
-            }
-
-            PathfinderBFS pathfinder = new PathfinderBFS(self.Position, self.MovementSpeed, world);
-
-            foreach (Vector3Int gridPos in pathfinder.Reachables)
-            {
-                if (entityPositions.Contains(gridPos))
+                if (world.UnitManager.Positions.ContainsKey(gridPos) && world.UnitManager.Positions[gridPos].PlayerControlled)
                     return gridPos;
             }
 
+            // Default case:
+            int index = world.RNG.Next(self.VisibleTiles.Count);
+            Debug.Log(self.VisibleTiles.Count);
+            int i = 0;
+            foreach (Vector3Int visible in self.VisibleTiles)
+            {
+                if (i == index)
+                    return visible;
+                i++;
+            }
             return self.Position;
         }
 
         public LinkedList<Vector3Int> GetMovement(UnitEntity self, Vector3Int target, World world)
         {
+            // *Find destination candidates*
             List<Vector3Int> candidates = new List<Vector3Int>();
             int attackRange = 1;
             // Does not account for line of sight or vision in general
             PathfinderBFS pathfinder = new PathfinderBFS(self.Position, self.MovementSpeed, world, true);
             foreach (Vector3Int withinRange in world.GetTilesInRange(target, attackRange))
             {
-                //world.movement.SetTile(withinRange, world.cloud);
                 if (withinRange != target && pathfinder.Reachables.Contains(withinRange))
                     candidates.Add(withinRange);
             }
 
             // *Insert candidate analysis*
-
-            //placeholder
-            Debug.Log("Motion Target: " + candidates[0]);
-            return pathfinder.GetPathTo(candidates[0]);
+            // random candidate analysis
+            int index = world.RNG.Next(candidates.Count);
+            int i = 0;
+            foreach (Vector3Int candidate in candidates)
+            {
+                if (i == index)
+                    return pathfinder.GetPathTo(candidate);
+                i++;
+            }
+            return pathfinder.GetPathTo(self.Position);
         }
     }
 }

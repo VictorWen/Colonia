@@ -27,7 +27,7 @@ namespace Units
         // Vision
         protected int sight;
         protected int reconRange;
-        protected HashSet<Vector3Int> Visible;
+        public HashSet<Vector3Int> VisibleTiles { get; private set; }
 
         private readonly UnitEntityManager manager;
         private readonly UnitEntityScript script;
@@ -62,7 +62,7 @@ namespace Units
 
             sight = 3;
             reconRange = 5;
-            Visible = new HashSet<Vector3Int>();
+            VisibleTiles = new HashSet<Vector3Int>();
 
             CanMove = true;
             MovementSpeed = 3;
@@ -115,63 +115,40 @@ namespace Units
         {
             if (PlayerControlled)
             {
-                foreach (Vector3Int visible in Visible)
+                foreach (Vector3Int visible in VisibleTiles)
                 {
                     world.AddFogOfWar(visible, manager);
                 }
-                Visible = new HashSet<Vector3Int>();
+            }
+            VisibleTiles = new HashSet<Vector3Int>();
 
+/*            if (PlayerControlled)
+            {
                 PathfinderBFS reconPath = new PathfinderBFS(Position, reconRange, world);
                 foreach (Vector3Int withinRecon in reconPath.Reachables)
                 {
-                    world.RevealTerraIncognita(withinRecon);
+                    
                 }
+            }*/
 
-                //BFS
-                List<Vector3Int> queue = new List<Vector3Int>();
-                HashSet<Vector3Int> visited = new HashSet<Vector3Int>();
-                Dictionary<Vector3Int, float> moves = new Dictionary<Vector3Int, float>();
-                queue.Add(Position);
-                visited.Add(Position);
-                Visible.Add(Position);
-                moves.Add(Position, 0);
+            float bonus = 0;
+            UnityEngine.Tilemaps.TileBase t = world.terrain.GetTile(Position);
+            if (t != null)
+            {
+                bonus = ((TerrainTile)t).sightBonus;
+            }
 
-                float bonus = 0;
-                UnityEngine.Tilemaps.TileBase t = world.terrain.GetTile(Position);
-                if (t != null)
+            VisibleTiles = world.GetLineOfSight(Position, sight + (int) bonus);
+
+            if (PlayerControlled)
+            {
+                foreach (Vector3Int withinSight in VisibleTiles)
                 {
-                    bonus = ((TerrainTile)t).sightBonus;
-                }
-
-                while (queue.Count > 0)
-                {
-                    foreach (Vector3Int gridTilePos in world.GetAdjacents(queue[0]))
-                    {
-                        float currentMoves = moves[queue[0]];
-                        float cost = world.IsViewable(sight + bonus - currentMoves, gridTilePos);
-                        float moveCost = cost + currentMoves;
-                        if (!visited.Contains(gridTilePos) && cost >= 0)
-                        {
-                            visited.Add(gridTilePos);
-
-                            Visible.Add(gridTilePos);
-
-                            queue.Add(gridTilePos);
-                            moves.Add(gridTilePos, moveCost);
-                        }
-                        else if (visited.Contains(gridTilePos) && cost >= 0 && moveCost < moves[gridTilePos])
-                        {
-                            moves[gridTilePos] = moveCost;
-                        }
-                    }
-                    queue.RemoveAt(0);
-                }
-
-                foreach (Vector3Int withinSight in Visible)
-                {
+                    world.RevealTerraIncognita(withinSight);
                     world.RevealFogOfWar(withinSight, manager);
                 }
             }
+
             if (world.vision.GetTile(Position) == null)
                 ShowScript();
             else

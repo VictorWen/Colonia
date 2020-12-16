@@ -36,5 +36,7 @@ MonoBehaviour:
   m_ColliderType: 1
   impassable: 0
   movementCost: 2
+  sightCost: 3
+  sightBonus: 0
   baseFertility: 5
   baseRichness: 1
