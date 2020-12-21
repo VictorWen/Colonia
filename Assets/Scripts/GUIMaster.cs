@@ -88,9 +88,9 @@ public class GUIMaster : MonoBehaviour
         LinkedList<Vector3Int> movement = enemy.ai.GetMovement(enemy, target, Game.World);
         foreach (Vector3Int motion in movement)
         {
-            Debug.Log("Enemey Motion: " + motion);
+            //Debug.Log("Enemey Motion: " + motion);
             testEnemyUnit.transform.position = Game.World.grid.CellToWorld(motion);
-            //enemy.MoveTo(motion, Game.World);
+            enemy.MoveTo(motion, Game.World);
         }
         //UpdateAllUnitVisibilities();
     }

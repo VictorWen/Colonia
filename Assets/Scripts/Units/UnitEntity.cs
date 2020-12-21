@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Units.Abilities;
 
 namespace Units
 {
@@ -16,17 +17,16 @@ namespace Units
         //protected List<StatusEffect> statusEffects;
 
         // Combat Attributes
-        protected int attack;
-        protected int armor;
+        public int Attack { get; private set; }
+        protected int defence;
         protected int piercing;
-        protected int magic;
+        public int Magic { get; private set; }
         protected int resistance;
         protected int accuracy;
         protected int agility;
 
         // Vision
-        protected int sight;
-        protected int reconRange;
+        public int Sight { get; private set; }
         public HashSet<Vector3Int> VisibleTiles { get; private set; }
 
         private readonly UnitEntityManager manager;
@@ -35,6 +35,7 @@ namespace Units
         // Movement Controls
         public Vector3Int Position { get; private set; }
         public bool CanMove { get; private set; } //TODO: move to a HeroUnitEntity class
+        public bool CanAttack { get; private set; }
         public int MovementSpeed { get; private set; }
         public bool PlayerControlled { get; private set; }
 
@@ -52,19 +53,19 @@ namespace Units
             mana = 100;
             maxMana = 100;
 
-            attack = 1;
-            armor = 1;
+            Attack = 1;
+            defence = 1;
             piercing = 1;
-            magic = 1;
+            Magic = 1;
             resistance = 1;
             accuracy = 1;
             agility = 1;
 
-            sight = 3;
-            reconRange = 5;
+            Sight = 5;
             VisibleTiles = new HashSet<Vector3Int>();
 
             CanMove = true;
+            CanAttack = true;
             MovementSpeed = 3;
             Position = position;
 
@@ -75,12 +76,51 @@ namespace Units
         public virtual void OnNextTurn(GameMaster game)
         {
             CanMove = true;
+            CanAttack = true;
             UpdateVision(game.World);
         }
 
-        public void Attack(UnitEntity target)
+        public void AttackUnitEntity(UnitEntity target)
         {
+            CanMove = false;
+            CanAttack = false;
+            int reduction = Mathf.Max((target.defence - piercing), 0) * (target.defence / (piercing + 1));
+            int damage = Mathf.Max(0, Attack - reduction);
+            Debug.Log("COMBAT: ATTACKED: " + target.Name + " for " + damage + " Damage");
+            target.health = Mathf.Max(0, target.health - damage);
+        }
 
+        public void CastAbility(Ability ability, Vector3Int target, World world)
+        {
+            CanAttack = false;
+            // Assumes there is enough mana available
+            // TODO: UnityEntity Ability.manaCost modifiers
+            mana -= ability.ManaCost;
+            Debug.Log("COMBAT: " + Name + " casted " + ability.Name + " at " + target);
+            ability.Cast(this, target, world);
+        }
+
+        public int DealDamage(float baseDamage, UnitEntity attacker, bool isPhysicalDamage = true)
+        {
+            if (isPhysicalDamage)
+            {
+                float reduction = Mathf.Max(0, defence - attacker.piercing);
+                reduction *= (float) defence / (attacker.piercing + 1);
+                int damage = (int) (baseDamage - reduction);
+                damage = Mathf.Max(0, damage);
+                damage = Mathf.Min(damage, health);
+                health -= damage;
+                return damage;
+            }
+            else
+            {
+                float reduction = resistance;
+                int damage = (int)(baseDamage - reduction);
+                damage = Mathf.Max(0, damage);
+                damage = Mathf.Min(damage, health);
+                health -= damage;
+                return damage;
+            }
         }
 
         public string GetStatusDescription()
@@ -122,14 +162,14 @@ namespace Units
             }
             VisibleTiles = new HashSet<Vector3Int>();
 
-/*            if (PlayerControlled)
+            if (PlayerControlled)
             {
-                PathfinderBFS reconPath = new PathfinderBFS(Position, reconRange, world);
+                PathfinderBFS reconPath = new PathfinderBFS(Position, MovementSpeed, world);
                 foreach (Vector3Int withinRecon in reconPath.Reachables)
                 {
-                    
+                    world.RevealTerraIncognita(withinRecon);
                 }
-            }*/
+            }
 
             float bonus = 0;
             UnityEngine.Tilemaps.TileBase t = world.terrain.GetTile(Position);
@@ -138,7 +178,7 @@ namespace Units
                 bonus = ((TerrainTile)t).sightBonus;
             }
 
-            VisibleTiles = world.GetLineOfSight(Position, sight + (int) bonus);
+            VisibleTiles = world.GetLineOfSight(Position, Sight + (int) bonus);
 
             if (PlayerControlled)
             {

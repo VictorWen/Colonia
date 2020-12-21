@@ -19,7 +19,6 @@ namespace Units
 
             // Default case:
             int index = world.RNG.Next(self.VisibleTiles.Count);
-            Debug.Log(self.VisibleTiles.Count);
             int i = 0;
             foreach (Vector3Int visible in self.VisibleTiles)
             {

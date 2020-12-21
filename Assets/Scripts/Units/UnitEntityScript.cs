@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
-
+using Units.Abilities;
 
 namespace Units
 {
@@ -15,11 +15,13 @@ namespace Units
         public Tilemap movement;
         public TileBase gold;
         public TileBase cyan;
+        public TileBase red;
 
         public GUIMaster gui; 
 
         private bool selected = false;
         private readonly HashSet<Vector3Int> moveablePos = new HashSet<Vector3Int>();
+        private readonly HashSet<Vector3Int> attackablePos = new HashSet<Vector3Int>();
 
         //TODO: change to readonly
         public UnitEntity Unit { get; set;}
@@ -62,6 +64,7 @@ namespace Units
                     else
                     {
                         ClearMovables();
+                        ClearAttackables();
                         gui.unitPanel.SetSelectedUnit(null);
                         movement.SetTile(grid.WorldToCell(transform.position), null);
                         gui.GUIState.SetState(GUIStateManager.MAP);
@@ -83,7 +86,7 @@ namespace Units
             gui.unitPanel.HideUnitInfo();
         }
 
-        private void Update()
+        private void Update() 
         {
             if (selected && Input.GetMouseButtonUp(0))
             {
@@ -91,20 +94,29 @@ namespace Units
                 Vector3Int gridPos = grid.WorldToCell(pos);
                 if (moveablePos.Contains(gridPos))
                 {
-                    movement.SetTile(grid.WorldToCell(transform.position), null);
+                    movement.SetTile(Unit.Position, null);
                     ClearMovables();
                     movement.SetTile(gridPos, gold);
-                    Unit.MoveTo(gridPos, gui.Game.World);
-                    UpdateGraphics();
-                    gui.unitPanel.moveButton.interactable = false;
+                    Unit.MoveTo(gridPos, world);
                     //gui.UpdateAllUnitVisibilities();
                 }
+                if (attackablePos.Contains(gridPos))
+                {
+                    ClearAttackables();
+                    Unit.AttackUnitEntity(world.UnitManager.Positions[gridPos]);
+                }
+                UpdateGraphics();
             }
         }
 
         public void UpdateGraphics()
         {
             transform.position = grid.CellToWorld(Unit.Position);
+            if (selected)
+            {
+                gui.unitPanel.moveButton.interactable = Unit.CanMove;
+                gui.unitPanel.attackButton.interactable = Unit.CanAttack;
+            }
         }
 
         public void MoveAction()
@@ -113,16 +125,89 @@ namespace Units
                 return;
 
             ClearMovables();
+            ClearAttackables();
 
             PathfinderBFS pathfinder = new PathfinderBFS(Unit.Position, Unit.MovementSpeed, world, true);
-
             foreach (Vector3Int gridPos in pathfinder.Reachables)
             {
-                movement.SetTile(gridPos, cyan);
-                moveablePos.Add(gridPos);
+                if (!gridPos.Equals(Unit.Position))
+                {
+                    movement.SetTile(gridPos, cyan);
+                    moveablePos.Add(gridPos);
+                }
             }
 
-            moveablePos.Remove(grid.WorldToCell(transform.position));
+            //AttackAction();
+        }
+
+        public void AttackAction()
+        {
+            if (!Unit.CanAttack)
+                return;
+
+            ClearMovables();
+            ClearAttackables();
+
+            const int testAttackrange = 1;
+/*            foreach (Vector3Int movePos in moveablePos)
+            {
+                foreach (Vector3Int attackPos in world.GetLineOfSight(movePos, testAttackrange)) {
+                    if (world.UnitManager.Positions.ContainsKey(attackPos) && !world.UnitManager.Positions[attackPos].PlayerControlled && !attackablePos.Contains(attackPos))
+                    {
+                        attackablePos.Add(attackPos);
+                        world.movement.SetTile(attackPos, red);
+                    }
+                }
+            }*/
+            foreach (Vector3Int attackPos in world.GetLineOfSight(Unit.Position, testAttackrange))
+            {
+                if (world.UnitManager.Positions.ContainsKey(attackPos) && !world.UnitManager.Positions[attackPos].PlayerControlled && !attackablePos.Contains(attackPos))
+                {
+                    attackablePos.Add(attackPos);
+                    world.movement.SetTile(attackPos, red);
+                }
+            }
+        }
+
+        public void AbilityAction()
+        {
+            //TODO: placeholder UnitEntityScript.AbilityAction
+            string selectedAbilityID = "fireball";
+            Ability selectedAbility = GlobalAbilityDictionary.GetAbility(selectedAbilityID);
+            StartCoroutine(SelectAbilityTarget(selectedAbility));
+        }
+
+        private IEnumerator SelectAbilityTarget(Ability ability)
+        {
+            HashSet<Vector3Int> range = ability.GetWithinRange(Unit, world);
+            bool hasSelected = false;
+            while (!hasSelected)
+            {
+                world.movement.ClearAllTiles();
+                Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector3Int gridPos = world.grid.WorldToCell(worldPos);
+                if (range.Contains(gridPos))
+                {
+                    DisplayAbilityArea(ability, gridPos, world);
+                    bool click = Input.GetMouseButtonUp(0);
+                    if (click)
+                    {
+                        Unit.CastAbility(ability, gridPos, world);
+                    }
+                }
+                yield return null;
+            }
+            yield break;
+        }
+
+        private void DisplayAbilityArea(Ability ability, Vector3Int target, World world)
+        {
+            world.movement.ClearAllTiles();
+            Vector3Int[] area = ability.GetAreaOfEffect(Unit.Position, target, world);
+            foreach (Vector3Int tile in area)
+            {
+                world.movement.SetTile(tile, red);
+            }
         }
 
         private void ClearMovables()
@@ -132,6 +217,16 @@ namespace Units
                 movement.SetTile(tilePos, null);
             }
             moveablePos.Clear();
+            //ClearAttackables();
+        }
+
+        private void ClearAttackables()
+        {
+            foreach (Vector3Int tilePos in attackablePos)
+            {
+                movement.SetTile(tilePos, null);
+            }
+            attackablePos.Clear();
         }
     }
 }

@@ -268,7 +268,6 @@ public class World : MonoBehaviour
     public HashSet<Vector3Int> GetLineOfSight(Vector3Int start, int range)
     {
         //Debug.Log("LINE OF SIGHT");
-        Vector3 worldStart = grid.CellToWorld(start);
         HashSet<Vector3Int> sight = new HashSet<Vector3Int>();
         List<List<Vector3Int>> rangeList = GetRangeList(start, range);
         sight.Add(start);
@@ -279,8 +278,6 @@ public class World : MonoBehaviour
             {
                 // Calculate angles
                 Vector3Int tile = rangeList[r][i];
-                Vector3 worldTile = grid.CellToWorld(tile);
-                Vector3 dVector = worldTile - worldStart;
                 float angle = margin * i;
                 float leftRay = angle - margin / 2;
                 float rightRay = angle + margin / 2;
@@ -303,9 +300,9 @@ public class World : MonoBehaviour
                     // Determine sight cost
                     float leftSightCost = 1000;
                     float rightSightCost = 1000;
-                    if (sight.Contains(left))
+                    if (sight.Contains(left) && terrain.GetTile(left) != null)
                         leftSightCost = ((TerrainTile)terrain.GetTile(left)).sightCost;
-                    if (sight.Contains(right))
+                    if (sight.Contains(right) && terrain.GetTile(right) != null)
                         rightSightCost = ((TerrainTile)terrain.GetTile(right)).sightCost;
                     pastSightCost += Mathf.Min(leftSightCost, rightSightCost);
                 }

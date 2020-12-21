@@ -15,6 +15,8 @@ namespace Units
         private Text infoStatusText;
 
         public Button moveButton;
+        public Button attackButton;
+        public Button abilityButton;
 
         private UnitEntityScript selectedUnit;
 
@@ -49,12 +51,7 @@ namespace Units
                 unitPanel.SetActive(true);
                 HideUnitInfo();
                 namePlate.text = selected.Unit.Name;
-                statusText.text = selected.Unit.GetStatusDescription();
-                if (selected.Unit.CanMove)
-                {
-                    moveButton.interactable = true;
-                    moveButton.onClick.AddListener(selected.MoveAction);
-                }
+                UpdateGUI();
             }
             else
             {
@@ -87,6 +84,12 @@ namespace Units
                 {
                     moveButton.interactable = true;
                     moveButton.onClick.AddListener(selectedUnit.MoveAction);
+                }
+                if (selectedUnit.Unit.CanAttack)
+                {
+                    attackButton.interactable = true;
+                    attackButton.onClick.AddListener(selectedUnit.AttackAction);
+                    abilityButton.onClick.AddListener(selectedUnit.AbilityAction);
                 }
             }
         }
