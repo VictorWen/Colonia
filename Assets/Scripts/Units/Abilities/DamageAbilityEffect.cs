@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Units.Abilities
 {
@@ -34,7 +31,14 @@ namespace Units.Abilities
 
         public override string GetDescription()
         {
-            throw new NotImplementedException();
+            if (isPhysicalDamage)
+            {
+                return "Deals " + baseDamage + " + " + Math.Round(attackMultiplier, 2) + "*Attack Physical Damage"; 
+            }
+            else
+            {
+                return "Deals " + baseDamage + " + " + Math.Round(attackMultiplier, 2) + "*Magic Magical Damage";
+            }
         }
     }
 }

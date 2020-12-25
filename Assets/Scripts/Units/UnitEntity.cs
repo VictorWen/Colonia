@@ -16,6 +16,9 @@ namespace Units
         protected int maxMana;
         //protected List<StatusEffect> statusEffects;
 
+        // Combat Abilities
+        public List<string> Abilities { get; private set; }
+
         // Combat Attributes
         public int Attack { get; private set; }
         protected int defence;
@@ -52,6 +55,11 @@ namespace Units
             maxHealth = 100;
             mana = 100;
             maxMana = 100;
+
+            Abilities = new List<string>();
+            //TEMP
+            Abilities.Add("fireball");
+            //----
 
             Attack = 1;
             defence = 1;
@@ -92,6 +100,7 @@ namespace Units
 
         public void CastAbility(Ability ability, Vector3Int target, World world)
         {
+            CanMove = false;
             CanAttack = false;
             // Assumes there is enough mana available
             // TODO: UnityEntity Ability.manaCost modifiers

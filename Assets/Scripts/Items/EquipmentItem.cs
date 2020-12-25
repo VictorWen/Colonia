@@ -6,7 +6,7 @@ public class EquipmentItem : Item
 {
     public override string Name => throw new System.NotImplementedException();
     public override int Tier => throw new System.NotImplementedException();
-    public override float Hardness => throw new System.NotImplementedException();
+    public override float Hardness => throw new System.NotImplementedException(); //Max Durability
     public override float Weight => throw new System.NotImplementedException();
     public override float Value => throw new System.NotImplementedException();
     public override string ID => throw new System.NotImplementedException();

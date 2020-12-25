@@ -169,20 +169,19 @@ namespace Units
             }
         }
 
-        public void AbilityAction()
+        public void SelectAbilityTarget(string abilityID)
         {
-            //TODO: placeholder UnitEntityScript.AbilityAction
-            string selectedAbilityID = "fireball";
-            Ability selectedAbility = GlobalAbilityDictionary.GetAbility(selectedAbilityID);
-            StartCoroutine(SelectAbilityTarget(selectedAbility));
+            gui.unitPanel.HideAbilityMenu();
+            StartCoroutine(SelectAbilityTargetCoroutine(GlobalAbilityDictionary.GetAbility(abilityID)));
         }
 
-        private IEnumerator SelectAbilityTarget(Ability ability)
+        private IEnumerator SelectAbilityTargetCoroutine(Ability ability)
         {
             HashSet<Vector3Int> range = ability.GetWithinRange(Unit, world);
             bool hasSelected = false;
             while (!hasSelected)
             {
+                yield return new WaitForSecondsRealtime(0.05f);
                 world.movement.ClearAllTiles();
                 Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector3Int gridPos = world.grid.WorldToCell(worldPos);
@@ -193,10 +192,12 @@ namespace Units
                     if (click)
                     {
                         Unit.CastAbility(ability, gridPos, world);
+                        hasSelected = true;
                     }
                 }
-                yield return null;
             }
+            world.movement.ClearAllTiles();
+            UpdateGraphics();
             yield break;
         }
 

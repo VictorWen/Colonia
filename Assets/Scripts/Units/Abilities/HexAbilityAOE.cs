@@ -22,7 +22,7 @@ namespace Units.Abilities
 
         public override string GetDescription()
         {
-            return "Affects a circle around the target.\nRadius: " + range;
+            return "Affects a circle around the target of radius " + range;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Units.Abilities;
 
 namespace Units
 {
@@ -13,6 +14,8 @@ namespace Units
         public GameObject unitInfoPanel;
         private Text infoNamePlate;
         private Text infoStatusText;
+
+        public AbilityMenuScript abilityMenu;
 
         public Button moveButton;
         public Button attackButton;
@@ -74,9 +77,21 @@ namespace Units
             unitInfoPanel.SetActive(false);
         }
 
+        public void ShowAbilityMenu(UnitEntityScript unit)
+        {
+            abilityMenu.Enable(unit);
+        }
+
+        public void HideAbilityMenu()
+        {
+            abilityMenu.gameObject.SetActive(false);
+        }
+
         public void UpdateGUI()
         {
             moveButton.onClick.RemoveAllListeners();
+            attackButton.onClick.RemoveAllListeners();
+            abilityButton.onClick.RemoveAllListeners();
             if (selectedUnit != null)
             {
                 statusText.text = selectedUnit.Unit.GetStatusDescription();
@@ -89,7 +104,7 @@ namespace Units
                 {
                     attackButton.interactable = true;
                     attackButton.onClick.AddListener(selectedUnit.AttackAction);
-                    abilityButton.onClick.AddListener(selectedUnit.AbilityAction);
+                    abilityButton.onClick.AddListener(() => abilityMenu.Enable(selectedUnit));
                 }
             }
         }

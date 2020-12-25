@@ -57,8 +57,17 @@ namespace Units.Abilities
 
         public string GetDescription()
         {
-            //TODO: placerholder ability description
-            return "PLACEHOLDER ABILITY DESCRIPTION";
+            string text = "<b>" + Name + "</b>\n\n";
+            text += "<b>Range:</b> " + range + "\n";
+            text += "<b>Area:</b> " + area.GetDescription() + "\n";
+            text += "<b>Effects:</b>" + "\n";
+            foreach (AbilityEffect e in effects)
+            {
+                text += " * " + e.GetDescription() + "\n";
+            }
+            
+
+            return text;
         }
     }
 }
