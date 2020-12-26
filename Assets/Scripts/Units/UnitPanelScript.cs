@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Units.Abilities;
+using Items;
 
 namespace Units
 {
@@ -15,11 +16,16 @@ namespace Units
         private Text infoNamePlate;
         private Text infoStatusText;
 
+        private UnitEntity hoveredUnit;
+
         public AbilityMenuScript abilityMenu;
+
+        public HeroInventoryPanel heroInventory;
 
         public Button moveButton;
         public Button attackButton;
         public Button abilityButton;
+        public Button itemsButton;
 
         private UnitEntityScript selectedUnit;
 
@@ -39,7 +45,6 @@ namespace Units
                     infoNamePlate = t;
                 if (t.name == "Status Text")
                     infoStatusText = t;
-
             }
         }
 
@@ -66,6 +71,7 @@ namespace Units
         {
             if (selectedUnit == null || selectedUnit.Unit != unit)
             {
+                hoveredUnit = unit;
                 unitInfoPanel.SetActive(true);
                 infoNamePlate.text = unit.Name;
                 infoStatusText.text = unit.GetStatusDescription();
@@ -92,20 +98,30 @@ namespace Units
             moveButton.onClick.RemoveAllListeners();
             attackButton.onClick.RemoveAllListeners();
             abilityButton.onClick.RemoveAllListeners();
+            itemsButton.onClick.RemoveAllListeners();
             if (selectedUnit != null)
             {
                 statusText.text = selectedUnit.Unit.GetStatusDescription();
+                moveButton.interactable = selectedUnit.Unit.CanMove;
+                attackButton.interactable = selectedUnit.Unit.CanAttack;
+                abilityButton.interactable = selectedUnit.Unit.CanAttack;
+                itemsButton.interactable = selectedUnit.Unit.CanAttack;
                 if (selectedUnit.Unit.CanMove)
                 {
-                    moveButton.interactable = true;
                     moveButton.onClick.AddListener(selectedUnit.MoveAction);
                 }
                 if (selectedUnit.Unit.CanAttack)
                 {
-                    attackButton.interactable = true;
                     attackButton.onClick.AddListener(selectedUnit.AttackAction);
                     abilityButton.onClick.AddListener(() => abilityMenu.Enable(selectedUnit));
                 }
+                itemsButton.onClick.AddListener(() => selectedUnit.ShowInventory());
+            }
+            
+            if (unitInfoPanel.activeInHierarchy)
+            {
+                infoNamePlate.text = hoveredUnit.Name;
+                infoStatusText.text = hoveredUnit.GetStatusDescription();
             }
         }
     }

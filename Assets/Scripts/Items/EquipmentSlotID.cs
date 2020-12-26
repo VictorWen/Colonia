@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EquipmentSlotID
+namespace Items
 {
-    HEAD, CHEST, LEGS, FEET, ONE_HANDED, TWO_HANDED, RING
+    public enum EquipmentSlotID
+    {
+        HEAD, CHEST, LEGS, FEET, ONE_HANDED, TWO_HANDED, RING
+    }
 }

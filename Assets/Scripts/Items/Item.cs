@@ -2,36 +2,47 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
+using Items.ItemActions;
 
-public abstract class Item
+namespace Items
 {
-    public string Type { get; private set; }
-    public int Count { get; set; }
-    public abstract string Name { get; }
-    public abstract int Tier { get; }
-    public abstract float Hardness { get; }
-    public abstract float Weight { get; }
-    public abstract float Value { get; }
-    public abstract string ID { get; }
-
-    public Item(string type, int count = 1)
+    public abstract class Item
     {
-        Type = type;
-        Count = count;
-    }
+        public string Type { get; private set; }
+        public int Count { get; set; }
+        public abstract string Name { get; }
+        public abstract int Tier { get; }
+        public abstract float Hardness { get; }
+        public abstract float Weight { get; }
+        public abstract float Value { get; }
+        public abstract string ID { get; }
 
-    public override string ToString()
-    {
-        return GetAttributes() + "\n<b>" + Type + "</b>";
-    }
+        //TODO: added Item sprite color
 
-    protected virtual string GetAttributes()
-    {
-        string text = Name + " (" + Count + ")\n";
-        text += "Tier: " + Tier + "\n";
-        text += "Hardness: " + Hardness + "\n";
-        text += "Weight: " + Weight + "\n";
-        text += "Value: " + Value + "\n";
-        return text;
+        public Item(string type, int count = 1)
+        {
+            Type = type;
+            Count = count;
+        }
+
+        public override string ToString()
+        {
+            return GetAttributes() + "\n<b>" + Type + "</b>";
+        }
+
+        public virtual List<ItemAction> GetActions()
+        {
+            return new List<ItemAction>();
+        }
+
+        protected virtual string GetAttributes()
+        {
+            string text = Name + " (" + Count + ")\n";
+            text += "Tier: " + Tier + "\n";
+            text += "Hardness: " + Hardness + "\n";
+            text += "Weight: " + Weight + "\n";
+            text += "Value: " + Value + "\n";
+            return text;
+        }
     }
 }

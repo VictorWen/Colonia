@@ -59,11 +59,10 @@ namespace Units.Abilities
         {
             string text = "<b>" + Name + "</b>\n\n";
             text += "<b>Range:</b> " + range + "\n";
-            text += "<b>Area:</b> " + area.GetDescription() + "\n";
-            text += "<b>Effects:</b>" + "\n";
+            text += area.GetDescription() + "\n";
             foreach (AbilityEffect e in effects)
             {
-                text += " * " + e.GetDescription() + "\n";
+                text += e.GetDescription() + "\n";
             }
             
 

@@ -3,93 +3,97 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Inventory
+
+namespace Items
 {
-    public float MaxWeight { get; private set; }
-
-    public List<Item> Items { get; private set; }
-
-    public Inventory(float maxWeight)
+    public class Inventory
     {
-        Items = new List<Item>();
-        MaxWeight = maxWeight;
-    }
+        public float MaxWeight { get; private set; }
 
-    // Returns true if successful, false otherwise
-    public bool AddItem(Item i)
-    {
-        if (MaxWeight == -1 || GetWeight() + i.Weight <= MaxWeight)
+        public List<Item> Items { get; private set; }
+
+        public Inventory(float maxWeight)
         {
-            if (i.Type.Equals("Resource") && GetResourceCount(((ResourceItem)i).ID) > 0)
+            Items = new List<Item>();
+            MaxWeight = maxWeight;
+        }
+
+        // Returns true if successful, false otherwise
+        public bool AddItem(Item i)
+        {
+            if (MaxWeight == -1 || GetWeight() + i.Weight <= MaxWeight)
             {
-                foreach (Item item in Items)
+                if (i.Type.Equals("Resource") && GetResourceCount(((ResourceItem)i).ID) > 0)
                 {
-                    if (item.Type.Equals("Resource") && ((ResourceItem)item).ID.Equals(i.ID))
+                    foreach (Item item in Items)
                     {
-                        item.Count += i.Count;
-                        if (item.Count <= 0)
+                        if (item.Type.Equals("Resource") && ((ResourceItem)item).ID.Equals(i.ID))
                         {
-                            Items.Remove(item);
+                            item.Count += i.Count;
+                            if (item.Count <= 0)
+                            {
+                                Items.Remove(item);
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
+                else
+                {
+                    Items.Add(i);
+                }
+                return true;
             }
-            else
+            return false;
+        }
+
+        // Returns true if successful, false otherwise
+        public bool MoveItem(int index, Inventory receiver)
+        {
+            if (receiver.AddItem(Items[index]))
             {
-                Items.Add(i);
+                Items.RemoveAt(index);
+                return true;
             }
-            return true;
+            return false;
         }
-        return false;
-    }
-    
-    // Returns true if successful, false otherwise
-    public bool MoveItem(int index, Inventory receiver)
-    {
-        if (receiver.AddItem(Items[index]))
-        {
-            Items.RemoveAt(index);
-            return true;
-        }
-        return false;
-    }
 
-    public float GetWeight()
-    {
-        float sum = 0;
-        foreach (Item i in Items)
+        public float GetWeight()
         {
-            sum += i.Weight;
-        }
-        return sum;
-    }
-
-    public int GetResourceCount(string id)
-    {
-        foreach (Item i in Items)
-        {
-            if (i.Type.Equals("Resource") && ((ResourceItem)i).ID.Equals(id))
+            float sum = 0;
+            foreach (Item i in Items)
             {
-                return i.Count;
+                sum += i.Weight;
+            }
+            return sum;
+        }
+
+        public int GetResourceCount(string id)
+        {
+            foreach (Item i in Items)
+            {
+                if (i.Type.Equals("Resource") && ((ResourceItem)i).ID.Equals(id))
+                {
+                    return i.Count;
+                }
+            }
+            return 0;
+        }
+
+        public void Sort(ItemSortID sort)
+        {
+            switch (sort)
+            {
+                case ItemSortID.NAME:
+                    Items.Sort((Item x, Item y) => x.Name.CompareTo(y.Name));
+                    break;
             }
         }
-        return 0;
-    }
 
-    public void Sort(ItemSortID sort)
-    {
-        switch (sort)
+        public enum ItemSortID
         {
-            case ItemSortID.NAME:
-                Items.Sort((Item x, Item y) => x.Name.CompareTo(y.Name));
-                break;
+            NAME
         }
-    }
 
-    public enum ItemSortID
-    {
-        NAME
     }
-
 }

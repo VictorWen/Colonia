@@ -1,13 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Units.Abilities;
+using Items.UtilityItems.Potions;
+using Items;
 
 namespace Units
 {
     public class UnitEntity
     {
+        // General Information
         public string Name { get; private set; }
         protected int level;
+
+        // Items
+        public Inventory Inventory { get; private set; }
 
         // Combat Status
         protected int health;
@@ -42,24 +48,25 @@ namespace Units
         public int MovementSpeed { get; private set; }
         public bool PlayerControlled { get; private set; }
 
-        // Abilities
-        //protected List<Ability> abilities
-
         public UnitEntity(string name, bool playerControlled, Vector3Int position, UnitEntityManager manager, UnitEntityScript script) 
         {
             this.Name = name;
             this.PlayerControlled = playerControlled;
             level = 0;
-            
-            health = 100;
+
+            // TODO: placeholder UnitEntity.Inventory weight
+            Inventory = new Inventory(100);
+            // TEST
+            Inventory.AddItem(new Potion("potion", "Health Potion", 1, 3, 1, 10, new PotionEffect[] { new HealPotionEffect(10) }));
+
+            health = 30;
             maxHealth = 100;
             mana = 100;
             maxMana = 100;
 
             Abilities = new List<string>();
-            //TEMP
+            //TODO: placeholder UnitEntity.Abilities
             Abilities.Add("fireball");
-            //----
 
             Attack = 1;
             defence = 1;
@@ -88,6 +95,15 @@ namespace Units
             UpdateVision(game.World);
         }
 
+        public void MoveTo(Vector3Int destination, World world)
+        {
+            CanMove = false;
+            manager.MoveUnit(this, destination);
+            Position = destination;
+            UpdateVision(world);
+            script.UpdateGraphics();
+        }
+
         public void AttackUnitEntity(UnitEntity target)
         {
             CanMove = false;
@@ -96,6 +112,7 @@ namespace Units
             int damage = Mathf.Max(0, Attack - reduction);
             Debug.Log("COMBAT: ATTACKED: " + target.Name + " for " + damage + " Damage");
             target.health = Mathf.Max(0, target.health - damage);
+            script.UpdateGraphics();
         }
 
         public void CastAbility(Ability ability, Vector3Int target, World world)
@@ -107,10 +124,26 @@ namespace Units
             mana -= ability.ManaCost;
             Debug.Log("COMBAT: " + Name + " casted " + ability.Name + " at " + target);
             ability.Cast(this, target, world);
+            script.UpdateGraphics();
+        }
+
+        public void OnUtilityItemUse()
+        {
+            CanAttack = false;
+            script.UpdateGraphics();
+        }
+
+        public int Heal(float amount)
+        {
+            int heal = (int) System.Math.Min(amount, maxHealth - health);
+            health += heal;
+            return heal;
         }
 
         public int DealDamage(float baseDamage, UnitEntity attacker, bool isPhysicalDamage = true)
         {
+            if (baseDamage < 0)
+                return 0;
             if (isPhysicalDamage)
             {
                 float reduction = Mathf.Max(0, defence - attacker.piercing);
@@ -141,14 +174,6 @@ namespace Units
             return text;
         }
 
-        public void MoveTo(Vector3Int destination, World world)
-        {
-            CanMove = false;
-            manager.MoveUnit(this, destination);
-            Position = destination;
-            UpdateVision(world);
-        }
-
         public void HideScript()
         {
             script.gameObject.SetActive(false);
@@ -162,6 +187,7 @@ namespace Units
 
         public void UpdateVision(World world)
         {
+            // Place FoW on previously viewable tiles
             if (PlayerControlled)
             {
                 foreach (Vector3Int visible in VisibleTiles)
@@ -171,6 +197,7 @@ namespace Units
             }
             VisibleTiles = new HashSet<Vector3Int>();
 
+            // Reveal Terra Incognita within movement
             if (PlayerControlled)
             {
                 PathfinderBFS reconPath = new PathfinderBFS(Position, MovementSpeed, world);
@@ -180,6 +207,7 @@ namespace Units
                 }
             }
 
+            // Determine sight bonus
             float bonus = 0;
             UnityEngine.Tilemaps.TileBase t = world.terrain.GetTile(Position);
             if (t != null)
@@ -187,6 +215,7 @@ namespace Units
                 bonus = ((TerrainTile)t).sightBonus;
             }
 
+            // Remove FoW from tiles within line of sight
             VisibleTiles = world.GetLineOfSight(Position, Sight + (int) bonus);
 
             if (PlayerControlled)
@@ -198,6 +227,7 @@ namespace Units
                 }
             }
 
+            // Check if the unit is visible or not
             if (world.vision.GetTile(Position) == null)
                 ShowScript();
             else

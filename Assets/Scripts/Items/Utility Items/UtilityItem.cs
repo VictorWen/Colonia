@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Items.ItemActions;
+using System;
+using System.Collections.Generic;
 using Units;
 
 namespace Items.UtilityItems
@@ -37,16 +39,30 @@ namespace Items.UtilityItems
         {
             Uses--;
             OnUse(user);
-            if (Uses == 0)
+            if (Uses <= 0)
             {
                 OnDestroy(user);
-                Count = 0;
+                Count--;
+                if (Count > 0)
+                    Uses = (int) hardness;
             }
+        }
+
+        public override List<ItemAction> GetActions()
+        {
+            List<ItemAction> actions = base.GetActions();
+            actions.Add(new UseItemAction(this));
+            return actions;
         }
 
         protected abstract void OnUse(UnitEntityScript user);
 
         protected virtual void OnDestroy(UnitEntityScript user) { }
+
+        public virtual bool IsUsable()
+        {
+            return Uses > 0 && Count > 0;
+        }
 
         public virtual void OnNextTurn() { }
 

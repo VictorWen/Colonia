@@ -3,36 +3,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ResourceModifiers
+namespace Items
 {
-    private readonly Dictionary<ModifierAttributeID, Dictionary<string, float>> mods;
-
-    public ResourceModifiers()
+    public class ResourceModifiers
     {
-        mods = new Dictionary<ModifierAttributeID, Dictionary<string, float>>();
-        foreach (ModifierAttributeID attr in Enum.GetValues(typeof(ModifierAttributeID)))
-        {
-            mods.Add(attr, new Dictionary<string, float>());
-        }
-    }
+        private readonly Dictionary<ModifierAttributeID, Dictionary<string, float>> mods;
 
-    public void AddResourceMod(ModifierAttributeID attr, string id, float value)
-    {
-        if (mods[attr].ContainsKey(id))
+        public ResourceModifiers()
         {
-            mods[attr][id] += value;
+            mods = new Dictionary<ModifierAttributeID, Dictionary<string, float>>();
+            foreach (ModifierAttributeID attr in Enum.GetValues(typeof(ModifierAttributeID)))
+            {
+                mods.Add(attr, new Dictionary<string, float>());
+            }
         }
-        else
-        {
-            mods[attr].Add(id, 1 + value);
-        }
-    }
 
-    public float GetResourceMod(ModifierAttributeID attr, string id)
-    {
-        if (mods[attr].ContainsKey(id))
-            return mods[attr][id];
-        else
-            return 1;
+        public void AddResourceMod(ModifierAttributeID attr, string id, float value)
+        {
+            if (mods[attr].ContainsKey(id))
+            {
+                mods[attr][id] += value;
+            }
+            else
+            {
+                mods[attr].Add(id, 1 + value);
+            }
+        }
+
+        public float GetResourceMod(ModifierAttributeID attr, string id)
+        {
+            if (mods[attr].ContainsKey(id))
+                return mods[attr][id];
+            else
+                return 1;
+        }
     }
 }

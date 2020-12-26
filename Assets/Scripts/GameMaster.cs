@@ -4,6 +4,7 @@ using UnityEngine;
 using Cities;
 using Cities.Construction;
 using Units;
+using Items;
 
 //Handles background game state (Server)
 public class GameMaster

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Cities;
 using Cities.Construction;
 using Units;
+using Items;
 
 // Handles foreground game state (client). Also used for testing purposes
 // Global client side, instantized server side

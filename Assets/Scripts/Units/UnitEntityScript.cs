@@ -9,6 +9,7 @@ namespace Units
 {
     public class UnitEntityScript : MonoBehaviour
     {
+        // TODO: Organize UnitEntityScript's field variables
         public Camera cam;
         public Grid grid;
         public World world;
@@ -105,7 +106,6 @@ namespace Units
                     ClearAttackables();
                     Unit.AttackUnitEntity(world.UnitManager.Positions[gridPos]);
                 }
-                UpdateGraphics();
             }
         }
 
@@ -114,8 +114,7 @@ namespace Units
             transform.position = grid.CellToWorld(Unit.Position);
             if (selected)
             {
-                gui.unitPanel.moveButton.interactable = Unit.CanMove;
-                gui.unitPanel.attackButton.interactable = Unit.CanAttack;
+                gui.unitPanel.UpdateGUI();
             }
         }
 
@@ -209,6 +208,11 @@ namespace Units
             {
                 world.movement.SetTile(tile, red);
             }
+        }
+
+        public void ShowInventory()
+        {
+            gui.unitPanel.heroInventory.Enable(this);
         }
 
         private void ClearMovables()
