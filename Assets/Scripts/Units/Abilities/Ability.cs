@@ -13,8 +13,10 @@ namespace Units.Abilities
         private readonly bool ignoreLoS; // Whether to ignore line of sight
         private readonly AbilityEffect[] effects;
         private readonly AbilityAOE area;
+        private readonly bool targetFriends;
+        private readonly bool targetEnemies;
 
-        public Ability(string id, string name, int manaCost, int range, bool ignoreLineOfSight, AbilityEffect[] effects, AbilityAOE areaOfEffect)
+        public Ability(string id, string name, int manaCost, int range, bool ignoreLineOfSight, AbilityEffect[] effects, AbilityAOE areaOfEffect, bool targetFriends = false, bool targetEnemies = true)
         {
             this.ID = id;
             this.Name = name;
@@ -23,6 +25,8 @@ namespace Units.Abilities
             this.ignoreLoS = ignoreLineOfSight;
             this.effects = effects;
             this.area = areaOfEffect;
+            this.targetFriends = targetFriends;
+            this.targetEnemies = targetEnemies;
         }
 
         public void Cast(UnitEntity caster, Vector3Int target, World world)
@@ -31,8 +35,12 @@ namespace Units.Abilities
             List<UnitEntity> targets = new List<UnitEntity>();
             foreach (Vector3Int tile in aoe)
             {
-                if (world.UnitManager.Positions.ContainsKey(tile) && world.UnitManager.Positions[tile].PlayerControlled != caster.PlayerControlled)
-                    targets.Add(world.UnitManager.Positions[tile]);
+                if (world.UnitManager.Positions.ContainsKey(tile))
+                {
+                    bool isEnemy = world.UnitManager.Positions[tile].PlayerControlled != caster.PlayerControlled;
+                    if (isEnemy && targetEnemies || !isEnemy && targetFriends)
+                        targets.Add(world.UnitManager.Positions[tile]);
+                }
             }
             foreach (AbilityEffect effect in effects)
             {

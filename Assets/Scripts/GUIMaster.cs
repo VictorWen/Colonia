@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Cities;
 using Cities.Construction;
 using Units;
+using Units.Intelligence;
 using Items;
 
 // Handles foreground game state (client). Also used for testing purposes
@@ -66,7 +67,7 @@ public class GUIMaster : MonoBehaviour
         testUnit.Unit.UpdateVision(Game.World);
 
         testEnemyUnit.gui = this;
-        testEnemyUnit.Unit = Game.AddNewTestNPCUnit("EVIL LORD", Game.World.grid.WorldToCell(testEnemyUnit.transform.position), new DummyAI(), testEnemyUnit);
+        testEnemyUnit.Unit = Game.AddNewTestNPCUnit("EVIL LORD", Game.World.grid.WorldToCell(testEnemyUnit.transform.position), new RecklessAI(), testEnemyUnit);
         //testEnemyUnit.Unit.UpdateVision(Game.World);
         //UpdateAllUnitVisibilities();
         //cityGUI.OpenCityGUI(capital);
@@ -89,7 +90,7 @@ public class GUIMaster : MonoBehaviour
         LinkedList<Vector3Int> movement = enemy.ai.GetMovement(enemy, target, Game.World);
         foreach (Vector3Int motion in movement)
         {
-            //Debug.Log("Enemey Motion: " + motion);
+            Debug.Log("Enemey Motion: " + motion);
             testEnemyUnit.transform.position = Game.World.grid.CellToWorld(motion);
             enemy.MoveTo(motion, Game.World);
         }

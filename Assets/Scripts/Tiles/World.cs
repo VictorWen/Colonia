@@ -13,8 +13,9 @@ public class World : MonoBehaviour
     public Tilemap terrain;
     public Tilemap cities;
     public Tilemap movement;
-   
+
     [Header("Vision")]
+    public bool enableFogOfWar;
     public Tilemap vision;
     public Tile cloud;
     public Tile fog;
@@ -58,7 +59,7 @@ public class World : MonoBehaviour
     {
         GenerateWorld();
         // Generate Resources
-        ResourceMap = new ResourceMap(this, biomeResources, iconPrefab);
+        ResourceMap = new ResourceMap(this, biomeResources, iconPrefab, enableFogOfWar);
         UnitManager = new UnitEntityManager();
     }
 
@@ -76,6 +77,7 @@ public class World : MonoBehaviour
     {
         Visible = new Dictionary<Vector3Int, int>();
         terrain.ClearAllTiles();
+        vision.ClearAllTiles();
         Array.Sort(tiles, (x1, x2) => x1.height.CompareTo(x2.height));
         foreach (BiomeTileSet b in biomes)
         {
@@ -197,7 +199,8 @@ public class World : MonoBehaviour
                         break;
                     }
                 }
-                vision.SetTile(pos, cloud);
+                if (enableFogOfWar)
+                    vision.SetTile(pos, cloud);
             }
             //terrain.SetTile(grid.WorldToCell(center), null);
         }
@@ -216,9 +219,12 @@ public class World : MonoBehaviour
             if (Visible[position] == 0)
             {
                 Visible.Remove(position);
-                vision.SetTile(position, fog);
-                if (manager.Positions.ContainsKey(position) && !manager.Positions[position].PlayerControlled)
-                    manager.Positions[position].HideScript();
+                if (enableFogOfWar)
+                {
+                    vision.SetTile(position, fog);
+                    if (manager.Positions.ContainsKey(position) && !manager.Positions[position].PlayerControlled)
+                        manager.Positions[position].HideScript();
+                }
             }
         }
     }
@@ -369,6 +375,13 @@ public class World : MonoBehaviour
         return tileRange;
     }
 
+    /// <summary>
+    /// Calculates whether a tile is reachable with a given movement speed
+    /// </summary>
+    /// <param name="moves">The remaing movement speed available</param>
+    /// <param name="destination">The destination tile</param>
+    /// <param name="checkUnits">Whether to check if the destination tile has a unit on it or not</param>
+    /// <returns>Return the movement cost to get to the destination tile if it is reachable, otherwise returns -1</returns>
     public float IsReachable(float moves, Vector3Int destination, bool checkUnits = false)
     {
         TerrainTile t = (TerrainTile)terrain.GetTile(destination);
@@ -377,6 +390,15 @@ public class World : MonoBehaviour
             return t.movementCost;
         }
         return -1;
+    }
+
+    public float GetMovementCost(Vector3Int position)
+    {
+        if (terrain.GetTile(position) != null)
+        {
+            return ((TerrainTile)terrain.GetTile(position)).movementCost;
+        }
+        return 0f;
     }
 
     public float IsViewable(float moves, Vector3Int destination)

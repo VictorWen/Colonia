@@ -8,7 +8,7 @@ public class ResourceMap
     public Dictionary<Vector3Int, ResourceIconScript> Icons { get; private set; }
     public Dictionary<Vector3Int, string> ResourceLocations { get; private set; }
 
-    public ResourceMap(World world, BiomeResources[] biomeResources, ResourceIconScript iconPrefab)
+    public ResourceMap(World world, BiomeResources[] biomeResources, ResourceIconScript iconPrefab, bool enableVision = true)
     {
         if (Icons != null)
         {
@@ -71,7 +71,7 @@ public class ResourceMap
                             icon.SetResource(resource.resourceID);
                             Icons.Add(validTiles[index], icon);
                             icon.transform.SetParent(folder.transform, true);
-                            icon.gameObject.SetActive(false);
+                            icon.gameObject.SetActive(!enableVision);
 
                             count++;
                         }

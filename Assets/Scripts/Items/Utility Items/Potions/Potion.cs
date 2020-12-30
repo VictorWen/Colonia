@@ -1,4 +1,5 @@
 ﻿using Units;
+using Units.Abilities;
 
 namespace Items.UtilityItems.Potions
 {
@@ -13,20 +14,17 @@ namespace Items.UtilityItems.Potions
             }
         }
 
-        private readonly PotionEffect[] effects;
+        private readonly Ability potionAbility;
 
-        public Potion(string id, string name, int tier, int uses, float weight, float value, PotionEffect[] effects) : base(id, name, tier, uses, weight, "Potion")
+        public Potion(string id, string name, int tier, int uses, float weight, float value, AbilityEffect[] effects) : base(id, name, tier, uses, weight, "Potion")
         {
             this.initialValue = value;
-            this.effects = effects;
+            potionAbility = new Ability(id, name, 0, 1, true, effects, new HexAbilityAOE(0), true);
         }
 
         protected override void OnUse(UnitEntityScript user)
         {
-            foreach (PotionEffect effect in effects)
-            {
-                effect.Apply(user.Unit, user.Unit);
-            }
+            user.SelectAbilityTarget(potionAbility);
         }
     }
 }

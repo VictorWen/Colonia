@@ -126,7 +126,7 @@ namespace Units
             ClearMovables();
             ClearAttackables();
 
-            PathfinderBFS pathfinder = new PathfinderBFS(Unit.Position, Unit.MovementSpeed, world, true);
+            BFSPathfinder pathfinder = new BFSPathfinder(Unit.Position, Unit.MovementSpeed, world, true);
             foreach (Vector3Int gridPos in pathfinder.Reachables)
             {
                 if (!gridPos.Equals(Unit.Position))
@@ -168,10 +168,10 @@ namespace Units
             }
         }
 
-        public void SelectAbilityTarget(string abilityID)
+        public void SelectAbilityTarget(Ability ability)
         {
             gui.unitPanel.HideAbilityMenu();
-            StartCoroutine(SelectAbilityTargetCoroutine(GlobalAbilityDictionary.GetAbility(abilityID)));
+            StartCoroutine(SelectAbilityTargetCoroutine(ability));
         }
 
         private IEnumerator SelectAbilityTargetCoroutine(Ability ability)
@@ -186,9 +186,12 @@ namespace Units
                 Vector3Int gridPos = world.grid.WorldToCell(worldPos);
                 if (range.Contains(gridPos))
                 {
-                    DisplayAbilityArea(ability, gridPos, world);
-                    bool click = Input.GetMouseButtonUp(0);
-                    if (click)
+                    Vector3Int[] area = ability.GetAreaOfEffect(Unit.Position, gridPos, world);
+                    foreach (Vector3Int tile in area)
+                    {
+                        world.movement.SetTile(tile, red);
+                    }
+                    if (Input.GetMouseButtonUp(0))
                     {
                         Unit.CastAbility(ability, gridPos, world);
                         hasSelected = true;
@@ -198,16 +201,6 @@ namespace Units
             world.movement.ClearAllTiles();
             UpdateGraphics();
             yield break;
-        }
-
-        private void DisplayAbilityArea(Ability ability, Vector3Int target, World world)
-        {
-            world.movement.ClearAllTiles();
-            Vector3Int[] area = ability.GetAreaOfEffect(Unit.Position, target, world);
-            foreach (Vector3Int tile in area)
-            {
-                world.movement.SetTile(tile, red);
-            }
         }
 
         public void ShowInventory()

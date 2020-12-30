@@ -4,6 +4,7 @@ using UnityEngine;
 using Cities;
 using Cities.Construction;
 using Units;
+using Units.Intelligence;
 using Items;
 
 //Handles background game state (Server)

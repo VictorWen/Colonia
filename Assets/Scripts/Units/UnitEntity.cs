@@ -57,7 +57,7 @@ namespace Units
             // TODO: placeholder UnitEntity.Inventory weight
             Inventory = new Inventory(100);
             // TEST
-            Inventory.AddItem(new Potion("potion", "Health Potion", 1, 3, 1, 10, new PotionEffect[] { new HealPotionEffect(10) }));
+            Inventory.AddItem(new Potion("potion", "Health Potion", 1, 3, 1, 10, new AbilityEffect[] { new HealAbilityEffect(10) }));
 
             health = 30;
             maxHealth = 100;
@@ -200,7 +200,7 @@ namespace Units
             // Reveal Terra Incognita within movement
             if (PlayerControlled)
             {
-                PathfinderBFS reconPath = new PathfinderBFS(Position, MovementSpeed, world);
+                BFSPathfinder reconPath = new BFSPathfinder(Position, MovementSpeed, world);
                 foreach (Vector3Int withinRecon in reconPath.Reachables)
                 {
                     world.RevealTerraIncognita(withinRecon);
