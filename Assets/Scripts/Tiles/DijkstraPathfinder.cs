@@ -14,13 +14,6 @@ public class DijkstraPathfinder
         public Vector3Int position;
         public float distance;
 
-        public Location(Vector3Int position, float distance = 100000f)
-        {
-            parent = null;
-            this.position = position;
-            this.distance = distance;
-        }
-
         public Location(Vector3Int position, Location parent, float distance)
         {
             this.position = position;
@@ -47,7 +40,7 @@ public class DijkstraPathfinder
         // Runs Dijkstras, finding the shortest path to the target position and storing it.
         Dictionary<Vector3Int, Location> locations = new Dictionary<Vector3Int, Location>();
         SortedSet<Location> queue = new SortedSet<Location>(Comparer<Location>.Create(Location.Compare));
-        Location startLoc = new Location(start, 0);
+        Location startLoc = new Location(start, null, 0);
         locations.Add(start, startLoc);
         queue.Add(startLoc);
         
@@ -56,7 +49,6 @@ public class DijkstraPathfinder
         while (queue.Count > 0)
         {
             Location source = queue.Min;
-            //world.movement.SetTile(source.position, world.cloud);
             if (source == null)
             {
                 Debug.LogError("Invalid");
@@ -86,10 +78,11 @@ public class DijkstraPathfinder
             }
             if (!queue.Remove(queue.Min))
             {
+                // Debug
                 int x = Location.Compare(source, queue.Min);
                 Debug.LogError(x);
             }
-            if (count > 500)
+            if (count > 1000) //Check to prevent infinite loop
                 break;
             count++;
         }

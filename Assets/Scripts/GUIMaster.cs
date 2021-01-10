@@ -67,7 +67,7 @@ public class GUIMaster : MonoBehaviour
         testUnit.Unit.UpdateVision(Game.World);
 
         testEnemyUnit.gui = this;
-        testEnemyUnit.Unit = Game.AddNewTestNPCUnit("EVIL LORD", Game.World.grid.WorldToCell(testEnemyUnit.transform.position), new RecklessAI(), testEnemyUnit);
+        testEnemyUnit.Unit = Game.AddNewTestNPCUnit("EVIL LORD", Game.World.grid.WorldToCell(testEnemyUnit.transform.position), new ChargingMovementAI(), testEnemyUnit);
         //testEnemyUnit.Unit.UpdateVision(Game.World);
         //UpdateAllUnitVisibilities();
         //cityGUI.OpenCityGUI(capital);
@@ -85,15 +85,15 @@ public class GUIMaster : MonoBehaviour
 
         //TODO: move enemy turn to new location
         NPCUnitEntity enemy = (NPCUnitEntity) testEnemyUnit.Unit;
-        Vector3Int target = enemy.ai.GetTarget(enemy, Game.World);
+/*        Vector3Int target = enemy.ai.GetTarget(enemy, Game.World);
         Debug.Log("Enemey Target: " + target);
-        LinkedList<Vector3Int> movement = enemy.ai.GetMovement(enemy, target, Game.World);
+        LinkedList<Vector3Int> movement = enemy.ai.GetMovementAction(enemy, target, Game.World);
         foreach (Vector3Int motion in movement)
         {
             Debug.Log("Enemey Motion: " + motion);
             testEnemyUnit.transform.position = Game.World.grid.CellToWorld(motion);
             enemy.MoveTo(motion, Game.World);
-        }
+        }*/
         //UpdateAllUnitVisibilities();
     }
 

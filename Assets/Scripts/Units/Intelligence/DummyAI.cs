@@ -7,7 +7,7 @@ namespace Units.Intelligence
     ///This a very stupid AI.
     ///Only use for testing or as a template.
     ///</summary>
-    class DummyAI : NPCIntelligence
+    class DummyAI : NPCMovementAI
     {
         public Vector3Int GetTarget(UnitEntity self, World world)
         {
@@ -29,7 +29,7 @@ namespace Units.Intelligence
             return self.Position;
         }
 
-        public LinkedList<Vector3Int> GetMovement(UnitEntity self, Vector3Int target, World world)
+        public LinkedList<Vector3Int> GetMovementAction(UnitEntity self, Vector3Int target, World world)
         {
             // *Find destination candidates*
             List<Vector3Int> candidates = new List<Vector3Int>();
@@ -53,6 +53,11 @@ namespace Units.Intelligence
                 i++;
             }
             return pathfinder.GetPathTo(self.Position);
+        }
+
+        public void AttackAction(UnitEntity self, Vector3Int target, World world)
+        {
+            // pass;
         }
     }
 }
