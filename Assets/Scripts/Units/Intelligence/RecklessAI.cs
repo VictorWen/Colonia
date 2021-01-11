@@ -1,40 +1,15 @@
 ﻿
-using UnityEngine;
-
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Units.Intelligence
 {
-    public class RecklessTargettingAI : NPCTargetingAI
+    public class RecklessAI : NPCMainAI
     {
-        public UnitEntity GetAttackTarget(UnitEntity self, World world)
+        public AIState GetState(NPCUnitEntity self, World world)
         {
-            // Find all visible enemey UnitEntities
-            List<UnitEntity> targets = new List<UnitEntity>();
-            foreach (Vector3Int visible in self.VisibleTiles)
-            {
-                if (world.UnitManager.Positions.ContainsKey(visible) && world.UnitManager.Positions[visible].PlayerControlled)
-                {
-                    targets.Add(world.UnitManager.Positions[visible]);
-                }
-            }
-
-            // Target candidate analysis, determine best UnitEntity to target
-            // Find the closest UnitEntity
-            UnitEntity minDistance = null;
-            foreach (UnitEntity target in targets)
-            {
-                if (minDistance == null || Vector3Int.Distance(self.Position, target.Position) < Vector3Int.Distance(self.Position, minDistance.Position))
-                {
-                    minDistance = target;
-                }
-            }
-            return minDistance;
-        }
-
-        public Vector3Int GetMovementTarget(UnitEntity self, UnitEntity attackTarget, World world)
-        {
-            if (attackTarget != null) // There is an enemy to attack
+            throw new System.NotImplementedException();
+            /*if (attackTarget != null) // There is an enemy to attack
             {
                 // Find all tiles that are within the attack range to attack the target UnitEntity
                 int attackRange = 1; //TODO: PLACEHOLDER attack range for UnitEntity
@@ -45,8 +20,8 @@ namespace Units.Intelligence
                 Vector3Int minDistance = attackTarget.Position;
                 foreach (Vector3Int target in targetCandidates)
                 {
-                    if (minDistance.Equals(attackTarget.Position) 
-                        || Vector3Int.Distance(self.Position, target) < Vector3Int.Distance(self.Position, minDistance) 
+                    if (minDistance.Equals(attackTarget.Position)
+                        || Vector3Int.Distance(self.Position, target) < Vector3Int.Distance(self.Position, minDistance)
                         && world.IsReachable(self.MovementSpeed, target, true) >= 0)
                     {
                         minDistance = target;
@@ -75,7 +50,7 @@ namespace Units.Intelligence
                 }
 
                 return self.Position; // If no reachable tiles, stay put
-            }
+            }*/
         }
     }
 }

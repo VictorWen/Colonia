@@ -67,7 +67,7 @@ public class GUIMaster : MonoBehaviour
         testUnit.Unit.UpdateVision(Game.World);
 
         testEnemyUnit.gui = this;
-        testEnemyUnit.Unit = Game.AddNewTestNPCUnit("EVIL LORD", Game.World.grid.WorldToCell(testEnemyUnit.transform.position), new RecklessTargettingAI(), new ChargingMovementAI(), new BasicAttackAI(), testEnemyUnit);
+        testEnemyUnit.Unit = Game.AddNewTestNPCUnit("EVIL LORD", Game.World.grid.WorldToCell(testEnemyUnit.transform.position), new RecklessAI(), new BasicAttackAbilityAI(), new DijkstrasMovementAI(), testEnemyUnit);
         //testEnemyUnit.Unit.UpdateVision(Game.World);
         //UpdateAllUnitVisibilities();
         //cityGUI.OpenCityGUI(capital);

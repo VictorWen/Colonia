@@ -8,22 +8,22 @@ namespace Units
     public class NPCUnitEntity : UnitEntity
     {
         //TODO: change back to private
-        public NPCTargetingAI TargetingAI { get; private set; }
+        public NPCMainAI MainAI { get; private set; }
+        public NPCAbilityAI AbilityAI { get; private set; }
         public NPCMovementAI MovementAI {get; private set;}
-        public NPCAttackAI AttackAI { get; private set; }
 
-        public NPCUnitEntity(string name, Vector3Int position, NPCTargetingAI targetAI, NPCMovementAI moveAI, NPCAttackAI attackAI, UnitEntityManager manager, UnitEntityScript script) : base(name, false, position, manager, script)
+        public NPCUnitEntity(string name, Vector3Int position, NPCMainAI mainAI, NPCAbilityAI abilityAI, NPCMovementAI moveAI, UnitEntityManager manager, UnitEntityScript script) : base(name, false, position, manager, script)
         {
-            TargetingAI = targetAI;
+            MainAI = mainAI;
+            AbilityAI = abilityAI;
             MovementAI = moveAI;
-            AttackAI = attackAI;
         }
 
         public void ExecuteTurn(GameMaster game)
         {
-            UnitEntity attackTarget = TargetingAI.GetAttackTarget(this, game.World);
-            Vector3Int moveTarget = TargetingAI.GetMovementTarget(this, attackTarget, game.World);
-            LinkedList<Vector3Int> movement = MovementAI.GetMovementAction(this, moveTarget, game.World);
+            /*UnitEntity attackTarget = AbilityAI.GetAbilityTarget(this, game.World);
+            Vector3Int moveTarget = AbilityAI.GetMovementTarget(this, attackTarget, game.World);
+            LinkedList<Vector3Int> movement = MovementAI.GetAbilityMovement(this, moveTarget, game.World);
 
             foreach (Vector3Int motion in movement)
             {
@@ -31,7 +31,7 @@ namespace Units
             }
             MoveTo(movement.Last.Value, game.World);
 
-/*            Ability casting = AttackAI.GetAbilityTelegraph(this, attackTarget, game.World);
+            Ability casting = AttackAI.GetAbilityTelegraph(this, attackTarget, game.World);
             if (casting != null)
             {
                 CastAbility(casting, attackTarget.Position, game.World);
