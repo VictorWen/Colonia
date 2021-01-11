@@ -2,10 +2,11 @@
 using System;
 using System.Collections.Generic;
 using Units;
+using Units.Abilities;
 
 namespace Items.UtilityItems
 {
-    public abstract class UtilityItem : Item
+    public class UtilityItem : Item
     {
         public readonly string id;
         public override string ID { get { return id; } }
@@ -21,11 +22,22 @@ namespace Items.UtilityItems
 
         private readonly float weight;
         public override float Weight { get { return weight; } }
-        public abstract override float Value { get; }
+
+        private readonly float initialValue;
+        public override float Value
+        {
+            get
+            {
+                return initialValue * (float) Uses / Hardness;
+            }
+        }
 
         public int Uses { get; private set; }
 
-        public UtilityItem(string id, string name, int tier, int uses, float weight, string type) : base(type)
+        public UtilityItemAbility Ability { get; private set; }
+
+        public UtilityItem(string id, string name, int tier, int uses, float weight, string type, float value, 
+            int range, AbilityEffect[] effects, AbilityAOE aoe, bool targetFriends = true, bool targetEnemies = false) : base(type)
         {
             this.id = id;
             this.name = name;
@@ -33,31 +45,27 @@ namespace Items.UtilityItems
             hardness = uses;
             Uses = uses;
             this.weight = weight;
+            this.initialValue = value;
+            Ability = new UtilityItemAbility(this, id, name, range, false, effects, aoe, targetFriends, targetEnemies);
         }
 
-        public void Use(UnitEntityScript user)
+        public void Use()
         {
             Uses--;
-            OnUse(user);
             if (Uses <= 0)
             {
-                OnDestroy(user);
                 Count--;
                 if (Count > 0)
                     Uses = (int) hardness;
             }
         }
 
-        public override List<ItemAction> GetActions()
+        public override List<ItemAction> GetItemActions()
         {
-            List<ItemAction> actions = base.GetActions();
+            List<ItemAction> actions = base.GetItemActions();
             actions.Add(new UseItemAction(this));
             return actions;
         }
-
-        protected abstract void OnUse(UnitEntityScript user);
-
-        protected virtual void OnDestroy(UnitEntityScript user) { }
 
         public virtual bool IsUsable()
         {
@@ -65,6 +73,5 @@ namespace Items.UtilityItems
         }
 
         public virtual void OnNextTurn() { }
-
     }
 }

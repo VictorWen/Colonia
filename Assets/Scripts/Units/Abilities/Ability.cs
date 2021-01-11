@@ -29,7 +29,7 @@ namespace Units.Abilities
             this.targetEnemies = targetEnemies;
         }
 
-        public void Cast(UnitEntity caster, Vector3Int target, World world)
+        public virtual void Cast(UnitEntity caster, Vector3Int target, World world)
         {
             Vector3Int[] aoe = area.GetAOE(caster.Position, target, world);
             List<UnitEntity> targets = new List<UnitEntity>();

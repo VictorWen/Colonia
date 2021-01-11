@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Units.Abilities;
-using Items.UtilityItems.Potions;
+using Items.UtilityItems;
 using Items;
 
 namespace Units
@@ -57,7 +57,7 @@ namespace Units
             // TODO: placeholder UnitEntity.Inventory weight
             Inventory = new Inventory(100);
             // TEST
-            Inventory.AddItem(new Potion("potion", "Health Potion", 1, 3, 1, 10, new AbilityEffect[] { new HealAbilityEffect(10) }));
+            Inventory.AddItem(new UtilityItem("potion", "Health Potion", 1, 3, 1, "Potion", 10, 1, new AbilityEffect[] { new HealAbilityEffect(10) }, new HexAbilityAOE(0)));
 
             health = 30;
             maxHealth = 100;

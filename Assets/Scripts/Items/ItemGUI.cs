@@ -100,7 +100,7 @@ namespace Items
             }
 
             // Fill action menu
-            foreach (ItemAction action in item.GetActions())
+            foreach (ItemAction action in item.GetItemActions())
             {
                 Button btn = Instantiate(actionButtonPrefab);
                 btn.transform.SetParent(actionMenu.transform);

@@ -168,13 +168,13 @@ namespace Units
             }
         }
 
-        public void SelectAbilityTarget(Ability ability)
+        public void CastAbility(Ability ability)
         {
             gui.unitPanel.HideAbilityMenu();
-            StartCoroutine(SelectAbilityTargetCoroutine(ability));
+            StartCoroutine(CastAbilityCoroutine(ability));
         }
 
-        private IEnumerator SelectAbilityTargetCoroutine(Ability ability)
+        private IEnumerator CastAbilityCoroutine(Ability ability)
         {
             HashSet<Vector3Int> range = ability.GetWithinRange(Unit, world);
             bool hasSelected = false;

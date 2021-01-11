@@ -55,7 +55,7 @@ namespace Units.Abilities
 
         public void ConfirmSelection()
         {
-            unit.SelectAbilityTarget(GlobalAbilityDictionary.GetAbility(selectedAbilityID));
+            unit.CastAbility(GlobalAbilityDictionary.GetAbility(selectedAbilityID));
         }
     }
 }

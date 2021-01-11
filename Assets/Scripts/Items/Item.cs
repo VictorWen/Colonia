@@ -30,7 +30,7 @@ namespace Items
             return GetAttributes() + "\n<b>" + Type + "</b>";
         }
 
-        public virtual List<ItemAction> GetActions()
+        public virtual List<ItemAction> GetItemActions()
         {
             return new List<ItemAction>();
         }
