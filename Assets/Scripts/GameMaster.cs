@@ -70,9 +70,9 @@ public class GameMaster
         return unit;
     }
 
-    public NPCUnitEntity AddNewTestNPCUnit(string name, Vector3Int position, NPCMovementAI ai, UnitEntityScript script)
+    public NPCUnitEntity AddNewTestNPCUnit(string name, Vector3Int position, NPCTargetingAI targetAI, NPCMovementAI moveAI, NPCAttackAI attackAI, UnitEntityScript script)
     {
-        NPCUnitEntity unit = new NPCUnitEntity(name, position, ai, unitManager, script);
+        NPCUnitEntity unit = new NPCUnitEntity(name, position, targetAI, moveAI, attackAI, unitManager, script);
         unitManager.AddUnit(unit);
         return unit;
     }

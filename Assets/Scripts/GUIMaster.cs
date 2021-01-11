@@ -67,7 +67,7 @@ public class GUIMaster : MonoBehaviour
         testUnit.Unit.UpdateVision(Game.World);
 
         testEnemyUnit.gui = this;
-        testEnemyUnit.Unit = Game.AddNewTestNPCUnit("EVIL LORD", Game.World.grid.WorldToCell(testEnemyUnit.transform.position), new ChargingMovementAI(), testEnemyUnit);
+        testEnemyUnit.Unit = Game.AddNewTestNPCUnit("EVIL LORD", Game.World.grid.WorldToCell(testEnemyUnit.transform.position), new RecklessTargettingAI(), new ChargingMovementAI(), new BasicAttackAI(), testEnemyUnit);
         //testEnemyUnit.Unit.UpdateVision(Game.World);
         //UpdateAllUnitVisibilities();
         //cityGUI.OpenCityGUI(capital);
@@ -98,22 +98,3 @@ public class GUIMaster : MonoBehaviour
     }
 
 }
-
-/*[CustomEditor(typeof(GameMaster))]
-public class NextTurnButton : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        GameMaster game = (GameMaster)target;
-
-        *//*if (GUILayout.Button("Simulate Next Turn"))
-        {
-            game.NextTurn();
-        }*/
-
-        /*if (GUILayout.Button("Test Construction"))
-        {
-            game.loadedCity.UpdateConstruction();
-        }*//*
-    }
-}*/

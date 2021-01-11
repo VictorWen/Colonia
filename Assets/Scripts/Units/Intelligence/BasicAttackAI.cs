@@ -9,6 +9,17 @@ namespace Units.Intelligence
 {
     public class BasicAttackAI : NPCAttackAI
     {
+        public string UpdateAI(UnitEntity self, UnitEntity target, World world)
+        {
+            return null;
+        }
+
+
+        public void CompleteAttackAction(UnitEntity self, World world)
+        {
+
+        }
+
         public Ability GetAbilityTelegraph(UnitEntity self, UnitEntity target, World world)
         {
             if (target != null)

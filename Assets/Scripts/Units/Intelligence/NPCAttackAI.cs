@@ -1,4 +1,5 @@
-﻿using Units.Abilities;
+﻿using UnityEngine;
+using Units.Abilities;
 
 namespace Units.Intelligence
 {
@@ -7,6 +8,12 @@ namespace Units.Intelligence
     /// </summary>
     public interface NPCAttackAI
     {
-        Ability GetAbilityTelegraph(UnitEntity self, UnitEntity target, World world);
+        /// <summary>
+        /// Called before DoAbilityAction. Determines what attack, ability, or item to use.
+        /// </summary>
+        /// <returns>If an ability is to be used, it's ID is returned. Otherwise, returns null</returns>
+        string UpdateAI(UnitEntity self, UnitEntity target, World world);
+
+        void CompleteAttackAction(UnitEntity self, World world);
     }
 }
