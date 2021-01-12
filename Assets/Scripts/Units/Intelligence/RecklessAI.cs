@@ -1,56 +1,32 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using Units.Abilities;
 
 namespace Units.Intelligence
 {
+    /// <summary>
+    /// AI that always attacks any Unit within sight, never retreats.
+    /// Only wanders when there is nothing to attack.
+    /// </summary>
     public class RecklessAI : NPCMainAI
     {
         public AIState GetState(NPCUnitEntity self, World world)
         {
-            throw new System.NotImplementedException();
-            /*if (attackTarget != null) // There is an enemy to attack
+            // Check if there is any enemy visible
+            foreach (Vector3Int visible in self.VisibleTiles)
             {
-                // Find all tiles that are within the attack range to attack the target UnitEntity
-                int attackRange = 1; //TODO: PLACEHOLDER attack range for UnitEntity
-                HashSet<Vector3Int> targetCandidates = world.GetTilesInRange(attackTarget.Position, attackRange);
-                targetCandidates.Remove(attackTarget.Position);
-
-                // Find the closet target candidate
-                Vector3Int minDistance = attackTarget.Position;
-                foreach (Vector3Int target in targetCandidates)
+                if (world.UnitManager.Positions.ContainsKey(visible) && self.IsEnemy(world.UnitManager.Positions[visible]))
                 {
-                    if (minDistance.Equals(attackTarget.Position)
-                        || Vector3Int.Distance(self.Position, target) < Vector3Int.Distance(self.Position, minDistance)
-                        && world.IsReachable(self.MovementSpeed, target, true) >= 0)
-                    {
-                        minDistance = target;
-                    }
+                    return AIState.ABILITY;
                 }
-
-                // Edge case, no candidates are reachable
-                if (minDistance.Equals(attackTarget.Position))
-                    return self.Position;
-
-                return minDistance;
             }
-            else // There is no enemy => roam
-            {
-                // Move to a random reachable tile
-                BFSPathfinder pathfinder = new BFSPathfinder(self.Position, self.MovementSpeed, world, true);
-                int randIndex = world.RNG.Next(pathfinder.Reachables.Count);
-                int i = 0;
-                foreach (Vector3Int reachable in pathfinder.Reachables)
-                {
-                    if (randIndex == i)
-                    {
-                        return reachable;
-                    }
-                    i++;
-                }
 
-                return self.Position; // If no reachable tiles, stay put
-            }*/
+            return AIState.WANDER;
+        }
+
+        public Ability GetNextAbility(NPCUnitEntity self, World world)
+        {
+            return new Ability("attack", "Basic Attack", 0, 1, false, new AbilityEffect[] { new DamageAbilityEffect(0, true) }, new HexAbilityAOE(1));
         }
     }
 }

@@ -76,7 +76,7 @@ namespace Units
             accuracy = 1;
             agility = 1;
 
-            Sight = 5;
+            Sight = 2;
             VisibleTiles = new HashSet<Vector3Int>();
 
             CanMove = true;
@@ -232,6 +232,11 @@ namespace Units
                 ShowScript();
             else
                 HideScript();
+        }
+
+        public bool IsEnemy(UnitEntity other)
+        {
+            return other.PlayerControlled != PlayerControlled;
         }
     }
 }

@@ -1,4 +1,4 @@
 ﻿public enum AIState
 {
-    ATTACK, RETREAT, WANDER
+    ABILITY, RETREAT, WANDER
 }

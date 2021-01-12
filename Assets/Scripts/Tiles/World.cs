@@ -304,8 +304,8 @@ public class World : MonoBehaviour
                     }
 
                     // Determine sight cost
-                    float leftSightCost = 1000;
-                    float rightSightCost = 1000;
+                    float leftSightCost = 10000;
+                    float rightSightCost = 10000;
                     if (sight.Contains(left) && terrain.GetTile(left) != null)
                         leftSightCost = ((TerrainTile)terrain.GetTile(left)).sightCost;
                     if (sight.Contains(right) && terrain.GetTile(right) != null)

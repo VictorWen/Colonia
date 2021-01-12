@@ -13,11 +13,9 @@ namespace Units.Abilities
             this.range = range;
         }
 
-        public override Vector3Int[] GetAOE(Vector3Int casterPos, Vector3Int targetPos, World world)
+        public override HashSet<Vector3Int> GetAOE(Vector3Int casterPos, Vector3Int targetPos, World world)
         {
-            Vector3Int[] aoe = new Vector3Int[range * (range + 1) * 3 + 1];
-            world.GetTilesInRange(targetPos, range).CopyTo(aoe);
-            return aoe;
+            return world.GetTilesInRange(targetPos, range);
         }
 
         public override string GetDescription()

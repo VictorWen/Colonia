@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Units.Abilities;
 
 namespace Units.Intelligence
 {
     class DijkstrasMovementAI : NPCMovementAI
     {
-        public LinkedList<Vector3Int> GetAbilityMovement(UnitEntity self, UnitEntity target, World world)
+        public LinkedList<Vector3Int> GetAbilityMovement(UnitEntity self, Ability ability, Vector3Int target, World world)
         {
-            return Dijkstras(self, target.Position, world);
+            return Dijkstras(self, target, world);
         }
 
         public LinkedList<Vector3Int> GetRetreatMovement(UnitEntity self, Vector3Int target, World world)
@@ -16,19 +17,9 @@ namespace Units.Intelligence
             return Dijkstras(self, target, world);
         }
 
-        public Vector3Int GetRetreatTarget(UnitEntity self, World world)
-        {
-            throw new NotImplementedException();
-        }
-
         public LinkedList<Vector3Int> GetWanderMovement(UnitEntity self, Vector3Int target, World world)
         {
             return Dijkstras(self, target, world);
-        }
-
-        public Vector3Int GetWanderTarget(UnitEntity self, World world)
-        {
-            throw new NotImplementedException();
         }
 
         private LinkedList<Vector3Int> Dijkstras(UnitEntity self, Vector3Int target, World world)

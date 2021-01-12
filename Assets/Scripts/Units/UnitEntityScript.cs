@@ -186,7 +186,7 @@ namespace Units
                 Vector3Int gridPos = world.grid.WorldToCell(worldPos);
                 if (range.Contains(gridPos))
                 {
-                    Vector3Int[] area = ability.GetAreaOfEffect(Unit.Position, gridPos, world);
+                    HashSet<Vector3Int> area = ability.GetAreaOfEffect(Unit.Position, gridPos, world);
                     foreach (Vector3Int tile in area)
                     {
                         world.movement.SetTile(tile, red);

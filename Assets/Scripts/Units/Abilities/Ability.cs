@@ -31,7 +31,7 @@ namespace Units.Abilities
 
         public virtual void Cast(UnitEntity caster, Vector3Int target, World world)
         {
-            Vector3Int[] aoe = area.GetAOE(caster.Position, target, world);
+            HashSet<Vector3Int> aoe = area.GetAOE(caster.Position, target, world);
             List<UnitEntity> targets = new List<UnitEntity>();
             foreach (Vector3Int tile in aoe)
             {
@@ -58,7 +58,23 @@ namespace Units.Abilities
                 return world.GetLineOfSight(caster.Position, range);
         }
 
-        public Vector3Int[] GetAreaOfEffect(Vector3Int caster, Vector3Int target, World world)
+        /// <summary>
+        /// Determines what tiles can reach the target tile with this ability. (Pretty expensive computation)
+        /// </summary>
+        public HashSet<Vector3Int> GetReachingTiles(UnitEntity caster, Vector3Int target, World world)
+        {
+            HashSet<Vector3Int> reachingTiles = new HashSet<Vector3Int>();
+            foreach (Vector3Int tile in world.GetTilesInRange(target, range))
+            {
+                if (ignoreLoS || world.GetLineOfSight(caster.Position, Math.Min(caster.Sight, range)).Contains(target))
+                {
+                    reachingTiles.Add(tile);
+                }
+            }
+            return reachingTiles;
+        }
+
+        public HashSet<Vector3Int> GetAreaOfEffect(Vector3Int caster, Vector3Int target, World world)
         {
             return area.GetAOE(caster, target, world);
         }
@@ -72,7 +88,6 @@ namespace Units.Abilities
             {
                 text += e.GetDescription() + "\n";
             }
-            
 
             return text;
         }

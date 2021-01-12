@@ -9,7 +9,7 @@ namespace Units.Abilities
     /// </summary>
     public abstract class AbilityAOE
     {
-        public abstract Vector3Int[] GetAOE(Vector3Int casterPos, Vector3Int targetPos, World world);
+        public abstract HashSet<Vector3Int> GetAOE(Vector3Int casterPos, Vector3Int targetPos, World world);
 
         public abstract string GetDescription();
     }
