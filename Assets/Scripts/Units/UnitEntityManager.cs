@@ -11,16 +11,25 @@ namespace Units
     {
         public Dictionary<Vector3Int, UnitEntity> Positions { get; private set; }
         public List<UnitEntity> Units { get; private set; }
+        public List<NPCUnitEntity> NPCUnits { get; private set; }
 
         public UnitEntityManager()
         {
             Positions = new Dictionary<Vector3Int, UnitEntity>();
             Units = new List<UnitEntity>();
+            NPCUnits = new List<NPCUnitEntity>();
         }
 
         public void AddUnit(UnitEntity unit)
         {
             Units.Add(unit);
+            Positions.Add(unit.Position, unit);
+        }
+
+        public void AddNPCUnit(NPCUnitEntity unit)
+        {
+            Units.Add(unit);
+            NPCUnits.Add(unit);
             Positions.Add(unit.Position, unit);
         }
 

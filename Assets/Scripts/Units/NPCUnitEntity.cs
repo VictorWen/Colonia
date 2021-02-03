@@ -21,6 +21,7 @@ namespace Units
 
         public void ExecuteTurn(GameMaster game)
         {
+            UpdateVision(game.World);
             AIState aiState = MainAI.GetState(this, game.World);
             
             switch(aiState)
@@ -28,8 +29,9 @@ namespace Units
                 case AIState.ABILITY:
                     Ability ability = MainAI.GetNextAbility(this, game.World);
                     Vector3Int abilityTarget = TargetingAI.GetAbilityTarget(this, ability, game.World);
-                    
-                    ExecuteMovement(MovementAI.GetAbilityMovement(this, ability, abilityTarget, game.World), game.World);
+                    Vector3Int maneuverTarget = TargetingAI.GetManeuverTarget(this, ability, abilityTarget, game.World);
+
+                    ExecuteMovement(MovementAI.GetAbilityMovement(this, ability, maneuverTarget, game.World), game.World);
 
                     bool targetWithinRange = ability.GetWithinRange(this, game.World).Contains(abilityTarget);
                     if (ability != null && targetWithinRange)

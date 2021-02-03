@@ -41,7 +41,7 @@ namespace Units.Intelligence
             Vector3Int minDistance = abilityTarget;
             foreach (Vector3Int withinRange in ability.GetReachingTiles(self, abilityTarget, world))
             {
-                if (bfs.Reachables.Contains(withinRange) && 
+                if (bfs.Reachables.Contains(withinRange) && !withinRange.Equals(abilityTarget) &&
                     (minDistance.Equals(abilityTarget) || Vector3Int.Distance(self.Position, withinRange) < Vector3Int.Distance(self.Position, minDistance)))
                 {
                     minDistance = withinRange;

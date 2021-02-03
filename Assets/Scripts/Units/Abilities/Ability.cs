@@ -66,7 +66,7 @@ namespace Units.Abilities
             HashSet<Vector3Int> reachingTiles = new HashSet<Vector3Int>();
             foreach (Vector3Int tile in world.GetTilesInRange(target, range))
             {
-                if (ignoreLoS || world.GetLineOfSight(caster.Position, Math.Min(caster.Sight, range)).Contains(target))
+                if (ignoreLoS || world.GetLineOfSight(tile, Math.Min(caster.Sight, range)).Contains(target))
                 {
                     reachingTiles.Add(tile);
                 }

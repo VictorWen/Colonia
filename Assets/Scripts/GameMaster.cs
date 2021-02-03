@@ -35,6 +35,12 @@ public class GameMaster
     // TODO: Move game control methods to a separate interface or class
     public void NextTurn(GUIMaster gui)
     {
+        foreach (NPCUnitEntity npc in unitManager.NPCUnits)
+        {
+            npc.ExecuteTurn(this);
+        }
+        
+        
         foreach (City city in cities)
         {
             city.OnNextTurn(gui);
@@ -73,7 +79,7 @@ public class GameMaster
     public NPCUnitEntity AddNewTestNPCUnit(string name, Vector3Int position, NPCMainAI mainAI, NPCTargetingAI abilityAI, NPCMovementAI moveAI, UnitEntityScript script)
     {
         NPCUnitEntity unit = new NPCUnitEntity(name, position, mainAI, abilityAI, moveAI, unitManager, script);
-        unitManager.AddUnit(unit);
+        unitManager.AddNPCUnit(unit);
         return unit;
     }
     
