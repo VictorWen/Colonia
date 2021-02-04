@@ -53,12 +53,30 @@ namespace Units.Intelligence
 
         public Vector3Int GetRetreatTarget(UnitEntity self, World world)
         {
-            throw new NotImplementedException();
+            BFSPathfinder bfs = new BFSPathfinder(self.Position, self.MovementSpeed, world, true);
+            int random = world.RNG.Next(bfs.Reachables.Count);
+            int index = 0;
+            foreach (Vector3Int tile in bfs.Reachables)
+            {
+                if (index == random)
+                    return tile;
+                index++;
+            }
+            return self.Position;
         }
 
         public Vector3Int GetWanderTarget(UnitEntity self, World world)
         {
-            throw new NotImplementedException();
+            BFSPathfinder bfs = new BFSPathfinder(self.Position, self.MovementSpeed, world, true);
+            int random = world.RNG.Next(bfs.Reachables.Count);
+            int index = 0;
+            foreach (Vector3Int tile in bfs.Reachables)
+            {
+                if (index == random)
+                    return tile;
+                index++;
+            }
+            return self.Position;
         }
     }
 }
