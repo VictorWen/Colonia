@@ -8,6 +8,7 @@ public class TerrainTile : Tile
 {
     public bool impassable;
     public float movementCost;
+    public float combatModifier = 1;
     public float sightCost = 1;
     public float sightBonus = 0;
     public float baseFertility;

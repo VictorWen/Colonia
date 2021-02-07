@@ -274,6 +274,7 @@ public class World : MonoBehaviour
     public HashSet<Vector3Int> GetLineOfSight(Vector3Int start, int range)
     {
         //Debug.Log("LINE OF SIGHT");
+        range += (int) ((TerrainTile)terrain.GetTile(start)).sightBonus;
         HashSet<Vector3Int> sight = new HashSet<Vector3Int>();
         List<List<Vector3Int>> rangeList = GetRangeList(start, range);
         sight.Add(start);
@@ -292,6 +293,8 @@ public class World : MonoBehaviour
                 // Backtrack
                 bool clear = true;
                 float pastSightCost = 1;
+                //float pastSightCost = ((TerrainTile)terrain.GetTile(tile)).sightCost;
+                //float pastSightCost = 0;
                 for (int j = r - 1; j > 0; j--)
                 {
                     float layerMargin = Mathf.PI * 2 / (j * 6 * 2);

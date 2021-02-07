@@ -44,7 +44,7 @@ namespace Units.Abilities
             }
             foreach (AbilityEffect effect in effects)
             {
-                effect.Apply(caster, targets);
+                effect.Apply(caster, targets, world);
             }
         }
 

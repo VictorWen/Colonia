@@ -31,6 +31,7 @@ namespace Units
         protected int piercing;
         public int Magic { get; private set; }
         protected int resistance;
+        // TODO: Figure what these stats are going to do.
         protected int accuracy;
         protected int agility;
 
@@ -68,15 +69,15 @@ namespace Units
             //TODO: placeholder UnitEntity.Abilities
             Abilities.Add("fireball");
 
-            Attack = 1;
-            defence = 1;
-            piercing = 1;
-            Magic = 1;
-            resistance = 1;
+            Attack = 15;
+            defence = 5;
+            piercing = 3;
+            Magic = 10;
+            resistance = 5;
             accuracy = 1;
             agility = 1;
 
-            Sight = 5;
+            Sight = 4;
             VisibleTiles = new HashSet<Vector3Int>();
 
             CanMove = true;
@@ -104,14 +105,11 @@ namespace Units
             script.UpdateGraphics();
         }
 
-        public void AttackUnitEntity(UnitEntity target)
+        public void AttackUnitEntity(UnitEntity target, World world)
         {
             CanMove = false;
             CanAttack = false;
-            int reduction = Mathf.Max((target.defence - piercing), 0) * (target.defence / (piercing + 1));
-            int damage = Mathf.Max(0, Attack - reduction);
-            Debug.Log("COMBAT: ATTACKED: " + target.Name + " for " + damage + " Damage");
-            target.health = Mathf.Max(0, target.health - damage);
+            target.DealDamage(Attack, this, world, true); //TODO: change to basic attack ability
             script.UpdateGraphics();
         }
 
@@ -140,29 +138,43 @@ namespace Units
             return heal;
         }
 
-        public int DealDamage(float baseDamage, UnitEntity attacker, bool isPhysicalDamage = true)
+        public int DealDamage(float baseDamage, UnitEntity attacker, World world, bool isPhysicalDamage = true)
         {
             if (baseDamage < 0)
                 return 0;
+
+            float combatModifier = ((TerrainTile)world.terrain.GetTile(Position)).combatModifier;
+
             if (isPhysicalDamage)
             {
-                float reduction = Mathf.Max(0, defence - attacker.piercing);
-                reduction *= (float) defence / (attacker.piercing + 1);
+                float reduction = Mathf.Max(0, combatModifier * (defence - attacker.piercing));
+                reduction *= (float) combatModifier * defence / (attacker.piercing + 1);
                 int damage = (int) (baseDamage - reduction);
                 damage = Mathf.Max(0, damage);
                 damage = Mathf.Min(damage, health);
                 health -= damage;
+                if (health <= 0)
+                    OnDeath();
                 return damage;
             }
             else
             {
-                float reduction = resistance;
+                float reduction = combatModifier * resistance;
                 int damage = (int)(baseDamage - reduction);
                 damage = Mathf.Max(0, damage);
                 damage = Mathf.Min(damage, health);
                 health -= damage;
+                if (health <= 0)
+                    OnDeath();
                 return damage;
             }
+        }
+
+        public virtual void OnDeath()
+        {
+            Debug.Log(Name + " Died");
+            Object.Destroy(script.gameObject);
+            manager.RemoveUnit(this);
         }
 
         public string GetStatusDescription()
@@ -207,16 +219,16 @@ namespace Units
                 }
             }
 
-            // Determine sight bonus
+/*            // Determine sight bonus
             float bonus = 0;
             UnityEngine.Tilemaps.TileBase t = world.terrain.GetTile(Position);
             if (t != null)
             {
                 bonus = ((TerrainTile)t).sightBonus;
-            }
+            }*/
 
             // Remove FoW from tiles within line of sight
-            VisibleTiles = world.GetLineOfSight(Position, Sight + (int) bonus);
+            VisibleTiles = world.GetLineOfSight(Position, Sight);
 
             if (PlayerControlled)
             {

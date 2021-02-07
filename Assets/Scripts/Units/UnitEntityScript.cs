@@ -104,7 +104,7 @@ namespace Units
                 if (attackablePos.Contains(gridPos))
                 {
                     ClearAttackables();
-                    Unit.AttackUnitEntity(world.UnitManager.Positions[gridPos]);
+                    Unit.AttackUnitEntity(world.UnitManager.Positions[gridPos], world);
                 }
             }
         }

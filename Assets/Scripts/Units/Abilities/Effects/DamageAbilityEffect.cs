@@ -16,7 +16,7 @@ namespace Units.Abilities
             this.attackMultiplier = attackMultiplier;
         }
 
-        public override void Apply(UnitEntity caster, List<UnitEntity> targets)
+        public override void Apply(UnitEntity caster, List<UnitEntity> targets, World world)
         {
             foreach (UnitEntity target in targets)
             {
@@ -25,7 +25,7 @@ namespace Units.Abilities
                     attack *= caster.Attack;
                 else
                     attack *= caster.Magic;
-                target.DealDamage(baseDamage + attack, caster, isPhysicalDamage);
+                target.DealDamage(baseDamage + attack, caster, world, isPhysicalDamage);
             }
         }
 

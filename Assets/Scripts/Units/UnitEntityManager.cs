@@ -26,6 +26,7 @@ namespace Units
             Positions.Add(unit.Position, unit);
         }
 
+        // TODO: Generalize this?
         public void AddNPCUnit(NPCUnitEntity unit)
         {
             Units.Add(unit);
@@ -36,6 +37,8 @@ namespace Units
         public void RemoveUnit(UnitEntity unit)
         {
             Units.Remove(unit);
+            if (NPCUnits.Contains(unit))
+                NPCUnits.Remove((NPCUnitEntity)unit);
             Positions.Remove(unit.Position);
         }
 
