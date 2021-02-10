@@ -8,12 +8,12 @@ namespace Units.Intelligence
     /// <summary>
     /// AI for calculating how the UnitEntity should move to a target location
     /// </summary>
-    public interface NPCMovementAI
+    public abstract class NPCMovementAI : MonoBehaviour
     {
-        LinkedList<Vector3Int> GetAbilityMovement(UnitEntity self, Ability ability, Vector3Int target, World world);
+        public abstract LinkedList<Vector3Int> GetAbilityMovement(UnitEntity self, Ability ability, Vector3Int target, World world);
 
-        LinkedList<Vector3Int> GetRetreatMovement(UnitEntity self, Vector3Int target, World world);
+        public abstract LinkedList<Vector3Int> GetRetreatMovement(UnitEntity self, Vector3Int target, World world);
 
-        LinkedList<Vector3Int> GetWanderMovement(UnitEntity self, Vector3Int target, World world);
+        public abstract LinkedList<Vector3Int> GetWanderMovement(UnitEntity self, Vector3Int target, World world);
     }
 }

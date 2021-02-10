@@ -6,87 +6,91 @@ using Items;
 
 namespace Units
 {
-    public class UnitEntity
+    public class UnitEntity : MonoBehaviour
     {
+        // Unity Editor fields ==========================
+        public int _health;
+        public int _maxHealth;
+        public int _mana;
+        public int _maxMana;
+
+        public int _attack;
+        public int _defence;
+        public int _piercing;
+        public int _magic;
+        public int _resistance;
+        // TODO: Figure what these stats are going to do.
+        public int _accuracy;
+        public int _agility;
+
+        public int _sight;
+        public int _movementSpeed;
+
+        public int _level;
+        public bool _playerControlled;
+
+        public World _world;
+        //==============================================
+
         // General Information
-        public string Name { get; private set; }
-        protected int level;
+        public string Name { get { return name; } }
 
         // Items
         public Inventory Inventory { get; private set; }
 
         // Combat Status
-        protected int health;
-        protected int maxHealth;
-        protected int mana;
-        protected int maxMana;
         //protected List<StatusEffect> statusEffects;
 
         // Combat Abilities
         public List<string> Abilities { get; private set; }
 
         // Combat Attributes
-        public int Attack { get; private set; }
-        protected int defence;
-        protected int piercing;
-        public int Magic { get; private set; }
-        protected int resistance;
-        // TODO: Figure what these stats are going to do.
-        protected int accuracy;
-        protected int agility;
+        public int Attack { get { return _attack; } private set { _attack = value; } }
+        public int Magic { get { return _magic; } private set { _magic = value; } }
 
         // Vision
-        public int Sight { get; private set; }
+        public int Sight { get { return _sight; } }
         public HashSet<Vector3Int> VisibleTiles { get; private set; }
 
-        private readonly UnitEntityManager manager;
-        private readonly UnitEntityScript script;
-
         // Movement Controls
-        public Vector3Int Position { get; private set; }
+        public Vector3Int Position { get { return manager.GetPositionFor(this); } }
         public bool CanMove { get; private set; } //TODO: move to a HeroUnitEntity class
         public bool CanAttack { get; private set; }
-        public int MovementSpeed { get; private set; }
-        public bool PlayerControlled { get; private set; }
+        public int MovementSpeed { get { return _movementSpeed; } }
+        public bool PlayerControlled { get { return _playerControlled; } }
 
-        public UnitEntity(string name, bool playerControlled, Vector3Int position, UnitEntityManager manager, UnitEntityScript script) 
+        // Management
+        private UnitEntityManager manager; // Manages positioning
+        private UnitEntityGUI script; // Manages GUI stuff
+
+        protected virtual void Awake()
         {
-            this.Name = name;
-            this.PlayerControlled = playerControlled;
-            level = 0;
+            script = GetComponent<UnitEntityGUI>();
+            VisibleTiles = new HashSet<Vector3Int>();
+        }
 
+        public void SetUnitManager(UnitEntityManager manager)
+        {
+            this.manager = manager;
+        }
+
+        protected virtual void Start()
+        {
+            _world.AddUnitEntity(this);
+            CanMove = true;
+            CanAttack = true;
+
+            // Testing Stuff
             // TODO: placeholder UnitEntity.Inventory weight
             Inventory = new Inventory(100);
             // TEST
             Inventory.AddItem(new UtilityItem("potion", "Health Potion", 1, 3, 1, "Potion", 10, 1, new AbilityEffect[] { new HealAbilityEffect(10) }, new HexAbilityAOE(0)));
 
-            health = 30;
-            maxHealth = 100;
-            mana = 100;
-            maxMana = 100;
-
             Abilities = new List<string>();
             //TODO: placeholder UnitEntity.Abilities
             Abilities.Add("fireball");
 
-            Attack = 15;
-            defence = 5;
-            piercing = 3;
-            Magic = 10;
-            resistance = 5;
-            accuracy = 1;
-            agility = 1;
-
-            Sight = 4;
-            VisibleTiles = new HashSet<Vector3Int>();
-
-            CanMove = true;
-            CanAttack = true;
-            MovementSpeed = 3;
-            Position = position;
-
-            this.manager = manager;
-            this.script = script;
+            UpdateVision(_world);
         }
 
         public virtual void OnNextTurn(GameMaster game)
@@ -99,8 +103,7 @@ namespace Units
         public void MoveTo(Vector3Int destination, World world)
         {
             CanMove = false;
-            manager.MoveUnit(this, destination);
-            Position = destination;
+            manager.SetUnitPosition(this, destination);
             UpdateVision(world);
             script.UpdateGraphics();
         }
@@ -119,7 +122,7 @@ namespace Units
             CanAttack = false;
             // Assumes there is enough mana available
             // TODO: UnityEntity Ability.manaCost modifiers
-            mana -= ability.ManaCost;
+            _mana -= ability.ManaCost;
             Debug.Log("COMBAT: " + Name + " casted " + ability.Name + " at " + target);
             ability.Cast(this, target, world);
             script.UpdateGraphics();
@@ -133,8 +136,8 @@ namespace Units
 
         public int Heal(float amount)
         {
-            int heal = (int) System.Math.Min(amount, maxHealth - health);
-            health += heal;
+            int heal = (int) System.Math.Min(amount, _maxHealth - _health);
+            _health += heal;
             return heal;
         }
 
@@ -147,24 +150,24 @@ namespace Units
 
             if (isPhysicalDamage)
             {
-                float reduction = Mathf.Max(0, combatModifier * (defence - attacker.piercing));
-                reduction *= (float) combatModifier * defence / (attacker.piercing + 1);
+                float reduction = Mathf.Max(0, combatModifier * (_defence - attacker._piercing));
+                reduction *= (float) combatModifier * _defence / (attacker._piercing + 1);
                 int damage = (int) (baseDamage - reduction);
                 damage = Mathf.Max(0, damage);
-                damage = Mathf.Min(damage, health);
-                health -= damage;
-                if (health <= 0)
+                damage = Mathf.Min(damage, _health);
+                _health -= damage;
+                if (_health <= 0)
                     OnDeath();
                 return damage;
             }
             else
             {
-                float reduction = combatModifier * resistance;
+                float reduction = combatModifier * _resistance;
                 int damage = (int)(baseDamage - reduction);
                 damage = Mathf.Max(0, damage);
-                damage = Mathf.Min(damage, health);
-                health -= damage;
-                if (health <= 0)
+                damage = Mathf.Min(damage, _health);
+                _health -= damage;
+                if (_health <= 0)
                     OnDeath();
                 return damage;
             }
@@ -179,8 +182,8 @@ namespace Units
 
         public string GetStatusDescription()
         {
-            string text = "Health: " + health + "/" + maxHealth + "\n";
-            text += "Mana: " + mana + "/" + maxMana + "\n";
+            string text = "Health: " + _health + "/" + _maxHealth + "\n";
+            text += "Mana: " + _mana + "/" + _maxMana + "\n";
             text += "Status Effects: \n";
             text += "* TEST STATUS EFFECT";
             return text;
@@ -204,7 +207,7 @@ namespace Units
             {
                 foreach (Vector3Int visible in VisibleTiles)
                 {
-                    world.AddFogOfWar(visible, manager);
+                    world.AddFogOfWar(visible);
                 }
             }
             VisibleTiles = new HashSet<Vector3Int>();
@@ -235,7 +238,7 @@ namespace Units
                 foreach (Vector3Int withinSight in VisibleTiles)
                 {
                     world.RevealTerraIncognita(withinSight);
-                    world.RevealFogOfWar(withinSight, manager);
+                    world.RevealFogOfWar(withinSight);
                 }
             }
 

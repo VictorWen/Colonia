@@ -7,17 +7,17 @@ namespace Units.Intelligence
 {
     class DijkstrasMovementAI : NPCMovementAI
     {
-        public LinkedList<Vector3Int> GetAbilityMovement(UnitEntity self, Ability ability, Vector3Int target, World world)
+        public override LinkedList<Vector3Int> GetAbilityMovement(UnitEntity self, Ability ability, Vector3Int target, World world)
         {
             return Dijkstras(self, target, world);
         }
 
-        public LinkedList<Vector3Int> GetRetreatMovement(UnitEntity self, Vector3Int target, World world)
+        public override LinkedList<Vector3Int> GetRetreatMovement(UnitEntity self, Vector3Int target, World world)
         {
             return Dijkstras(self, target, world);
         }
 
-        public LinkedList<Vector3Int> GetWanderMovement(UnitEntity self, Vector3Int target, World world)
+        public override LinkedList<Vector3Int> GetWanderMovement(UnitEntity self, Vector3Int target, World world)
         {
             return Dijkstras(self, target, world);
         }

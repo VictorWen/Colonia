@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -37,32 +38,6 @@ public class World : MonoBehaviour
     [Range(0.5f, 4f)]
     public float octaveAmplitude;
 
-    [Header("Terrain Tiles")]
-    public TerrainData[] tiles;
-    public BiomeTileSet[] biomes;
-
-    [Header("Resource Generation")]
-    public BiomeResources[] biomeResources;
-    public ResourceIconScript iconPrefab;
-
-    private Dictionary<Vector3Int, float> fertility;
-    private Dictionary<Vector3Int, float> richness;
-
-    public UnitEntityManager UnitManager { get; private set; }
-
-    //TODO: fix/organize this
-    public ResourceMap ResourceMap { get; private set; }
-    public Vector3Int[][] BiomeChunks { get; private set; }
-    public System.Random RNG { get; private set; }
-
-    private void Awake()
-    {
-        GenerateWorld();
-        // Generate Resources
-        ResourceMap = new ResourceMap(this, biomeResources, iconPrefab, enableFogOfWar);
-        UnitManager = new UnitEntityManager();
-    }
-
     [System.Serializable]
     public struct TerrainData
     {
@@ -73,6 +48,258 @@ public class World : MonoBehaviour
         public bool waterAdjacent;
     }
 
+    [Header("Terrain Tiles")]
+    public TerrainData[] tiles;
+    public BiomeTileSet[] biomes;
+
+    [Header("Resource Generation")]
+    public BiomeResources[] biomeResources;
+    public ResourceIconScript iconPrefab;
+
+    //TODO: fix/organize this
+    public ResourceMap ResourceMap { get; private set; }
+    public Vector3Int[][] BiomeChunks { get; private set; }
+    public System.Random RNG { get; private set; }
+
+    private Dictionary<Vector3Int, float> fertility;
+    private Dictionary<Vector3Int, float> richness;
+
+    private UnitEntityManager unitManager;
+
+    private void Awake()
+    {
+        GenerateWorld();
+        // Generate Resources
+        ResourceMap = new ResourceMap(this, biomeResources, iconPrefab, enableFogOfWar);
+        unitManager = new UnitEntityManager(this);
+    }
+
+    // UnitEntityManager wrappers =======================
+    public UnitEntity GetUnitAt(Vector3Int position)
+    {
+        return unitManager.GetUnitAt(position);
+    }
+
+    public void AddUnitEntity(UnitEntity unit)
+    {
+        unitManager.AddUnit(unit);
+    }
+
+    public void ExecuteNPCTurns(GameMaster game)
+    {
+        foreach (NPCUnitEntity npc in unitManager.NPCUnits)
+            npc.ExecuteTurn(game);
+    }
+
+    public void UnitsOnNextTurn(GameMaster game)
+    {
+        foreach (UnitEntity unit in unitManager.Units)
+            unit.OnNextTurn(game);
+    }
+    // =========================================
+
+    // World Vision ===========================
+    public void AddFogOfWar(Vector3Int position)
+    {
+        if (Visible.ContainsKey(position))
+        {
+            Visible[position]--;
+            if (Visible[position] == 0)
+            {
+                Visible.Remove(position);
+                if (enableFogOfWar)
+                {
+                    vision.SetTile(position, fog);
+                    UnitEntity unitAt = GetUnitAt(position);
+                    if (unitAt != null && !unitAt.PlayerControlled)
+                        unitAt.HideScript();
+                }
+            }
+        }
+    }
+
+    public void RevealTerraIncognita(Vector3Int position)
+    {
+        TileBase tile = vision.GetTile(position);
+        if (tile != null && tile.name == "Cloud")
+        {
+            vision.SetTile(position, fog);
+            if (ResourceMap.Icons.ContainsKey(position))
+                ResourceMap.Icons[position].gameObject.SetActive(true);
+        }
+    }
+
+    public void RevealFogOfWar(Vector3Int position)
+    {
+        if (Visible.ContainsKey(position))
+        {
+            Visible[position]++;
+        }
+        else
+        {
+            Visible.Add(position, 1);
+            vision.SetTile(position, null);
+            UnitEntity unitAt = GetUnitAt(position);
+            if (unitAt != null && !unitAt.PlayerControlled)
+                unitAt.ShowScript();
+        }
+    }
+    
+    /// <summary>
+    /// Approximates the line of sight to each hexagon within a given radius by placing
+    /// each hexagon within a angle bucket and backtracking to find any collisions
+    /// with buckets in an earlier layer
+    /// </summary>
+    public HashSet<Vector3Int> GetLineOfSight(Vector3Int start, int range)
+    {
+        //Debug.Log("LINE OF SIGHT");
+        range += (int)((TerrainTile)terrain.GetTile(start)).sightBonus;
+        HashSet<Vector3Int> sight = new HashSet<Vector3Int>();
+        List<List<Vector3Int>> rangeList = GetRangeList(start, range);
+        sight.Add(start);
+        for (int r = 1; r <= range; r++)
+        {
+            float margin = Mathf.PI * 2 / (r * 6);
+            for (int i = 0; i < r * 6; i++)
+            {
+                // Calculate angles
+                Vector3Int tile = rangeList[r][i];
+                float angle = margin * i;
+                float leftRay = angle - margin / 2;
+                float rightRay = angle + margin / 2;
+                //Debug.Log(tile + "\t" + leftRay + "\t" + rightRay);
+
+                // Backtrack
+                bool clear = true;
+                float pastSightCost = 1;
+                //float pastSightCost = ((TerrainTile)terrain.GetTile(tile)).sightCost;
+                //float pastSightCost = 0;
+                for (int j = r - 1; j > 0; j--)
+                {
+                    float layerMargin = Mathf.PI * 2 / (j * 6 * 2);
+                    Vector3Int left = rangeList[j][Mathf.CeilToInt(leftRay / layerMargin) / 2 % (j * 6)];
+                    Vector3Int right = rangeList[j][Mathf.CeilToInt(rightRay / layerMargin) / 2 % (j * 6)];
+                    if (!(sight.Contains(left) || sight.Contains(right)))
+                    {
+                        clear = false;
+                        break;
+                    }
+
+                    // Determine sight cost
+                    float leftSightCost = 10000;
+                    float rightSightCost = 10000;
+                    if (sight.Contains(left) && terrain.GetTile(left) != null)
+                        leftSightCost = ((TerrainTile)terrain.GetTile(left)).sightCost;
+                    if (sight.Contains(right) && terrain.GetTile(right) != null)
+                        rightSightCost = ((TerrainTile)terrain.GetTile(right)).sightCost;
+                    pastSightCost += Mathf.Min(leftSightCost, rightSightCost);
+                }
+                if (clear && pastSightCost <= range)
+                {
+                    sight.Add(tile);
+                }
+            }
+        }
+        return sight;
+    }
+    // ===========================================
+
+    // Utility Tile Grabbers =====================================
+    public List<Vector3Int> GetAdjacents(Vector3Int tile)
+    {
+        List<Vector3Int> adjacents = new List<Vector3Int>();
+        Vector3[] checks = new Vector3[] { new Vector3(-1, 0), new Vector3(-0.5f, 0.75f), new Vector3(0.5f, 0.75f), new Vector3(1, 0), new Vector3(0.5f, -0.75f), new Vector3(-0.5f, -0.75f) };
+        foreach (Vector3 check in checks)
+        {
+            adjacents.Add(grid.WorldToCell(check + grid.CellToWorld(tile)));
+        }
+        return adjacents;
+    }
+
+    public List<List<Vector3Int>> GetRangeList(Vector3Int start, int range)
+    {
+        List<List<Vector3Int>> rangeList = new List<List<Vector3Int>>() { new List<Vector3Int>() { start } };
+        Vector3 worldStart = grid.CellToWorld(start);
+        
+        for (int r = 1; r <= range; r++) {
+            Vector3[] checks = new Vector3[] { new Vector3(-0.5f, 0.75f), new Vector3(-1, 0), new Vector3(-0.5f, -0.75f), new Vector3(0.5f, -0.75f), new Vector3(1, 0), new Vector3(0.5f, 0.75f)};
+            List<Vector3Int> tiles = new List<Vector3Int>();
+            Vector3 adder = r * new Vector3(1f, 0);
+            for (int i = 0; i < 6; i++)
+            {
+                for (int j = 0; j < r; j++)
+                {
+                    tiles.Add(grid.WorldToCell(worldStart + adder));
+                    adder += checks[i];
+                }
+            }
+            rangeList.Add(tiles);
+        }
+        return rangeList;
+    }
+
+    public HashSet<Vector3Int> GetTilesInRange(Vector3Int start, int range)
+    {
+        HashSet<Vector3Int> tileRange = new HashSet<Vector3Int>
+        {
+            start
+        };
+
+        Vector3 worldStart = grid.CellToWorld(start);
+
+        for (int i = 1; i <= range; i++)
+        {
+            tileRange.Add(grid.WorldToCell(i * new Vector3(-1, 0) + worldStart));
+            tileRange.Add(grid.WorldToCell(i * new Vector3(1, 0) + worldStart));
+        }
+
+        Vector3 topEdge = new Vector3(0.5f - range, 0.75f) + worldStart;
+        Vector3 lowerEdge = new Vector3(0.5f - range, -0.75f) + worldStart;
+        for (int layer = 0; layer < range; layer++)
+        {
+            // Move to next layer and fill line
+            for (int i = 0; i < range * 2 - layer; i++)
+            {
+                tileRange.Add(grid.WorldToCell(i * new Vector3(1, 0) + topEdge));
+                tileRange.Add(grid.WorldToCell(i * new Vector3(1, 0) + lowerEdge));
+            }
+            topEdge += new Vector3(0.5f, 0.75f);
+            lowerEdge += new Vector3(0.5f, -0.75f);
+        }
+
+        return tileRange;
+    }
+    // ===========================================================
+
+    // World Movement =========================================
+    /// <summary>
+    /// Calculates whether a tile is reachable with a given movement speed
+    /// </summary>
+    /// <param name="moves">The remaing movement speed available</param>
+    /// <param name="destination">The destination tile</param>
+    /// <param name="checkUnits">Whether to check if the destination tile has a unit on it or not</param>
+    /// <returns>Return the movement cost to get to the destination tile if it is reachable, otherwise returns -1</returns>
+    public float IsReachable(float moves, Vector3Int destination, bool checkUnits = false)
+    {
+        TerrainTile t = (TerrainTile)terrain.GetTile(destination);
+        if (t != null && !t.impassable && moves >= t.movementCost && (!checkUnits || GetUnitAt(destination) == null))
+        {
+            return t.movementCost;
+        }
+        return -1;
+    }
+
+    public float GetMovementCost(Vector3Int position)
+    {
+        if (terrain.GetTile(position) != null)
+        {
+            return ((TerrainTile)terrain.GetTile(position)).movementCost;
+        }
+        return 0f;
+    }
+    // ==================================================
+
+    // World Generation ==========================================
     public void GenerateWorld()
     {
         Visible = new Dictionary<Vector3Int, int>();
@@ -179,9 +406,9 @@ public class World : MonoBehaviour
                     if (!t.waterAdjacent && height <= t.height)
                     {
                         terrain.SetTile(pos, t.tile);
-                            
-                        if (!fertility.ContainsKey(pos)) 
-                            fertility.Add(pos, GetRandomAspect(RNG, t.tile.baseFertility)); 
+
+                        if (!fertility.ContainsKey(pos))
+                            fertility.Add(pos, GetRandomAspect(RNG, t.tile.baseFertility));
                         if (!richness.ContainsKey(pos))
                             richness.Add(pos, GetRandomAspect(RNG, t.tile.baseRichness));
 
@@ -205,215 +432,6 @@ public class World : MonoBehaviour
             //terrain.SetTile(grid.WorldToCell(center), null);
         }
     }
-
-    private float GetRandomAspect(System.Random rand, float baseAspect)
-    {
-        return baseAspect + (float)(rand.NextDouble() - 0.5) * baseAspect;
-    }
-
-    public void AddFogOfWar(Vector3Int position, UnitEntityManager manager)
-    {
-        if (Visible.ContainsKey(position))
-        {
-            Visible[position]--;
-            if (Visible[position] == 0)
-            {
-                Visible.Remove(position);
-                if (enableFogOfWar)
-                {
-                    vision.SetTile(position, fog);
-                    if (manager.Positions.ContainsKey(position) && !manager.Positions[position].PlayerControlled)
-                        manager.Positions[position].HideScript();
-                }
-            }
-        }
-    }
-
-    public void RevealTerraIncognita(Vector3Int position)
-    {
-        TileBase tile = vision.GetTile(position);
-        if (tile != null && tile.name == "Cloud")
-        {
-            vision.SetTile(position, fog);
-            if (ResourceMap.Icons.ContainsKey(position))
-                ResourceMap.Icons[position].gameObject.SetActive(true);
-        }
-    }
-
-    public void RevealFogOfWar(Vector3Int position, UnitEntityManager manager)
-    {
-        if (Visible.ContainsKey(position))
-        {
-            Visible[position]++;
-        }
-        else
-        {
-            Visible.Add(position, 1);
-            vision.SetTile(position, null);
-            if (manager.Positions.ContainsKey(position) && !manager.Positions[position].PlayerControlled)
-                manager.Positions[position].ShowScript();
-        }
-    }
-
-    public List<Vector3Int> GetAdjacents(Vector3Int tile)
-    {
-        List<Vector3Int> adjacents = new List<Vector3Int>();
-        Vector3[] checks = new Vector3[] { new Vector3(-1, 0), new Vector3(-0.5f, 0.75f), new Vector3(0.5f, 0.75f), new Vector3(1, 0), new Vector3(0.5f, -0.75f), new Vector3(-0.5f, -0.75f) };
-        foreach (Vector3 check in checks)
-        {
-            adjacents.Add(grid.WorldToCell(check + grid.CellToWorld(tile)));
-        }
-        return adjacents;
-    }
-
-    /// <summary>
-    /// Approximates the line of sight to each hexagon within a given radius by placing
-    /// each hexagon within a angle bucket and backtracking to find any collisions
-    /// with buckets in an earlier layer
-    /// </summary>
-    public HashSet<Vector3Int> GetLineOfSight(Vector3Int start, int range)
-    {
-        //Debug.Log("LINE OF SIGHT");
-        range += (int) ((TerrainTile)terrain.GetTile(start)).sightBonus;
-        HashSet<Vector3Int> sight = new HashSet<Vector3Int>();
-        List<List<Vector3Int>> rangeList = GetRangeList(start, range);
-        sight.Add(start);
-        for (int r = 1; r <= range; r++)
-        {
-            float margin = Mathf.PI * 2 / (r * 6);
-            for (int i = 0; i < r * 6; i++)
-            {
-                // Calculate angles
-                Vector3Int tile = rangeList[r][i];
-                float angle = margin * i;
-                float leftRay = angle - margin / 2;
-                float rightRay = angle + margin / 2;
-                //Debug.Log(tile + "\t" + leftRay + "\t" + rightRay);
-
-                // Backtrack
-                bool clear = true;
-                float pastSightCost = 1;
-                //float pastSightCost = ((TerrainTile)terrain.GetTile(tile)).sightCost;
-                //float pastSightCost = 0;
-                for (int j = r - 1; j > 0; j--)
-                {
-                    float layerMargin = Mathf.PI * 2 / (j * 6 * 2);
-                    Vector3Int left = rangeList[j][Mathf.CeilToInt(leftRay / layerMargin) / 2 % (j*6)];
-                    Vector3Int right = rangeList[j][Mathf.CeilToInt(rightRay / layerMargin) / 2 % (j*6)];
-                    if (!(sight.Contains(left) || sight.Contains(right)))
-                    {
-                        clear = false;
-                        break;
-                    }
-
-                    // Determine sight cost
-                    float leftSightCost = 10000;
-                    float rightSightCost = 10000;
-                    if (sight.Contains(left) && terrain.GetTile(left) != null)
-                        leftSightCost = ((TerrainTile)terrain.GetTile(left)).sightCost;
-                    if (sight.Contains(right) && terrain.GetTile(right) != null)
-                        rightSightCost = ((TerrainTile)terrain.GetTile(right)).sightCost;
-                    pastSightCost += Mathf.Min(leftSightCost, rightSightCost);
-                }
-                if (clear && pastSightCost <= range)
-                {   
-                    sight.Add(tile);
-                }
-            }
-        }
-        return sight;
-    }
-
-    public List<List<Vector3Int>> GetRangeList(Vector3Int start, int range)
-    {
-        List<List<Vector3Int>> rangeList = new List<List<Vector3Int>>() { new List<Vector3Int>() { start } };
-        Vector3 worldStart = grid.CellToWorld(start);
-        
-        for (int r = 1; r <= range; r++) {
-            Vector3[] checks = new Vector3[] { new Vector3(-0.5f, 0.75f), new Vector3(-1, 0), new Vector3(-0.5f, -0.75f), new Vector3(0.5f, -0.75f), new Vector3(1, 0), new Vector3(0.5f, 0.75f)};
-            List<Vector3Int> tiles = new List<Vector3Int>();
-            Vector3 adder = r * new Vector3(1f, 0);
-            for (int i = 0; i < 6; i++)
-            {
-                for (int j = 0; j < r; j++)
-                {
-                    tiles.Add(grid.WorldToCell(worldStart + adder));
-                    adder += checks[i];
-                }
-            }
-            rangeList.Add(tiles);
-        }
-        return rangeList;
-    }
-
-    public HashSet<Vector3Int> GetTilesInRange(Vector3Int start, int range)
-    {
-        HashSet<Vector3Int> tileRange = new HashSet<Vector3Int>
-        {
-            start
-        };
-
-        Vector3 worldStart = grid.CellToWorld(start);
-
-        for (int i = 1; i <= range; i++)
-        {
-            tileRange.Add(grid.WorldToCell(i * new Vector3(-1, 0) + worldStart));
-            tileRange.Add(grid.WorldToCell(i * new Vector3(1, 0) + worldStart));
-        }
-
-        Vector3 topEdge = new Vector3(0.5f - range, 0.75f) + worldStart;
-        Vector3 lowerEdge = new Vector3(0.5f - range, -0.75f) + worldStart;
-        for (int layer = 0; layer < range; layer++)
-        {
-            // Move to next layer and fill line
-            for (int i = 0; i < range * 2 - layer; i++)
-            {
-                tileRange.Add(grid.WorldToCell(i * new Vector3(1, 0) + topEdge));
-                tileRange.Add(grid.WorldToCell(i * new Vector3(1, 0) + lowerEdge));
-            }
-            topEdge += new Vector3(0.5f, 0.75f);
-            lowerEdge += new Vector3(0.5f, -0.75f);
-        }
-
-        return tileRange;
-    }
-
-    /// <summary>
-    /// Calculates whether a tile is reachable with a given movement speed
-    /// </summary>
-    /// <param name="moves">The remaing movement speed available</param>
-    /// <param name="destination">The destination tile</param>
-    /// <param name="checkUnits">Whether to check if the destination tile has a unit on it or not</param>
-    /// <returns>Return the movement cost to get to the destination tile if it is reachable, otherwise returns -1</returns>
-    public float IsReachable(float moves, Vector3Int destination, bool checkUnits = false)
-    {
-        TerrainTile t = (TerrainTile)terrain.GetTile(destination);
-        if (t != null && !t.impassable && moves >= t.movementCost && (!checkUnits || !UnitManager.Positions.ContainsKey(destination)))
-        {
-            return t.movementCost;
-        }
-        return -1;
-    }
-
-    public float GetMovementCost(Vector3Int position)
-    {
-        if (terrain.GetTile(position) != null)
-        {
-            return ((TerrainTile)terrain.GetTile(position)).movementCost;
-        }
-        return 0f;
-    }
-
-    public float IsViewable(float moves, Vector3Int destination)
-    {
-        TerrainTile t = (TerrainTile)terrain.GetTile(destination);
-        if (t != null && moves > 0)
-        {
-            return t.sightCost;
-        }
-        return -1;
-    }
-
     // Creates meta-hexagon chunk
     private Vector3Int[] CreateChunk(Vector2 chunkCenter, int radius)
     {
@@ -489,6 +507,11 @@ public class World : MonoBehaviour
         return tiles;
     }
 
+    private float GetRandomAspect(System.Random rand, float baseAspect)
+    {
+        return baseAspect + (float)(rand.NextDouble() - 0.5) * baseAspect;
+    }
+
     public float GetFertilityAtTile(Vector3Int tilePos)
     {
         return fertility[tilePos];
@@ -498,4 +521,5 @@ public class World : MonoBehaviour
     {
         return richness[tilePos];
     }
+    // =============================================================
 }

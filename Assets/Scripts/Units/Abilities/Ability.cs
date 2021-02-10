@@ -35,11 +35,12 @@ namespace Units.Abilities
             List<UnitEntity> targets = new List<UnitEntity>();
             foreach (Vector3Int tile in aoe)
             {
-                if (world.UnitManager.Positions.ContainsKey(tile))
+                UnitEntity unitAt = world.GetUnitAt(tile);
+                if (unitAt != null)
                 {
-                    bool isEnemy = world.UnitManager.Positions[tile].PlayerControlled != caster.PlayerControlled;
+                    bool isEnemy = caster.IsEnemy(unitAt);
                     if (isEnemy && targetEnemies || !isEnemy && targetFriends)
-                        targets.Add(world.UnitManager.Positions[tile]);
+                        targets.Add(unitAt);
                 }
             }
             foreach (AbilityEffect effect in effects)

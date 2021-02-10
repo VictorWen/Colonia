@@ -6,10 +6,10 @@ namespace Units.Intelligence
     /// <summary>
     /// AI for calculating whether to try use an ability, retreat, or wander.
     /// </summary>
-    public interface NPCMainAI
+    public abstract class NPCMainAI : MonoBehaviour
     {
-        AIState GetState(NPCUnitEntity self, World world);
+        public abstract AIState GetState(NPCUnitEntity self, World world);
 
-        Ability GetNextAbility(NPCUnitEntity self, World world);
+        public abstract Ability GetNextAbility(NPCUnitEntity self, World world);
     }
 }

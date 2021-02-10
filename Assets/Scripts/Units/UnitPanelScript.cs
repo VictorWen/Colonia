@@ -27,7 +27,7 @@ namespace Units
         public Button abilityButton;
         public Button itemsButton;
 
-        private UnitEntityScript selectedUnit;
+        private UnitEntityGUI selectedUnit;
 
         private void Awake()
         {
@@ -49,7 +49,7 @@ namespace Units
         }
 
         //TODO: reorganize unitPanelScript
-        public void SetSelectedUnit(UnitEntityScript selected)
+        public void SetSelectedUnit(UnitEntityGUI selected)
         {
             selectedUnit = selected;
             moveButton.onClick.RemoveAllListeners();
@@ -83,7 +83,7 @@ namespace Units
             unitInfoPanel.SetActive(false);
         }
 
-        public void ShowAbilityMenu(UnitEntityScript unit)
+        public void ShowAbilityMenu(UnitEntityGUI unit)
         {
             abilityMenu.Enable(unit);
         }

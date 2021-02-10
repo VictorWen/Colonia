@@ -24,6 +24,7 @@ public class GUIMaster : MonoBehaviour
     public DistrictSelectorScript districtSelectorScript;
 
     public Canvas mapHUD;
+    public Camera playerCam;
 
     public GUIStateManager GUIState { get; private set; }
     public GameMaster Game { get; private set; }
@@ -34,21 +35,21 @@ public class GUIMaster : MonoBehaviour
     //TODO: formalize city script text updating
     private CityScript capitalScript;
 
-    public UnitEntityScript testUnit;
-    public UnitEntityScript testEnemyUnit;
-    public UnitEntityScript unitEntityPrefab;
+    public UnitEntityGUI testUnit;
+    public UnitEntityGUI testEnemyUnit;
+    public UnitEntityGUI unitEntityPrefab;
     public UnitPanelScript unitPanel;
 
     public void Awake()
     {
         Debug.Log("GAME START");
-        
+        Game = new GameMaster(world);
+
         GUIState = new GUIStateManager(cityGUI, mapHUD);
     }
 
     public void Start()
     {
-        Game = new GameMaster(world);
         cityGUI.gui = this;
 
         //--TESTING--------
@@ -62,12 +63,10 @@ public class GUIMaster : MonoBehaviour
         capital = capitalScript.city;
         //capital.inv = inv;
         
-        testUnit.gui = this;
-        testUnit.Unit = Game.AddNewTestUnit("TEST HERO NAME", true, Game.World.grid.WorldToCell(testUnit.transform.position), testUnit);
-        testUnit.Unit.UpdateVision(Game.World);
 
-        testEnemyUnit.gui = this;
-        testEnemyUnit.Unit = Game.AddNewTestNPCUnit("EVIL LORD", Game.World.grid.WorldToCell(testEnemyUnit.transform.position), new RecklessAI(), new BasicTargettingAI(), new SimpleMovementAI(), testEnemyUnit);
+/*        testUnit.Unit.UpdateVision(Game.World);
+
+        testEnemyUnit.gui = this;*/
         //testEnemyUnit.Unit.UpdateVision(Game.World);
         //UpdateAllUnitVisibilities();
         //cityGUI.OpenCityGUI(capital);
@@ -84,7 +83,7 @@ public class GUIMaster : MonoBehaviour
         capitalScript.title.text = capital.Name + "(" + capital.population + ")"; //TODO: move population text update location
 
         //TODO: move enemy turn to new location
-        NPCUnitEntity enemy = (NPCUnitEntity) testEnemyUnit.Unit;
+        //NPCUnitEntity enemy = (NPCUnitEntity) testEnemyUnit.Unit;
 /*        Vector3Int target = enemy.ai.GetTarget(enemy, Game.World);
         Debug.Log("Enemey Target: " + target);
         LinkedList<Vector3Int> movement = enemy.ai.GetMovementAction(enemy, target, Game.World);

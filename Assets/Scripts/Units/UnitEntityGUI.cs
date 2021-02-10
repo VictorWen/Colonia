@@ -7,19 +7,19 @@ using Units.Abilities;
 
 namespace Units
 {
-    public class UnitEntityScript : MonoBehaviour
+    public class UnitEntityGUI : MonoBehaviour
     {
         // TODO: Organize UnitEntityScript's field variables
-        public Camera cam;
-        public Grid grid;
-        public World world;
-        public Tilemap movement;
+        //public Camera cam;
+        //public World world;
+        //public Tilemap movement;
         public TileBase gold;
         public TileBase cyan;
         public TileBase red;
 
-        public GUIMaster gui; 
+        public GUIMaster gui;
 
+        private World world;
         private bool selected = false;
         private readonly HashSet<Vector3Int> moveablePos = new HashSet<Vector3Int>();
         private readonly HashSet<Vector3Int> attackablePos = new HashSet<Vector3Int>();
@@ -27,25 +27,20 @@ namespace Units
         //TODO: change to readonly
         public UnitEntity Unit { get; set;}
 
-        public static UnitEntityScript Create(UnitEntity unitData, UnitEntityScript prefab, GUIMaster gui)
-        {
-            UnitEntityScript unit = Instantiate(prefab);
-            unit.Unit = unitData;
-            unit.gui = gui;
-            if (unitData.PlayerControlled)
-                unit.gameObject.SetActive(false);
-            return unit;
-        }
-
         private void Awake()
         {
-            //TODO: TESTING UNIT CONTROLLER
-            //Unit = 
+            Unit = GetComponent<UnitEntity>();
+            world = gui.Game.World;
+            Debug.Log(Unit);
         }
 
         private void Start()
         {
-            //cam.transform.position = transform.position + new Vector3(0, 0, -500);
+/*            Debug.Log(gui);
+            Debug.Log(gui.Game);
+            Debug.Log(gui.Game.world);*/
+            if (Unit.PlayerControlled)
+                gameObject.SetActive(true);
         }
 
         private void OnMouseOver()
@@ -58,7 +53,7 @@ namespace Units
                     {
                         //MoveAction();
                         gui.unitPanel.SetSelectedUnit(this);
-                        movement.SetTile(grid.WorldToCell(transform.position), gold);
+                        world.movement.SetTile(world.grid.WorldToCell(transform.position), gold);
                         gui.GUIState.SetState(GUIStateManager.UNIT);
                         selected = true;
                     }
@@ -67,7 +62,7 @@ namespace Units
                         ClearMovables();
                         ClearAttackables();
                         gui.unitPanel.SetSelectedUnit(null);
-                        movement.SetTile(grid.WorldToCell(transform.position), null);
+                        world.movement.SetTile(world.grid.WorldToCell(transform.position), null);
                         gui.GUIState.SetState(GUIStateManager.MAP);
                         selected = false;
                     }
@@ -91,27 +86,28 @@ namespace Units
         {
             if (selected && Input.GetMouseButtonUp(0))
             {
-                Vector3 pos = cam.ScreenToWorldPoint(Input.mousePosition);
-                Vector3Int gridPos = grid.WorldToCell(pos);
+                Vector3 pos = gui.playerCam.ScreenToWorldPoint(Input.mousePosition);
+                Vector3Int gridPos = world.grid.WorldToCell(pos);
                 if (moveablePos.Contains(gridPos))
                 {
-                    movement.SetTile(Unit.Position, null);
+                    world.movement.SetTile(Unit.Position, null);
                     ClearMovables();
-                    movement.SetTile(gridPos, gold);
+                    world.movement.SetTile(gridPos, gold);
                     Unit.MoveTo(gridPos, world);
                     //gui.UpdateAllUnitVisibilities();
                 }
                 if (attackablePos.Contains(gridPos))
                 {
                     ClearAttackables();
-                    Unit.AttackUnitEntity(world.UnitManager.Positions[gridPos], world);
+                    Unit.AttackUnitEntity(world.GetUnitAt(gridPos), world);
                 }
             }
         }
 
         public void UpdateGraphics()
         {
-            transform.position = grid.CellToWorld(Unit.Position);
+            Debug.Log(world);
+            transform.position = world.grid.CellToWorld(Unit.Position);
             if (selected)
             {
                 gui.unitPanel.UpdateGUI();
@@ -131,7 +127,7 @@ namespace Units
             {
                 if (!gridPos.Equals(Unit.Position))
                 {
-                    movement.SetTile(gridPos, cyan);
+                    world.movement.SetTile(gridPos, cyan);
                     moveablePos.Add(gridPos);
                 }
             }
@@ -160,7 +156,8 @@ namespace Units
             }*/
             foreach (Vector3Int attackPos in world.GetLineOfSight(Unit.Position, testAttackrange))
             {
-                if (world.UnitManager.Positions.ContainsKey(attackPos) && !world.UnitManager.Positions[attackPos].PlayerControlled && !attackablePos.Contains(attackPos))
+                UnitEntity unitAt = world.GetUnitAt(attackPos);
+                if (unitAt != null && !unitAt.PlayerControlled && !attackablePos.Contains(attackPos))
                 {
                     attackablePos.Add(attackPos);
                     world.movement.SetTile(attackPos, red);
@@ -212,7 +209,7 @@ namespace Units
         {
             foreach (Vector3Int tilePos in moveablePos)
             {
-                movement.SetTile(tilePos, null);
+                world.movement.SetTile(tilePos, null);
             }
             moveablePos.Clear();
             //ClearAttackables();
@@ -222,7 +219,7 @@ namespace Units
         {
             foreach (Vector3Int tilePos in attackablePos)
             {
-                movement.SetTile(tilePos, null);
+                world.movement.SetTile(tilePos, null);
             }
             attackablePos.Clear();
         }

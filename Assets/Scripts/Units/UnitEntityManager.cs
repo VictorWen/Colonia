@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Units
 {
     public class UnitEntityManager
     {
-        public Dictionary<Vector3Int, UnitEntity> Positions { get; private set; }
         public List<UnitEntity> Units { get; private set; }
         public List<NPCUnitEntity> NPCUnits { get; private set; }
 
-        public UnitEntityManager()
+        private readonly World world;
+        private readonly Dictionary<Vector3Int, UnitEntity> positions;
+
+        public UnitEntityManager(World world)
         {
-            Positions = new Dictionary<Vector3Int, UnitEntity>();
+            this.world = world;
+            positions = new Dictionary<Vector3Int, UnitEntity>();
             Units = new List<UnitEntity>();
             NPCUnits = new List<NPCUnitEntity>();
         }
@@ -23,29 +23,38 @@ namespace Units
         public void AddUnit(UnitEntity unit)
         {
             Units.Add(unit);
-            Positions.Add(unit.Position, unit);
-        }
-
-        // TODO: Generalize this?
-        public void AddNPCUnit(NPCUnitEntity unit)
-        {
-            Units.Add(unit);
-            NPCUnits.Add(unit);
-            Positions.Add(unit.Position, unit);
+            if (unit is NPCUnitEntity npc)
+                NPCUnits.Add(npc);
+            positions.Add(GetPositionFor(unit), unit);
+            unit.SetUnitManager(this);
         }
 
         public void RemoveUnit(UnitEntity unit)
         {
             Units.Remove(unit);
-            if (NPCUnits.Contains(unit))
-                NPCUnits.Remove((NPCUnitEntity)unit);
-            Positions.Remove(unit.Position);
+            if (unit is NPCUnitEntity npc)
+                NPCUnits.Remove(npc);
+            positions.Remove(GetPositionFor(unit));
         }
 
-        public void MoveUnit(UnitEntity unit, Vector3Int destination)
+        public void SetUnitPosition(UnitEntity unit, Vector3Int destination)
         {
-            Positions.Remove(unit.Position);
-            Positions.Add(destination, unit);
+            positions.Remove(GetPositionFor(unit));
+            positions.Add(destination, unit);
+
+            unit.transform.position = world.grid.CellToWorld(destination);
+        }
+
+        public UnitEntity GetUnitAt(Vector3Int position)
+        {
+            if (positions.ContainsKey(position))
+                return positions[position];
+            return null;
+        }
+
+        public Vector3Int GetPositionFor(UnitEntity unit)
+        {
+            return world.grid.WorldToCell(unit.transform.position);
         }
     }
 }

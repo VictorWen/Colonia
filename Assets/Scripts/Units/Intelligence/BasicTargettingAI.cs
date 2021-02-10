@@ -10,15 +10,16 @@ namespace Units.Intelligence
         /// <summary>
         /// Assumes that the Ability is a damage dealing ability, though this is not necessarily true.
         /// </summary>
-        public Vector3Int GetAbilityTarget(UnitEntity self, Ability ability, World world)
+        public override Vector3Int GetAbilityTarget(UnitEntity self, Ability ability, World world)
         {
             // Find all visible enemey UnitEntities
             List<UnitEntity> targets = new List<UnitEntity>();
             foreach (Vector3Int visible in self.VisibleTiles)
             {
-                if (world.UnitManager.Positions.ContainsKey(visible) && self.IsEnemy(world.UnitManager.Positions[visible]))
+                UnitEntity unitAt = world.GetUnitAt(visible);
+                if (unitAt != null && self.IsEnemy(unitAt))
                 {
-                    targets.Add(world.UnitManager.Positions[visible]);
+                    targets.Add(unitAt);
                 }
             }
 
@@ -35,7 +36,7 @@ namespace Units.Intelligence
             return minDistance;
         }
 
-        public Vector3Int GetManeuverTarget(UnitEntity self, Ability ability, Vector3Int abilityTarget, World world)
+        public override Vector3Int GetManeuverTarget(UnitEntity self, Ability ability, Vector3Int abilityTarget, World world)
         {
             BFSPathfinder bfs = new BFSPathfinder(self.Position, self.MovementSpeed, world, true);
             Vector3Int minDistance = abilityTarget;
@@ -51,7 +52,7 @@ namespace Units.Intelligence
             return minDistance;
         }
 
-        public Vector3Int GetRetreatTarget(UnitEntity self, World world)
+        public override Vector3Int GetRetreatTarget(UnitEntity self, World world)
         {
             BFSPathfinder bfs = new BFSPathfinder(self.Position, self.MovementSpeed, world, true);
             int random = world.RNG.Next(bfs.Reachables.Count);
@@ -65,7 +66,7 @@ namespace Units.Intelligence
             return self.Position;
         }
 
-        public Vector3Int GetWanderTarget(UnitEntity self, World world)
+        public override Vector3Int GetWanderTarget(UnitEntity self, World world)
         {
             BFSPathfinder bfs = new BFSPathfinder(self.Position, self.MovementSpeed, world, true);
             int random = world.RNG.Next(bfs.Reachables.Count);

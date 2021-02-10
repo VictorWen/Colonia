@@ -12,11 +12,12 @@ namespace Units
         public NPCTargetingAI TargetingAI { get; private set; }
         public NPCMovementAI MovementAI {get; private set;}
 
-        public NPCUnitEntity(string name, Vector3Int position, NPCMainAI mainAI, NPCTargetingAI abilityAI, NPCMovementAI moveAI, UnitEntityManager manager, UnitEntityScript script) : base(name, false, position, manager, script)
+        protected override void Awake()
         {
-            MainAI = mainAI;
-            TargetingAI = abilityAI;
-            MovementAI = moveAI;
+            MainAI = GetComponent<NPCMainAI>();
+            TargetingAI = GetComponent<NPCTargetingAI>();
+            MovementAI = GetComponent<NPCMovementAI>();
+            base.Awake();
         }
 
         public void ExecuteTurn(GameMaster game)

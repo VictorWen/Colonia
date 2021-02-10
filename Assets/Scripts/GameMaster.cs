@@ -18,9 +18,6 @@ public class GameMaster
     private readonly List<City> cities;
     private readonly ResourceModifiers globalModifiers;
 
-    public List<UnitEntity> Units { get { return unitManager.Units; } }
-    private readonly UnitEntityManager unitManager;
-
     public GameMaster(World world)
     {
         this.World = world;
@@ -29,27 +26,19 @@ public class GameMaster
         pendingResources = new Dictionary<string, float>();
         cities = new List<City>();
         globalModifiers = new ResourceModifiers();
-        unitManager = World.UnitManager;
     }
 
     // TODO: Move game control methods to a separate interface or class
     public void NextTurn(GUIMaster gui)
     {
-        foreach (NPCUnitEntity npc in unitManager.NPCUnits)
-        {
-            npc.ExecuteTurn(this);
-        }
-        
+        World.ExecuteNPCTurns(this);
         
         foreach (City city in cities)
         {
             city.OnNextTurn(gui);
         }
 
-        foreach (UnitEntity unit in unitManager.Units)
-        {
-            unit.OnNextTurn(this);
-        }
+        World.UnitsOnNextTurn(this);
 
         Dictionary<string, int> delta = new Dictionary<string, int>();
         foreach (KeyValuePair<string, float> resource in pendingResources)
@@ -67,20 +56,6 @@ public class GameMaster
     public void AddNewCity(City city)
     {
         cities.Add(city);
-    }
-
-    public UnitEntity AddNewTestUnit(string name, bool playerControlled, Vector3Int position, UnitEntityScript script)
-    {
-        UnitEntity unit = new UnitEntity(name, playerControlled, position, unitManager, script);
-        unitManager.AddUnit(unit);
-        return unit;
-    }
-
-    public NPCUnitEntity AddNewTestNPCUnit(string name, Vector3Int position, NPCMainAI mainAI, NPCTargetingAI abilityAI, NPCMovementAI moveAI, UnitEntityScript script)
-    {
-        NPCUnitEntity unit = new NPCUnitEntity(name, position, mainAI, abilityAI, moveAI, unitManager, script);
-        unitManager.AddNPCUnit(unit);
-        return unit;
     }
     
     public void AddPendingResource(string id, float value)
