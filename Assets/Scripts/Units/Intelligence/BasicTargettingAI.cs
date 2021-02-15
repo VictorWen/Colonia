@@ -10,9 +10,10 @@ namespace Units.Intelligence
         /// <summary>
         /// Assumes that the Ability is a damage dealing ability, though this is not necessarily true.
         /// </summary>
-        public override Vector3Int GetAbilityTarget(UnitEntity self, Ability ability, World world)
+        public override Vector3Int GetAbilityTarget(NPCUnitEntityAI self, Ability ability, World world)
         {
-            // Find all visible enemey UnitEntities
+            return self.Movement.Position;
+/*            // Find all visible enemey UnitEntities
             List<UnitEntity> targets = new List<UnitEntity>();
             foreach (Vector3Int visible in self.VisibleTiles)
             {
@@ -33,12 +34,13 @@ namespace Units.Intelligence
                     minDistance = entity.Position;
                 }
             }
-            return minDistance;
+            return minDistance;*/
         }
 
-        public override Vector3Int GetManeuverTarget(UnitEntity self, Ability ability, Vector3Int abilityTarget, World world)
+        public override Vector3Int GetManeuverTarget(NPCUnitEntityAI self, Ability ability, Vector3Int abilityTarget, World world)
         {
-            BFSPathfinder bfs = new BFSPathfinder(self.Position, self.MovementSpeed, world, true);
+            return self.Movement.Position;
+/*            BFSPathfinder bfs = new BFSPathfinder(self.Position, self.MovementSpeed, world, true);
             Vector3Int minDistance = abilityTarget;
             foreach (Vector3Int withinRange in ability.GetReachingTiles(self, abilityTarget, world))
             {
@@ -49,12 +51,12 @@ namespace Units.Intelligence
                 }
             }
 
-            return minDistance;
+            return minDistance;*/
         }
 
-        public override Vector3Int GetRetreatTarget(UnitEntity self, World world)
+        public override Vector3Int GetRetreatTarget(NPCUnitEntityAI self, World world)
         {
-            BFSPathfinder bfs = new BFSPathfinder(self.Position, self.MovementSpeed, world, true);
+            BFSPathfinder bfs = self.Movement.GetMoveables();
             int random = world.RNG.Next(bfs.Reachables.Count);
             int index = 0;
             foreach (Vector3Int tile in bfs.Reachables)
@@ -63,12 +65,12 @@ namespace Units.Intelligence
                     return tile;
                 index++;
             }
-            return self.Position;
+            return self.Movement.Position;
         }
 
-        public override Vector3Int GetWanderTarget(UnitEntity self, World world)
+        public override Vector3Int GetWanderTarget(NPCUnitEntityAI self, World world)
         {
-            BFSPathfinder bfs = new BFSPathfinder(self.Position, self.MovementSpeed, world, true);
+            BFSPathfinder bfs = self.Movement.GetMoveables();
             int random = world.RNG.Next(bfs.Reachables.Count);
             int index = 0;
             foreach (Vector3Int tile in bfs.Reachables)
@@ -77,7 +79,7 @@ namespace Units.Intelligence
                     return tile;
                 index++;
             }
-            return self.Position;
+            return self.Movement.Position;
         }
     }
 }

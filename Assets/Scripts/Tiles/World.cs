@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Units;
+using Units.Movement;
 
 // The interface for the terrain map
 // Generates and accesses the terrain
@@ -18,43 +19,13 @@ public class World : MonoBehaviour
     [Header("Vision")]
     public bool enableFogOfWar;
     public Tilemap vision;
-    public Tile cloud;
-    public Tile fog;
     public Dictionary<Vector3Int, int> Visible { get; private set; }
 
     [Header("Generation Settings")]
     public bool autoUpdate;
     public int seed;
-    public int chunkRadius;
-    public int worldRadius;
-    [Range(0.5f, 25f)]
-    public float scale;
-    [Range(1, 16)]
-    public int octaves;
-    [Range(0.1f, 2f)]
-    public float persistence;
-    [Range(0.1f, 1f)]
-    public float lucanarity;
-    [Range(0.5f, 4f)]
-    public float octaveAmplitude;
 
-    [System.Serializable]
-    public struct TerrainData
-    {
-        [Header("Generation")]
-        [Range(0, 1)]
-        public float height;
-        public TerrainTile tile;
-        public bool waterAdjacent;
-    }
-
-    [Header("Terrain Tiles")]
-    public TerrainData[] tiles;
-    public BiomeTileSet[] biomes;
-
-    [Header("Resource Generation")]
-    public BiomeResources[] biomeResources;
-    public ResourceIconScript iconPrefab;
+    [SerializeField] private WorldGenerationConfig config;
 
     //TODO: fix/organize this
     public ResourceMap ResourceMap { get; private set; }
@@ -64,37 +35,31 @@ public class World : MonoBehaviour
     private Dictionary<Vector3Int, float> fertility;
     private Dictionary<Vector3Int, float> richness;
 
-    private UnitEntityManager unitManager;
+    public UnitEntityManager UnitManager { get; private set; }
 
     private void Awake()
     {
         GenerateWorld();
         // Generate Resources
-        ResourceMap = new ResourceMap(this, biomeResources, iconPrefab, enableFogOfWar);
-        unitManager = new UnitEntityManager(this);
+        ResourceMap = new ResourceMap(this, config.biomeResources, config.iconPrefab, enableFogOfWar);
+        UnitManager = new UnitEntityManager(this);
     }
 
     // UnitEntityManager wrappers =======================
     public UnitEntity GetUnitAt(Vector3Int position)
     {
-        return unitManager.GetUnitAt(position);
-    }
-
-    public void AddUnitEntity(UnitEntity unit)
-    {
-        unitManager.AddUnit(unit);
+        //return unitManager.GetUnitAt(position);
+        return null;
     }
 
     public void ExecuteNPCTurns(GameMaster game)
     {
-        foreach (NPCUnitEntity npc in unitManager.NPCUnits)
-            npc.ExecuteTurn(game);
+        UnitManager.ExecuteNPCTurns(game);
     }
 
     public void UnitsOnNextTurn(GameMaster game)
     {
-        foreach (UnitEntity unit in unitManager.Units)
-            unit.OnNextTurn(game);
+        UnitManager.NextTurn(game);
     }
     // =========================================
 
@@ -109,10 +74,10 @@ public class World : MonoBehaviour
                 Visible.Remove(position);
                 if (enableFogOfWar)
                 {
-                    vision.SetTile(position, fog);
-                    UnitEntity unitAt = GetUnitAt(position);
+                    vision.SetTile(position, config.fog);
+/*                    UnitEntity unitAt = GetUnitAt(position);
                     if (unitAt != null && !unitAt.PlayerControlled)
-                        unitAt.HideScript();
+                        unitAt.HideScript();*/
                 }
             }
         }
@@ -123,7 +88,7 @@ public class World : MonoBehaviour
         TileBase tile = vision.GetTile(position);
         if (tile != null && tile.name == "Cloud")
         {
-            vision.SetTile(position, fog);
+            vision.SetTile(position, config.fog);
             if (ResourceMap.Icons.ContainsKey(position))
                 ResourceMap.Icons[position].gameObject.SetActive(true);
         }
@@ -139,9 +104,9 @@ public class World : MonoBehaviour
         {
             Visible.Add(position, 1);
             vision.SetTile(position, null);
-            UnitEntity unitAt = GetUnitAt(position);
+/*            UnitEntity unitAt = GetUnitAt(position);
             if (unitAt != null && !unitAt.PlayerControlled)
-                unitAt.ShowScript();
+                unitAt.ShowScript();*/
         }
     }
     
@@ -305,14 +270,14 @@ public class World : MonoBehaviour
         Visible = new Dictionary<Vector3Int, int>();
         terrain.ClearAllTiles();
         vision.ClearAllTiles();
-        Array.Sort(tiles, (x1, x2) => x1.height.CompareTo(x2.height));
-        foreach (BiomeTileSet b in biomes)
+        Array.Sort(config.tiles, (x1, x2) => x1.height.CompareTo(x2.height));
+        foreach (BiomeTileSet b in config.biomes)
         {
             Array.Sort(b.tiles, (x1, x2) => x1.height.CompareTo(x2.height));
         }
 
         RNG = new System.Random(seed);
-        int size = (worldRadius * 2 + 1) * (chunkRadius * 2 + 1);
+        int size = (config.worldRadius * 2 + 1) * (config.chunkRadius * 2 + 1);
 
         //TODO: better fertility and richness => create better biome terrain
         fertility = new Dictionary<Vector3Int, float>();
@@ -322,49 +287,49 @@ public class World : MonoBehaviour
         float[,] heightLevels = new float[size, size];
         float amplitude = 1f;
         float frequency = 1f;
-        for (int i = 0; i < octaves; i++)
+        for (int i = 0; i < config.octaves; i++)
         {
             float offset = RNG.Next(-100000, 100000);
             for (int x = 0; x < size; x++)
             {
                 for (int y = 0; y < size; y++)
                 {
-                    float sampleX = (x - size / 2f) / scale * frequency + offset;
-                    float sampleY = (y - size / 2f) / scale * frequency + offset;
+                    float sampleX = (x - size / 2f) / config.scale * frequency + offset;
+                    float sampleY = (y - size / 2f) / config.scale * frequency + offset;
                     heightLevels[x, y] += amplitude * (Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1);
                 }
             }
 
-            amplitude *= persistence;
-            frequency *= lucanarity;
+            amplitude *= config.persistence;
+            frequency *= config.lucanarity;
         }
         for (int x = 0; x < size; x++)
         {
             for (int y = 0; y < size; y++)
             {
-                heightLevels[x, y] = Mathf.InverseLerp(-octaveAmplitude, octaveAmplitude, heightLevels[x, y]);
+                heightLevels[x, y] = Mathf.InverseLerp(-config.octaveAmplitude, config.octaveAmplitude, heightLevels[x, y]);
             }
         }
 
-        Vector2[] centers = GetChunkCenters(chunkRadius, worldRadius);
+        Vector2[] centers = GetChunkCenters(config.chunkRadius, config.worldRadius);
         BiomeChunks = new Vector3Int[centers.Length][];
         int p = 0;
         // Assign Tiles
         foreach (Vector2 center in centers)
         {
             // Determine biome
-            TerrainData[] biomeTiles = tiles;
+            WorldGenerationConfig.TerrainData[] biomeTiles = config.tiles;
             //Vector3 tilePos = grid.CellToWorld(pos);
-            float distance = Vector2.Distance(center, new Vector2(0, 0)) / (1.5f * chunkRadius);
+            float distance = Vector2.Distance(center, new Vector2(0, 0)) / (1.5f * config.chunkRadius);
 
-            if (distance >= 0.5 * worldRadius)
+            if (distance >= 0.5 * config.worldRadius)
             {
                 float angle = Mathf.Atan2(center.x, center.y);
                 if (angle < 0)
                 {
                     angle += 2 * Mathf.PI;
                 }
-                float interval = 2 * Mathf.PI / biomes.Length;
+                float interval = 2 * Mathf.PI / config.biomes.Length;
                 float lower = -interval / 2;
                 int index = 0;
                 while (angle > lower && angle >= lower + interval)
@@ -372,10 +337,10 @@ public class World : MonoBehaviour
                     lower += interval;
                     index++;
                 }
-                biomeTiles = biomes[index % biomes.Length].tiles;
+                biomeTiles = config.biomes[index % config.biomes.Length].tiles;
             }
 
-            Vector3Int[] chunk = CreateChunk(center, chunkRadius);
+            Vector3Int[] chunk = CreateChunk(center, config.chunkRadius);
             BiomeChunks[p++] = chunk;
             foreach (Vector3Int pos in chunk)
             {
@@ -402,7 +367,7 @@ public class World : MonoBehaviour
                 // Match height to TileBase
                 for (int i = 0; i < biomeTiles.Length; i++)
                 {
-                    TerrainData t = biomeTiles[i];
+                    WorldGenerationConfig.TerrainData t = biomeTiles[i];
                     if (!t.waterAdjacent && height <= t.height)
                     {
                         terrain.SetTile(pos, t.tile);
@@ -427,7 +392,7 @@ public class World : MonoBehaviour
                     }
                 }
                 if (enableFogOfWar)
-                    vision.SetTile(pos, cloud);
+                    vision.SetTile(pos, config.cloud);
             }
             //terrain.SetTile(grid.WorldToCell(center), null);
         }

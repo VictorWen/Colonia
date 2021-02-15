@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48ebbca8fe82e9842a3b5b3b04fb3e1a, type: 3}
+  m_Name: World Gen Config
+  m_EditorClassIdentifier: 
+  cloud: {fileID: 11400000, guid: 3ed3004e6432e914fbc93a78954c8a82, type: 2}
+  fog: {fileID: 11400000, guid: 2e77e5b8870413146906527fe984dbd3, type: 2}
+  chunkRadius: 25
+  worldRadius: 1
+  scale: 2.5
+  octaves: 8
+  persistence: 0.8
+  lucanarity: 0.8
+  octaveAmplitude: 1.1
+  tiles:
+  - height: 0.384
+    tile: {fileID: 11400000, guid: e6e21178bcf49b846add37a71658fc2a, type: 2}
+    waterAdjacent: 0
+  - height: 0.589
+    tile: {fileID: 11400000, guid: d22b922b4bb654847869f491f3b90318, type: 2}
+    waterAdjacent: 0
+  - height: 0.748
+    tile: {fileID: 11400000, guid: b62df5e1a9dc3194c8842ba6486a64d3, type: 2}
+    waterAdjacent: 0
+  - height: 0.875
+    tile: {fileID: 11400000, guid: 87a4c5a45c50a4649af146b5122a7288, type: 2}
+    waterAdjacent: 0
+  - height: 1
+    tile: {fileID: 11400000, guid: 87e5671401b51eb4d88993c6a21b1b31, type: 2}
+    waterAdjacent: 0
+  biomes:
+  - {fileID: 11400000, guid: b7c05cec3ffa0e943b5499d6afe88e50, type: 2}
+  - {fileID: 11400000, guid: 95ddcb6dc9c70d342a18ab96d0b35842, type: 2}
+  - {fileID: 11400000, guid: f7f7395db080e3e459253e314da2e2cb, type: 2}
+  - {fileID: 11400000, guid: 122ffc5bac4446c418e9054b48327fdb, type: 2}
+  - {fileID: 11400000, guid: 855ffbeaaaa4a504ab8f273b39b4109a, type: 2}
+  - {fileID: 11400000, guid: b62ef7a8a6fd17e4aabba6b6dfe87454, type: 2}
+  biomeResources:
+  - {fileID: 11400000, guid: 90856e588b46f5845b4f2dc102b91d27, type: 2}
+  - {fileID: 11400000, guid: f4ec32ecaa0adf54690e221745964c60, type: 2}
+  iconPrefab: {fileID: 8672234480903314696, guid: 1bff54e7af4da8045a516481433dd0ec,
+    type: 3}

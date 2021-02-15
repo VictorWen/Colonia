@@ -5,5 +5,5 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Tile", menuName = "ScriptableObjects/Biome Tile Set", order = 1)]
 public class BiomeTileSet : ScriptableObject
 {
-    public World.TerrainData[] tiles;
+    public WorldGenerationConfig.TerrainData[] tiles;
 }

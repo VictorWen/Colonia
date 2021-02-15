@@ -1,60 +1,83 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Units.Movement;
+using Units.Combat;
 
 namespace Units
 {
     public class UnitEntityManager
     {
-        public List<UnitEntity> Units { get; private set; }
-        public List<NPCUnitEntity> NPCUnits { get; private set; }
+        public List<UnitEntityData> Units { get; private set; }
+        public List<NPCUnitEntityAI> NPCUnits { get; private set; }
 
         private readonly World world;
-        private readonly Dictionary<Vector3Int, UnitEntity> positions;
+        private readonly Dictionary<Vector3Int, UnitEntityData> positions;
+
+        public struct UnitEntityData
+        {
+            public readonly UnitEntityMovement movement;
+            public readonly UnitEntityCombat combat;
+
+            public UnitEntityData(UnitEntityMovement movement, UnitEntityCombat combat)
+            {
+                this.movement = movement;
+                this.combat = combat;
+            }
+        }
 
         public UnitEntityManager(World world)
         {
             this.world = world;
-            positions = new Dictionary<Vector3Int, UnitEntity>();
-            Units = new List<UnitEntity>();
-            NPCUnits = new List<NPCUnitEntity>();
+            positions = new Dictionary<Vector3Int, UnitEntityData>();
+            Units = new List<UnitEntityData>();
+            NPCUnits = new List<NPCUnitEntityAI>();
         }
 
-        public void AddUnit(UnitEntity unit)
+        public void AddUnit(UnitEntityMovement movement, UnitEntityCombat combat, NPCUnitEntityAI ai = null)
         {
-            Units.Add(unit);
-            if (unit is NPCUnitEntity npc)
-                NPCUnits.Add(npc);
-            positions.Add(GetPositionFor(unit), unit);
-            unit.SetUnitManager(this);
+            UnitEntityData data = new UnitEntityData(movement, combat);
+            Units.Add(data);
+            positions.Add(movement.Position, data);
+
+            if (ai != null)
+                NPCUnits.Add(ai);
+
+            //unit.SetUnitManager(this);
         }
 
-        public void RemoveUnit(UnitEntity unit)
+        public void RemoveUnit(Vector3Int position)
         {
-            Units.Remove(unit);
-            if (unit is NPCUnitEntity npc)
-                NPCUnits.Remove(npc);
-            positions.Remove(GetPositionFor(unit));
+            Units.Remove(positions[position]);
+            positions.Remove(position);
         }
 
-        public void SetUnitPosition(UnitEntity unit, Vector3Int destination)
+        public void UpdateUnitPosition(Vector3Int previousPos, Vector3Int newPos)
         {
-            positions.Remove(GetPositionFor(unit));
-            positions.Add(destination, unit);
-
-            unit.transform.position = world.grid.CellToWorld(destination);
+            UnitEntityData data = positions[previousPos];
+            positions.Remove(previousPos);
+            positions.Add(newPos, data);
         }
 
-        public UnitEntity GetUnitAt(Vector3Int position)
+        public bool GetUnitAt(Vector3Int position, out UnitEntityData data)
         {
-            if (positions.ContainsKey(position))
-                return positions[position];
-            return null;
+            return positions.TryGetValue(position, out data);
         }
 
-        public Vector3Int GetPositionFor(UnitEntity unit)
+        public void NextTurn(GameMaster game)
         {
-            return world.grid.WorldToCell(unit.transform.position);
+            foreach (UnitEntityData data in Units)
+            {
+                data.movement.OnNextTurn(game);
+            }
+        }
+
+        public void ExecuteNPCTurns(GameMaster game)
+        {
+            foreach (NPCUnitEntityAI ai in NPCUnits)
+            {
+                ai.ExecuteTurn(game);
+            }
         }
     }
 }

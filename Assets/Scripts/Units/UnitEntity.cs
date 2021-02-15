@@ -6,34 +6,10 @@ using Items;
 
 namespace Units
 {
-    public class UnitEntity : MonoBehaviour
+    public class UnitEntity
     {
-        // Unity Editor fields ==========================
-        public int _health;
-        public int _maxHealth;
-        public int _mana;
-        public int _maxMana;
-
-        public int _attack;
-        public int _defence;
-        public int _piercing;
-        public int _magic;
-        public int _resistance;
-        // TODO: Figure what these stats are going to do.
-        public int _accuracy;
-        public int _agility;
-
-        public int _sight;
-        public int _movementSpeed;
-
-        public int _level;
-        public bool _playerControlled;
-
-        public World _world;
-        //==============================================
-
         // General Information
-        public string Name { get { return name; } }
+        //public string Name { get { return name; } }
 
         // Items
         public Inventory Inventory { get; private set; }
@@ -45,27 +21,27 @@ namespace Units
         public List<string> Abilities { get; private set; }
 
         // Combat Attributes
-        public int Attack { get { return _attack; } private set { _attack = value; } }
-        public int Magic { get { return _magic; } private set { _magic = value; } }
+        public int Attack { get; private set; }
+        public int Magic { get; private set; }
 
         // Vision
-        public int Sight { get { return _sight; } }
+        public int Sight { get; }
         public HashSet<Vector3Int> VisibleTiles { get; private set; }
 
         // Movement Controls
-        public Vector3Int Position { get { return manager.GetPositionFor(this); } }
+        public Vector3Int Position { get; }
         public bool CanMove { get; private set; } //TODO: move to a HeroUnitEntity class
         public bool CanAttack { get; private set; }
-        public int MovementSpeed { get { return _movementSpeed; } }
-        public bool PlayerControlled { get { return _playerControlled; } }
+        public int MovementSpeed { get; }
+        public bool PlayerControlled { get; }
 
         // Management
         private UnitEntityManager manager; // Manages positioning
-        private UnitEntityGUI script; // Manages GUI stuff
+        private UnitEntityController script; // Manages GUI stuff
 
         protected virtual void Awake()
         {
-            script = GetComponent<UnitEntityGUI>();
+            //script = GetComponent<UnitEntityController>();
             VisibleTiles = new HashSet<Vector3Int>();
         }
 
@@ -76,7 +52,7 @@ namespace Units
 
         protected virtual void Start()
         {
-            _world.AddUnitEntity(this);
+            //_world.AddUnitEntity(this);
             CanMove = true;
             CanAttack = true;
 
@@ -90,7 +66,7 @@ namespace Units
             //TODO: placeholder UnitEntity.Abilities
             Abilities.Add("fireball");
 
-            UpdateVision(_world);
+            //UpdateVision(_world);
         }
 
         public virtual void OnNextTurn(GameMaster game)
@@ -102,10 +78,10 @@ namespace Units
 
         public void MoveTo(Vector3Int destination, World world)
         {
-            CanMove = false;
-            manager.SetUnitPosition(this, destination);
-            UpdateVision(world);
-            script.UpdateGraphics();
+            //CanMove = false;
+            //manager.SetUnitPosition(this, destination);
+            //UpdateVision(world);
+            //script.UpdateGraphics();
         }
 
         public void AttackUnitEntity(UnitEntity target, World world)
@@ -113,7 +89,7 @@ namespace Units
             CanMove = false;
             CanAttack = false;
             target.DealDamage(Attack, this, world, true); //TODO: change to basic attack ability
-            script.UpdateGraphics();
+            //script.UpdateGraphics();
         }
 
         public void CastAbility(Ability ability, Vector3Int target, World world)
@@ -122,23 +98,24 @@ namespace Units
             CanAttack = false;
             // Assumes there is enough mana available
             // TODO: UnityEntity Ability.manaCost modifiers
-            _mana -= ability.ManaCost;
-            Debug.Log("COMBAT: " + Name + " casted " + ability.Name + " at " + target);
+            //_mana -= ability.ManaCost;
+            //Debug.Log("COMBAT: " + Name + " casted " + ability.Name + " at " + target);
             ability.Cast(this, target, world);
-            script.UpdateGraphics();
+            //script.UpdateGraphics();
         }
 
-        public void OnUtilityItemUse()
+/*        public void OnUtilityItemUse()
         {
             CanAttack = false;
-            script.UpdateGraphics();
-        }
+            //script.UpdateGraphics();
+        }*/
 
         public int Heal(float amount)
         {
-            int heal = (int) System.Math.Min(amount, _maxHealth - _health);
-            _health += heal;
-            return heal;
+            //int heal = (int) System.Math.Min(amount, maxHealth - health);
+            //health += heal;
+            //return heal;
+            return 0;
         }
 
         public int DealDamage(float baseDamage, UnitEntity attacker, World world, bool isPhysicalDamage = true)
@@ -150,44 +127,46 @@ namespace Units
 
             if (isPhysicalDamage)
             {
-                float reduction = Mathf.Max(0, combatModifier * (_defence - attacker._piercing));
-                reduction *= (float) combatModifier * _defence / (attacker._piercing + 1);
-                int damage = (int) (baseDamage - reduction);
-                damage = Mathf.Max(0, damage);
-                damage = Mathf.Min(damage, _health);
-                _health -= damage;
-                if (_health <= 0)
-                    OnDeath();
-                return damage;
+                //float reduction = Mathf.Max(0, combatModifier * (_defence - attacker._piercing));
+                //reduction *= (float) combatModifier * _defence / (attacker._piercing + 1);
+                //int damage = (int) (baseDamage - reduction);
+                //damage = Mathf.Max(0, damage);
+                //damage = Mathf.Min(damage, health);
+                //health -= damage;
+                //if (health <= 0)
+                 //   Death();
+                //return damage;
             }
             else
             {
-                float reduction = combatModifier * _resistance;
+/*                float reduction = combatModifier * _resistance;
                 int damage = (int)(baseDamage - reduction);
                 damage = Mathf.Max(0, damage);
-                damage = Mathf.Min(damage, _health);
-                _health -= damage;
-                if (_health <= 0)
-                    OnDeath();
-                return damage;
+                damage = Mathf.Min(damage, health);
+                health -= damage;
+                if (health <= 0)
+                    Death();
+                return damage;*/
             }
+            return 0;
         }
 
-        public virtual void OnDeath()
+/*        public virtual void Death()
         {
             Debug.Log(Name + " Died");
-            Object.Destroy(script.gameObject);
+            script.OnDeath();
+            Destroy(gameObject);
             manager.RemoveUnit(this);
-        }
+        }*/
 
-        public string GetStatusDescription()
+/*        public string GetStatusDescription()
         {
-            string text = "Health: " + _health + "/" + _maxHealth + "\n";
+            string text = "Health: " + health + "/" + maxHealth + "\n";
             text += "Mana: " + _mana + "/" + _maxMana + "\n";
             text += "Status Effects: \n";
             text += "* TEST STATUS EFFECT";
             return text;
-        }
+        }*/
 
         public void HideScript()
         {
@@ -197,7 +176,7 @@ namespace Units
         public void ShowScript()
         {
             script.gameObject.SetActive(true);
-            script.UpdateGraphics();
+            //script.UpdateGraphics();
         }
 
         public void UpdateVision(World world)

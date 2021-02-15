@@ -35,10 +35,10 @@ public class GUIMaster : MonoBehaviour
     //TODO: formalize city script text updating
     private CityScript capitalScript;
 
-    public UnitEntityGUI testUnit;
-    public UnitEntityGUI testEnemyUnit;
-    public UnitEntityGUI unitEntityPrefab;
-    public UnitPanelScript unitPanel;
+    public UnitEntityController testUnit;
+    public UnitEntityController testEnemyUnit;
+    public UnitEntityController unitEntityPrefab;
+    public UnitPanelController unitPanel;
 
     public void Awake()
     {
@@ -79,21 +79,8 @@ public class GUIMaster : MonoBehaviour
     public void NextTurn()
     {
         Game.NextTurn(this);
-        unitPanel.UpdateGUI();
+        unitPanel.OnNextTurn();
         capitalScript.title.text = capital.Name + "(" + capital.population + ")"; //TODO: move population text update location
-
-        //TODO: move enemy turn to new location
-        //NPCUnitEntity enemy = (NPCUnitEntity) testEnemyUnit.Unit;
-/*        Vector3Int target = enemy.ai.GetTarget(enemy, Game.World);
-        Debug.Log("Enemey Target: " + target);
-        LinkedList<Vector3Int> movement = enemy.ai.GetMovementAction(enemy, target, Game.World);
-        foreach (Vector3Int motion in movement)
-        {
-            Debug.Log("Enemey Motion: " + motion);
-            testEnemyUnit.transform.position = Game.World.grid.CellToWorld(motion);
-            enemy.MoveTo(motion, Game.World);
-        }*/
-        //UpdateAllUnitVisibilities();
     }
 
 }

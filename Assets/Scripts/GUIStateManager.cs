@@ -62,7 +62,7 @@ public class GUIStateManager
 
     public void SetState(GUIStatePreset preset)
     {
-        Debug.Log("GUI State Changed: " + preset.name);
+        //Debug.Log("GUI State Changed: " + preset.name);
         CameraControl = preset.camCtrl;
         UnitControl = preset.unitCtrl;
         TileInteraction = preset.tileIntr;

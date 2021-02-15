@@ -10,22 +10,22 @@ namespace Units.Intelligence
     /// </summary>
     public class RecklessAI : NPCMainAI
     {
-        public override AIState GetState(NPCUnitEntity self, World world)
+        public override AIState GetState(NPCUnitEntityAI self, World world)
         {
             // Check if there is any enemy visible
-            foreach (Vector3Int visible in self.VisibleTiles)
+            foreach (Vector3Int visible in self.Movement.Visibles)
             {
                 UnitEntity unitAt = world.GetUnitAt(visible);
-                if (unitAt != null && self.IsEnemy(unitAt))
+/*                if (unitAt != null && self.IsEnemy(unitAt))
                 {
                     return AIState.ABILITY;
-                }
+                }*/
             }
 
             return AIState.WANDER;
         }
 
-        public override Ability GetNextAbility(NPCUnitEntity self, World world)
+        public override Ability GetNextAbility(NPCUnitEntityAI self, World world)
         {
             return new Ability("attack", "Basic Attack", 0, 1, false, new AbilityEffect[] { new DamageAbilityEffect(0, true) }, new HexAbilityAOE(1));
         }

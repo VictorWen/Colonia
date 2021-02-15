@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 371865f880815604fbcf57f600444299, type: 3}
+  m_Name: Default Unit Config
+  m_EditorClassIdentifier: 
+  selectTile: {fileID: 11400000, guid: 6db509b576c8f394e96e626741bd1f06, type: 2}
+  moveTile: {fileID: 11400000, guid: c007934ee72fe774483205d82ef5e98b, type: 2}
+  attackTile: {fileID: 11400000, guid: 140d59465b3397149b276b5193b41045, type: 2}
+  playerControlled: 1

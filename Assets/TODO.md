@@ -8,7 +8,12 @@
 - [ ] Natural Regen
 - [ ] Status Effects
 - [ ] Spawning
+  - [X] Change UnitEntity format
+  - [ ] Fix UnitInfoPanel
+  - [ ] Automatic spawn mechanism
 - [ ] Cleanup UI
+  - [X] Cancel Abilities
+  - [ ] Fix bug when selecting multiple actions at once
 - [ ] More Abilities
 - [ ] Equipment
   - [X] Unit Inventory
