@@ -9,6 +9,15 @@ namespace Units
 {
     public class UnitEntityController : MonoBehaviour
     {
+        // TODO: REMOVE OLD STUFF ========
+        public UnitEntity Unit { get; set; }
+        public void CastAbility(Ability ability)
+        {
+            //gui.unitPanel.HideAbilityMenu();
+            //StartCoroutine(CastAbilityCoroutine(ability));
+        }
+        // ===============================
+
         [SerializeField] private GUIMaster gui;
         [SerializeField] private World world;
 
@@ -16,20 +25,8 @@ namespace Units
 
         [SerializeField] private UnitEntityConfig config;
 
-        [SerializeReference] private UnitEntityMovement movement;
-        [SerializeReference] private UnitEntityCombat combat;
-        [SerializeReference] private UnitEntityDeath death;
-
-        [SerializeReference] private UnitEntityMovementGraphics movementGraphics;
-        [SerializeReference] private UnitEntityCombatGraphics combatGraphics;
-
-        private bool waitingForMovement;
-        private bool waitingForAttack;
-        private HashSet<Vector3Int> moveables;
-        private HashSet<Vector3Int> attackables;
-
-        public UnitEntityCombat Combat { get { return combat; } }
-        public UnitEntityMovement Movement { get { return movement; } }
+        [SerializeReference] private TempUnitEntity unitEntity;
+        [SerializeReference] private UnitEntityGraphics graphics;
 
         private NPCUnitEntityAI ai;
 
@@ -38,9 +35,10 @@ namespace Units
             Vector3Int gridPos = world.grid.WorldToCell(transform.position);
             transform.position = world.grid.CellToWorld(gridPos);
 
-            movement = new UnitEntityMovement(gridPos, world);
-            combat = new UnitEntityCombat(world, movement, config.playerControlled);
-            death = new UnitEntityDeath(combat);
+            UnitEntityMovement movement = new UnitEntityMovement(gridPos, world);
+            UnitEntityCombat combat = new UnitEntityCombat(world, movement, config.playerControlled);
+            UnitEntityDeath death = new UnitEntityDeath(combat);
+            unitEntity = new TempUnitEntity(name, config.playerControlled, movement, combat, gui.unitPanel.UnitPanel);
 
             if (!config.playerControlled)
             {
@@ -52,113 +50,57 @@ namespace Units
                 world.UnitManager.AddUnit(movement, combat);
             }
 
-            movementGraphics = new UnitEntityMovementGraphics(world, gameObject, movement, config);
-            combatGraphics = new UnitEntityCombatGraphics(world, combat, movement, config);
+            UnitEntityMovementGraphics movementGraphics = new UnitEntityMovementGraphics(world, gameObject, movement, config);
+            UnitEntityCombatGraphics combatGraphics = new UnitEntityCombatGraphics(world, combat, movement, config);
+            graphics = new UnitEntityGraphics(unitEntity, movementGraphics, combatGraphics);
         }
 
         private void Start()
         {
-            movement.UpdateVision();
+            unitEntity.Movement.UpdateVision();
         }
 
         private void OnMouseOver()
         {
             if (gui.GUIState.UnitControl && config.playerControlled && Input.GetMouseButtonUp(0))
             {
-                if (!selected)
+                if (!unitEntity.IsSelected)
                 {
-                    gui.unitPanel.SetSelectedUnit(this);
                     gui.GUIState.SetState(GUIStateManager.UNIT);
-                    selected = true;
-                    movementGraphics.ShowSelectionIndicator();
-                    //gui.unitPanel.SetSelectedUnit(this);
+                    unitEntity.Select();
                 }
                 else
                 {
-                    gui.unitPanel.SetSelectedUnit(null);
                     gui.GUIState.SetState(GUIStateManager.MAP);
-                    selected = false;
-                    movementGraphics.HideSelectionIndicator();
+                    unitEntity.Deselect();
                 }
             }
         }
 
         private void Update()
         {
-            if (config.playerControlled && Input.GetMouseButtonUp(0))
+            if (config.playerControlled && Input.GetMouseButtonUp(0) && (unitEntity.IsWaitingForMovement || unitEntity.IsWaitingForAttack))
             {
                 Vector3 pos = gui.playerCam.ScreenToWorldPoint(Input.mousePosition);
                 Vector3Int gridPos = world.grid.WorldToCell(pos);
 
-                if (waitingForMovement && moveables.Contains(gridPos))
+                if (unitEntity.IsWaitingForMovement && graphics.MovementGraphics.ShownMoveables.Contains(gridPos))
                 {
-                    movement.MoveTo(gridPos);
-                    waitingForMovement = false;
+                    unitEntity.OnMoveClick(gridPos);
+                    graphics.MovementGraphics.ClearMoveables();
                 }
 
-                if (waitingForAttack && attackables.Contains(gridPos))
+                if (unitEntity.IsWaitingForAttack && graphics.CombatGraphics.ShownAttackables.Contains(gridPos))
                 {
-                    combat.Attack(gridPos);
-                    waitingForAttack = false;
-                }
-            }
-        }
-
-        public void MoveAction()
-        {
-            if (waitingForAttack)
-            {
-                combatGraphics.ClearAttackables();
-                waitingForAttack = false;
-            }
-
-            moveables = movement.GetMoveables().Reachables;
-            movementGraphics.ShowMoveables(moveables);
-            waitingForMovement = true;
-        }
-
-        public void AttackAction()
-        {
-            if (waitingForMovement)
-            {
-                movementGraphics.ClearMoveables();
-                waitingForMovement = false;
-            }
-
-            attackables = combat.GetAttackables();
-            combatGraphics.ShowAttackables(attackables);
-            waitingForAttack = true;
-        }
-
-        //TODO: change to readonly
-        public UnitEntity Unit { get; set;}
-
- /*       private void OnMouseOver()
-        {
-            if (gui.GUIState.UnitControl)
-            {
-                if (Unit.PlayerControlled && Input.GetMouseButtonUp(0))
-                {
-                    if (!selected)
-                    {
-                        //MoveAction();
-                        //gui.unitPanel.SetSelectedUnit(this);
-                        world.movement.SetTile(world.grid.WorldToCell(transform.position), gold);
-                        gui.GUIState.SetState(GUIStateManager.UNIT);
-                        selected = true;
-                    }
-                    else
-                    {
-                        ClearMovables();
-                        ClearAttackables();
-                        gui.unitPanel.SetSelectedUnit(null);
-                        world.movement.SetTile(world.grid.WorldToCell(transform.position), null);
-                        gui.GUIState.SetState(GUIStateManager.MAP);
-                        selected = false;
-                    }
+                    unitEntity.OnAttackClick(gridPos);
+                    graphics.CombatGraphics.ClearAttackables();
                 }
             }
         }
+
+
+
+ /*    
 
         private void OnMouseEnter()
         {
@@ -209,11 +151,7 @@ namespace Units
 
 */
 
-        public void CastAbility(Ability ability)
-        {
-            //gui.unitPanel.HideAbilityMenu();
-            //StartCoroutine(CastAbilityCoroutine(ability));
-        }
+
 
 /*        public void ShowInventory()
         {

@@ -1,14 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Units.Combat;
+using Units.Movement;
 using UnityEngine;
 using UnityEngine.UI;
-using Units.Movement;
-using Units.Combat;
 
-namespace Units {
+namespace Units
+{
     public class UnitPanelGraphics
     {
-        private readonly GameObject unitPanel;
+        private readonly GameObject panel;
         private readonly Text namePlate;
         private readonly Text statusText;
 
@@ -26,17 +25,23 @@ namespace Units {
 /*        public Button abilityButton;
         public Button itemsButton;*/
 
-        private string name;
-        private UnitEntityCombat combat;
-        private UnitEntityMovement movement;
+        private UnitPanel unitPanel;
+        private TempUnitEntity selectedUnit;
 
-        public UnitPanelGraphics(GameObject unitPanel, Button moveButton, Button attackButton)
+        public UnitPanelGraphics(UnitPanel unitPanel, GameObject panel, Button moveButton, Button attackButton)
         {
             this.unitPanel = unitPanel;
+            unitPanel.OnSelect += SetSelectedUnit;
+            unitPanel.OnSelect += ShowUnitPanel;
+            unitPanel.OnDeselect += RemoveCallbacks;
+            unitPanel.OnDeselect += HideUnitPanel;
+            selectedUnit = null;
+
+            this.panel = panel;
             this.moveButton = moveButton;
             this.attackButton = attackButton;
 
-            foreach (Text t in unitPanel.GetComponentsInChildren<Text>())
+            foreach (Text t in panel.GetComponentsInChildren<Text>())
             {
                 if (t.name == "Name Plate")
                     namePlate = t;
@@ -55,46 +60,50 @@ namespace Units {
 
         public void ShowUnitPanel()
         {
-            unitPanel.SetActive(true);
+            panel.SetActive(true);
         }
 
         public void HideUnitPanel()
         {
-            unitPanel.SetActive(false);
+            panel.SetActive(false);
         }
 
-        public void SetSelectedUnit(string name, UnitEntityCombat combatInfo, UnitEntityMovement movementInfo)
+        public void SetSelectedUnit()
         {
             // Remove previous callbacks
-            if (movement != null)
-                movement.OnMove -= UpdateActionButtons;
-            if (combat != null)
-                combat.OnAttack -= UpdateActionButtons;
+            RemoveCallbacks();
 
             // Set local information
-            this.name = name;
-            this.combat = combatInfo;
-            this.movement = movementInfo;
+            selectedUnit = unitPanel.SelectedUnit;
 
             // Add new callbacks
-            movementInfo.OnMove += UpdateActionButtons;
-            combatInfo.OnAttack += UpdateActionButtons;
+            selectedUnit.Movement.OnMove += UpdateActionButtons;
+            selectedUnit.Combat.OnAttack += UpdateActionButtons;
 
             // Update graphics
             UpdateUnitPanel();
             UpdateActionButtons();
         }
 
+        public void RemoveCallbacks()
+        {
+            if (selectedUnit != null)
+            {
+                selectedUnit.Movement.OnMove -= UpdateActionButtons;
+                selectedUnit.Combat.OnAttack -= UpdateActionButtons;
+            }
+        }
+
         public void UpdateUnitPanel()
         {
-            namePlate.text = name;
-            statusText.text = combat.GetStatusDescription();
+            namePlate.text = selectedUnit.Name;
+            statusText.text = selectedUnit.Combat.GetStatusDescription();
         }
 
         public void UpdateActionButtons()
         {
-            moveButton.interactable = movement.CanMove;
-            attackButton.interactable = combat.CanAttack;
+            moveButton.interactable = selectedUnit.Movement.CanMove;
+            attackButton.interactable = selectedUnit.Combat.CanAttack;
         }
     
 

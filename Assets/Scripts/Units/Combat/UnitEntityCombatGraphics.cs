@@ -11,7 +11,7 @@ namespace Units.Combat
         private UnitEntityMovement movement;
         private UnitEntityConfig config;
 
-        private HashSet<Vector3Int> shownAttackables;
+        public HashSet<Vector3Int> ShownAttackables { get; private set; }
 
         public UnitEntityCombatGraphics(World world, UnitEntityCombat combat, UnitEntityMovement movement, UnitEntityConfig config)
         {
@@ -22,7 +22,7 @@ namespace Units.Combat
 
             combat.OnAttack += OnAttack;
 
-            shownAttackables = new HashSet<Vector3Int>();
+            ShownAttackables = new HashSet<Vector3Int>();
         }
 
         public void OnAttack()
@@ -37,16 +37,16 @@ namespace Units.Combat
             {
                 world.movement.SetTile(attackable, config.attackTile);
             }
-            shownAttackables = new HashSet<Vector3Int>(attackables);
+            ShownAttackables = new HashSet<Vector3Int>(attackables);
         }
 
         public void ClearAttackables()
         {
-            foreach (Vector3Int tilePos in shownAttackables)
+            foreach (Vector3Int tilePos in ShownAttackables)
             {
                 world.movement.SetTile(tilePos, null);
             }
-            shownAttackables = new HashSet<Vector3Int>();
+            ShownAttackables = new HashSet<Vector3Int>();
         }
     }
 }

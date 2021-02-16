@@ -126060,15 +126060,9 @@ MonoBehaviour:
   world: {fileID: 1534646887}
   selected: 0
   config: {fileID: 11400000, guid: 9d99fe4f086396f48b950084296b043e, type: 2}
-  movement:
+  unitEntity:
     id: 0
-  combat:
-    id: 0
-  death:
-    id: 0
-  movementGraphics:
-    id: 0
-  combatGraphics:
+  graphics:
     id: 0
   references:
     version: 1
@@ -129232,19 +129226,23 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1205894829}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6623c83b865f03746b13bf1c1168953f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitPanel: {fileID: 1626743259}
+  actionPanel: {fileID: 1626743259}
   moveButton: {fileID: 1047125875}
   attackButton: {fileID: 1785186705}
-  graphics:
+  unitPanel:
     id: 0
+  graphics:
+    id: 1
   references:
     version: 1
     00000000:
+      type: {class: UnitPanel, ns: Units, asm: Assembly-CSharp}
+    00000001:
       type: {class: UnitPanelGraphics, ns: Units, asm: Assembly-CSharp}
 --- !u!224 &1205894831
 RectTransform:
@@ -130593,15 +130591,9 @@ MonoBehaviour:
   world: {fileID: 1534646887}
   selected: 0
   config: {fileID: 11400000, guid: 57f329b454257df4a9b2b20c5d91da79, type: 2}
-  movement:
+  unitEntity:
     id: 0
-  combat:
-    id: 0
-  death:
-    id: 0
-  movementGraphics:
-    id: 0
-  combatGraphics:
+  graphics:
     id: 0
   references:
     version: 1

@@ -13,7 +13,7 @@ namespace Units.Movement {
         private bool showingSelectionIndicator;
 
         private readonly UnitEntityMovement movement;
-        private HashSet<Vector3Int> shownMoveables;
+        public HashSet<Vector3Int> ShownMoveables { get; private set; }
         private HashSet<Vector3Int> visibleTiles;
 
         public UnitEntityMovementGraphics(World world, GameObject obj, UnitEntityMovement movement, UnitEntityConfig config)
@@ -30,7 +30,7 @@ namespace Units.Movement {
             this.config = config;
             showingSelectionIndicator = false;
 
-            shownMoveables = new HashSet<Vector3Int>();
+            ShownMoveables = new HashSet<Vector3Int>();
             visibleTiles = new HashSet<Vector3Int>();
         }
 
@@ -75,16 +75,16 @@ namespace Units.Movement {
             {
                 world.movement.SetTile(moveable, config.moveTile);
             }
-            shownMoveables = new HashSet<Vector3Int>(moveables);
+            ShownMoveables = new HashSet<Vector3Int>(moveables);
         }
 
         public void ClearMoveables()
         {
-            foreach (Vector3Int moveable in shownMoveables)
+            foreach (Vector3Int moveable in ShownMoveables)
             {
                 world.movement.SetTile(moveable, null);
             }
-            shownMoveables = new HashSet<Vector3Int>();
+            ShownMoveables = new HashSet<Vector3Int>();
         }
 
         public void UpdateVision(HashSet<Vector3Int> recon)

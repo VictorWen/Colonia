@@ -9,50 +9,29 @@ namespace Units
     [ExecuteInEditMode]
     public class UnitPanelController : MonoBehaviour
     {
-        [SerializeField] private GameObject unitPanel;
+        [SerializeField] private GameObject actionPanel;
         [SerializeField] private Button moveButton;
         [SerializeField] private Button attackButton;
 
+        [SerializeReference] private UnitPanel unitPanel = new UnitPanel();
         [SerializeReference] private UnitPanelGraphics graphics;
 
-        private UnitEntityController selectedUnit;
+        public UnitPanel UnitPanel { get { return unitPanel; } }
 
         private void Awake()
         {
-            graphics = new UnitPanelGraphics(unitPanel, moveButton, attackButton);
-        }
+            graphics = new UnitPanelGraphics(unitPanel, actionPanel, moveButton, attackButton);
 
-        public void RemoveListeners()
-        {
-            moveButton.onClick.RemoveAllListeners();
+            moveButton.onClick.AddListener(unitPanel.MoveAction);
+            attackButton.onClick.AddListener(unitPanel.AttackAction);
         }
 
         public void OnNextTurn()
         {
-            if (selectedUnit != null)
+            if (unitPanel.SelectedUnit != null)
             {
                 graphics.UpdateUnitPanel();
                 graphics.UpdateActionButtons();
-            }
-        }
-
-        public void SetSelectedUnit(UnitEntityController selected)
-        {
-            selectedUnit = selected;
-
-            RemoveListeners();
-            moveButton.onClick.AddListener(selected.MoveAction);
-            attackButton.onClick.AddListener(selected.AttackAction);
-
-            if (selected != null)
-            {
-                graphics.ShowUnitPanel();
-                //HideUnitInfo();
-                graphics.SetSelectedUnit(selected.name, selected.Combat, selected.Movement);
-            }
-            else
-            {
-                graphics.HideUnitPanel();
             }
         }
 
