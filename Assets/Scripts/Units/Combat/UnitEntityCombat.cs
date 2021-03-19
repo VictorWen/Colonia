@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using Units.Movement;
 using UnityEngine;
+using Tiles;
 
 namespace Units.Combat
 {
-    public class UnitEntityCombat
+    public class UnitEntityCombat : IUnitEntityCombat
     {
-        [Header("Health and Mana")]
-        [SerializeField] private int health = 100;
-        [SerializeField] private int maxHealth = 100;
+        [Header("Mana")]
         [SerializeField] private int mana = 100;
         [SerializeField] private int maxMana = 100;
 
@@ -20,89 +19,72 @@ namespace Units.Combat
         [SerializeField] private int magic = 10;
         [SerializeField] private int resistance = 3;
 
-        public event Action OnDeath;
         public event Action OnAttack;
 
-        public int Health { get { return health; } }
-        public int MaxHealth { get { return maxHealth; } }
+        public int Attack { get { return attack; } }
+        public int Piercing { get { return piercing; } }
+        public int Magic { get { return magic; } }
         public bool CanAttack { get; private set; }
 
-        //public HashSet<Vector3Int> Attackables { get; private set; }
+        //TODO: fix placeholder abilities list
+        public List<string> Abilities { get { return new List<string>(); } }
 
-        private World world;
-        private UnitEntityMovement movement;
+        public BaseUnitEntity Unit { get; private set; }
+        private readonly IWorld world;
+        private readonly IUnitEntityMovement movement;
 
-        private bool playerControlled;
         private int attackRange = 1;
 
-        public UnitEntityCombat(World world, UnitEntityMovement movement, bool isPlayerControlled)
+        public UnitEntityCombat(BaseUnitEntity unit, IWorld world, IUnitEntityMovement movement)
         {
+            this.Unit = unit;
             this.world = world;
             this.movement = movement;
-            playerControlled = isPlayerControlled;
 
             CanAttack = true;
-            //Attackables = new HashSet<Vector3Int>();
         }
 
-        public void Attack(Vector3Int position)
+        public void BasicAttackOnPosition(Vector3Int position)
         {
             CanAttack = false;
             OnAttack?.Invoke();
         }
 
-        public int DealDamage(float baseDamage, UnitEntityCombat attacker, float combatModifier, bool isPhysicalDamage = true)
+        public void DealDamage(float baseDamage, IUnitEntityCombat attacker, IWorld world, bool isPhysicalDamage = true)
         {
             if (baseDamage < 0)
-                return 0;
+                return;
 
+            float combatModifier = world.GetCombatModifierAt(Unit.Position);
+
+            int damage;
             if (isPhysicalDamage)
             {
-                float reduction = Mathf.Max(0, combatModifier * (defence - attacker.piercing));
-                reduction *= (float)combatModifier * defence / (attacker.piercing + 1);
-                int damage = (int)(baseDamage - reduction);
-                damage = Mathf.Max(0, damage);
-                damage = Mathf.Min(damage, health);
-                health -= damage;
-                if (health <= 0 && OnDeath != null)
-                {
-                    OnDeath.Invoke();
-                }
-                return damage;
+                float reduction = Mathf.Max(0, combatModifier * (defence - attacker.Piercing));
+                reduction *= (float)combatModifier * defence / (attacker.Piercing + 1);
+                damage = (int)(baseDamage - reduction);
+               
             }
             else
             {
                 float reduction = combatModifier * resistance;
-                int damage = (int)(baseDamage - reduction);
-                damage = Mathf.Max(0, damage);
-                damage = Mathf.Min(damage, health);
-                health -= damage;
-                if (health <= 0 && OnDeath != null)
-                {
-                    OnDeath.Invoke();
-                }
-                return damage;
+                damage = (int)(baseDamage - reduction);
             }
+            Unit.Damage(damage);
         }
 
-        public int Heal(float amount)
+        public bool IsEnemy(IUnitEntityCombat other)
         {
-            int heal = (int)System.Math.Min(amount, maxHealth - health);
-            health += heal;
-            return heal;
-        }
-
-        public bool IsEnemy(UnitEntityCombat other)
-        {
-            return other.playerControlled != playerControlled;
+            return other.Unit.IsPlayerControlled != Unit.IsPlayerControlled;
         }
 
         public HashSet<Vector3Int> GetAttackables()
         {
             HashSet<Vector3Int> attackables = new HashSet<Vector3Int>();
-            foreach (Vector3Int tile in world.GetLineOfSight(movement.Position, attackRange))
+            foreach (Vector3Int tile in world.GetLineOfSight(Unit.Position, attackRange))
             {
-                if (world.UnitManager.GetUnitAt(tile, out UnitEntityManager.UnitEntityData data) && data.combat.IsEnemy(this))
+                BaseUnitEntity unitAt = world.UnitManager.GetUnitAt<BaseUnitEntity>(tile);
+                if (unitAt != null && unitAt.Combat.IsEnemy(this))
                 {
                     attackables.Add(tile);
                 }
@@ -112,7 +94,7 @@ namespace Units.Combat
 
         public string GetStatusDescription()
         {
-            string text = "Health: " + health + "/" + maxHealth + "\n";
+            string text = "Health: " + Unit.Health + "/" + Unit.MaxHealth + "\n";
             text += "Mana: " + mana + "/" + maxMana + "\n";
             text += "Status Effects: \n";
             text += "* TEST STATUS EFFECT";

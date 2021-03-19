@@ -5,9 +5,9 @@ namespace Units.Combat
 {
     public class UnitEntityDeath
     {
-        public UnitEntityDeath(UnitEntityCombat combat)
+        public UnitEntityDeath(IUnitEntityCombat combat)
         {
-            combat.OnDeath += OnDeath;
+            //combat.OnDeath += OnDeath;
         }
 
         public void OnDeath()

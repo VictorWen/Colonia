@@ -1,6 +1,7 @@
 ﻿using Units;
 using Units.Abilities;
 using UnityEngine;
+using Tiles;
 
 namespace Items.UtilityItems
 {
@@ -15,7 +16,7 @@ namespace Items.UtilityItems
             this.item = item;
         }
 
-        public override void Cast(UnitEntity caster, Vector3Int target, World world)
+        public override void Cast(BaseUnitEntity caster, Vector3Int target, IWorld world)
         {
             base.Cast(caster, target, world);
             item.Use();

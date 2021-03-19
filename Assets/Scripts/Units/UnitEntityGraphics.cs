@@ -11,18 +11,10 @@ namespace Units
         public UnitEntityMovementGraphics MovementGraphics { get; private set; }
         public UnitEntityCombatGraphics CombatGraphics { get; private set; }
 
-        private TempUnitEntity unitEntity;
-
-        public UnitEntityGraphics(TempUnitEntity unitEntity, UnitEntityMovementGraphics moveGraphics, UnitEntityCombatGraphics combatGraphics)
+        public UnitEntityGraphics(UnitEntityMovementGraphics moveGraphics, UnitEntityCombatGraphics combatGraphics)
         {
-            this.unitEntity = unitEntity;
             this.MovementGraphics = moveGraphics;
             this.CombatGraphics = combatGraphics;
-
-            unitEntity.OnSelect += OnSelect;
-            unitEntity.OnDeselect += OnDeselect;
-            unitEntity.OnMoveAction += OnMoveAction;
-            unitEntity.OnAttackAction += OnAttackAction;
         }
 
         public void OnSelect()

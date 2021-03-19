@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using Tiles;
+using Units;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using Units;
-using Units.Movement;
 
 // The interface for the terrain map
 // Generates and accesses the terrain
 // TODO: Organize World class
-public class World : MonoBehaviour
+public class World : MonoBehaviour, IWorld
 {
     public Grid grid;
     public Tilemap terrain;
@@ -46,12 +45,6 @@ public class World : MonoBehaviour
     }
 
     // UnitEntityManager wrappers =======================
-    public UnitEntity GetUnitAt(Vector3Int position)
-    {
-        //return unitManager.GetUnitAt(position);
-        return null;
-    }
-
     public void ExecuteNPCTurns(GameMaster game)
     {
         UnitManager.ExecuteNPCTurns(game);
@@ -247,7 +240,7 @@ public class World : MonoBehaviour
     public float IsReachable(float moves, Vector3Int destination, bool checkUnits = false)
     {
         TerrainTile t = (TerrainTile)terrain.GetTile(destination);
-        if (t != null && !t.impassable && moves >= t.movementCost && (!checkUnits || GetUnitAt(destination) == null))
+        if (t != null && !t.impassable && moves >= t.movementCost && (!checkUnits || UnitManager.GetUnitAt(destination) == null))
         {
             return t.movementCost;
         }
@@ -485,6 +478,11 @@ public class World : MonoBehaviour
     public float GetRichnessAtTile(Vector3Int tilePos)
     {
         return richness[tilePos];
+    }
+
+    public float GetCombatModifierAt(Vector3Int tilePos)
+    {
+        return ((TerrainTile)terrain.GetTile(tilePos)).combatModifier;
     }
     // =============================================================
 }

@@ -12,20 +12,20 @@ namespace Units.Movement {
         private readonly UnitEntityConfig config;
         private bool showingSelectionIndicator;
 
-        private readonly UnitEntityMovement movement;
+        private readonly BaseUnitEntity unit;
         public HashSet<Vector3Int> ShownMoveables { get; private set; }
         private HashSet<Vector3Int> visibleTiles;
 
-        public UnitEntityMovementGraphics(World world, GameObject obj, UnitEntityMovement movement, UnitEntityConfig config)
+        public UnitEntityMovementGraphics(World world, GameObject obj, BaseUnitEntity unit, UnitEntityConfig config)
         {
             this.world = world;
             this.obj = obj;
 
-            this.movement = movement;
-            movement.OnMove += OnMove;
+            this.unit = unit;
+            unit.OnMove += UpdateUnitPosition;
 
             if (config.playerControlled)
-                movement.OnVisionUpdate += UpdateVision;
+                unit.OnVisionUpdate += UpdateVision;
 
             this.config = config;
             showingSelectionIndicator = false;
@@ -54,7 +54,7 @@ namespace Units.Movement {
             }
         }
 
-        public void OnMove()
+        public void UpdateUnitPosition()
         {
             bool toggledSelected = false;
             if (showingSelectionIndicator)
@@ -63,7 +63,9 @@ namespace Units.Movement {
                 ClearMoveables();
                 toggledSelected = true;
             }
-            obj.transform.position = world.grid.CellToWorld(movement.Position);
+
+            obj.transform.position = world.grid.CellToWorld(unit.Position);
+            
             if (toggledSelected)
                 ShowSelectionIndicator();
         }
@@ -87,7 +89,7 @@ namespace Units.Movement {
             ShownMoveables = new HashSet<Vector3Int>();
         }
 
-        public void UpdateVision(HashSet<Vector3Int> recon)
+        public void UpdateVision()
         {
             // Cover up previously viewable tiles
             foreach (Vector3Int fog in visibleTiles)
@@ -97,13 +99,13 @@ namespace Units.Movement {
             visibleTiles = new HashSet<Vector3Int>();
 
             // discover recon tiles
-            foreach (Vector3Int withinRecon in recon)
+/*            foreach (Vector3Int withinRecon in recon)
             {
                 world.RevealTerraIncognita(withinRecon);
-            }
+            }*/
 
             // Reveal visible tiles
-            foreach (Vector3Int visible in movement.Visibles)
+            foreach (Vector3Int visible in unit.Visibles)
             {
                 world.RevealFogOfWar(visible);
                 visibleTiles.Add(visible);

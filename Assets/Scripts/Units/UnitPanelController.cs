@@ -13,37 +13,54 @@ namespace Units
         [SerializeField] private Button moveButton;
         [SerializeField] private Button attackButton;
 
-        [SerializeReference] private UnitPanel unitPanel = new UnitPanel();
         [SerializeReference] private UnitPanelGraphics graphics;
 
-        public UnitPanel UnitPanel { get { return unitPanel; } }
+        public UnitEntityController SelectedUnit { get; private set; }
 
         private void Awake()
         {
-            graphics = new UnitPanelGraphics(unitPanel, actionPanel, moveButton, attackButton);
+            graphics = new UnitPanelGraphics(actionPanel, moveButton, attackButton);
 
-            moveButton.onClick.AddListener(unitPanel.MoveAction);
-            attackButton.onClick.AddListener(unitPanel.AttackAction);
+            moveButton.onClick.AddListener(MoveAction);
+            attackButton.onClick.AddListener(AttackAction);
         }
 
         public void OnNextTurn()
         {
-            if (unitPanel.SelectedUnit != null)
+            if (SelectedUnit != null)
             {
                 graphics.UpdateUnitPanel();
                 graphics.UpdateActionButtons();
             }
         }
 
-/*        public void ShowUnitInfo(UnitEntityController unit)
+        public void SetSelectedUnit(UnitEntityController newSelectedUnit)
         {
-            if (selectedUnit == null || selectedUnit.Unit != unit)
+            if (newSelectedUnit != null)
             {
-                hoveredUnit = unit;
-                unitInfoPanel.SetActive(true);
-                infoNamePlate.text = unit.Name;
-                infoStatusText.text = unit.GetStatusDescription();
+                if (SelectedUnit != null)
+                {
+                    SelectedUnit.Deselect();
+                    graphics.OnDeselect();
+                }
+                SelectedUnit = newSelectedUnit;
+                graphics.OnSelect(newSelectedUnit.Unit);
             }
-        }*/
+            else
+            {
+                SelectedUnit = null;
+                graphics.OnDeselect();
+            }
+        }
+
+        public void MoveAction()
+        {
+            SelectedUnit.MoveAction();
+        }
+
+        public void AttackAction()
+        {
+            SelectedUnit.AttackAction();
+        }
     }
 }

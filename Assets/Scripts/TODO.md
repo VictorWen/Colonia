@@ -1,5 +1,14 @@
 ﻿# TODO
 
+## UnitEntity Refactorization
+- [X] Refactor BaseUnitEntity
+- [ ] Move controls back to UnitEntityController
+- [ ] Move panel logic away from model
+- [X] Make PlayerControlledUnitEntity into a basic combat unit entity
+- [X] Refactor UnitEntityCombat and UnitEntityMovement
+- [X] Add ICombatableUnit interface
+- [ ] Fix references
+
 ## Combat
 - [X] Basic AI
 - [X] Basic Combat

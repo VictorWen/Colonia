@@ -33,7 +33,7 @@ namespace Units.Abilities
 
             // Get unit's abilities
             // Foreach ability instantiate ability button prefab
-            foreach (string id in unit.Unit.Abilities)
+            foreach (string id in unit.Unit.Combat.Abilities)
             {
                 // Fill in information
                 AbilityButton btn = Instantiate(abilityButtonPrefab);

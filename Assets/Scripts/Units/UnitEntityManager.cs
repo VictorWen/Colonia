@@ -1,44 +1,34 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using Units.Movement;
-using Units.Combat;
 
 namespace Units
 {
     public class UnitEntityManager
     {
-        public List<UnitEntityData> Units { get; private set; }
+        public List<IUnitEntity> Units { get; private set; }
         public List<NPCUnitEntityAI> NPCUnits { get; private set; }
 
         private readonly World world;
-        private readonly Dictionary<Vector3Int, UnitEntityData> positions;
-
-        public struct UnitEntityData
-        {
-            public readonly UnitEntityMovement movement;
-            public readonly UnitEntityCombat combat;
-
-            public UnitEntityData(UnitEntityMovement movement, UnitEntityCombat combat)
-            {
-                this.movement = movement;
-                this.combat = combat;
-            }
-        }
+        private readonly Dictionary<Vector3Int, IUnitEntity> positions;
+        private readonly Dictionary<IUnitEntity, Vector3Int> lastPositions;
 
         public UnitEntityManager(World world)
         {
             this.world = world;
-            positions = new Dictionary<Vector3Int, UnitEntityData>();
-            Units = new List<UnitEntityData>();
+            positions = new Dictionary<Vector3Int, IUnitEntity>();
+            lastPositions = new Dictionary<IUnitEntity, Vector3Int>();
+            Units = new List<IUnitEntity>();
             NPCUnits = new List<NPCUnitEntityAI>();
         }
 
-        public void AddUnit(UnitEntityMovement movement, UnitEntityCombat combat, NPCUnitEntityAI ai = null)
+        // TODO: fix removal of NPCUnitEntityAIs
+        public void AddUnit(IUnitEntity unit, NPCUnitEntityAI ai = null)
         {
-            UnitEntityData data = new UnitEntityData(movement, combat);
-            Units.Add(data);
-            positions.Add(movement.Position, data);
+            Units.Add(unit);
+            positions.Add(unit.Position, unit);
+            lastPositions.Add(unit, unit.Position);
+
+            unit.OnMove += () => UpdateUnitPosition(unit);
 
             if (ai != null)
                 NPCUnits.Add(ai);
@@ -50,25 +40,43 @@ namespace Units
         {
             Units.Remove(positions[position]);
             positions.Remove(position);
+            lastPositions.Remove(positions[position]);
         }
 
-        public void UpdateUnitPosition(Vector3Int previousPos, Vector3Int newPos)
+        public void UpdateUnitPosition(IUnitEntity unit)
         {
-            UnitEntityData data = positions[previousPos];
-            positions.Remove(previousPos);
-            positions.Add(newPos, data);
+            positions.Remove(lastPositions[unit]);
+            positions.Add(unit.Position, unit);
+            lastPositions[unit] = unit.Position;
         }
 
-        public bool GetUnitAt(Vector3Int position, out UnitEntityData data)
+        public bool TryGetUnitAt(Vector3Int position, out IUnitEntity data)
         {
             return positions.TryGetValue(position, out data);
         }
 
+        public IUnitEntity GetUnitAt(Vector3Int position)
+        {
+            if (TryGetUnitAt(position, out IUnitEntity unit))
+                return unit;
+            return null;
+        }
+
+        public T GetUnitAt<T>(Vector3Int position) where T : IUnitEntity
+        {
+            IUnitEntity unit = GetUnitAt(position);
+            if (unit is T t)
+            {
+                return t;
+            }
+            return default;
+        }
+
         public void NextTurn(GameMaster game)
         {
-            foreach (UnitEntityData data in Units)
+            foreach (IUnitEntity data in Units)
             {
-                data.movement.OnNextTurn(game);
+                data.OnNextTurn(game);
             }
         }
 

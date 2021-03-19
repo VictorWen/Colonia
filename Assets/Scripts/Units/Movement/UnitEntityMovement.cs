@@ -1,55 +1,33 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using Tiles;
 using UnityEngine;
 
 namespace Units.Movement
 {
-    public class UnitEntityMovement : IUnitEntityMoveable
+    public class UnitEntityMovement : IUnitEntityMovement
     {
-        [SerializeField] private Vector3Int position;
         [SerializeField] private int movementSpeed = 3;
-        [SerializeField] private int sight = 4;
 
-        public event Action OnMove;
-        //public delegate void VisionAction(HashSet<Vector3Int> recon);
-        public event VisionAction OnVisionUpdate;
+        private readonly BaseUnitEntity unit;
+        private readonly IWorld world;
 
-        public Vector3Int Position { get { return position; } }
-        public bool CanMove { get; private set; }
-        public HashSet<Vector3Int> Visibles { get; private set; }
+        public bool CanMove { get; set; }
 
-        private readonly World world;
-
-        public UnitEntityMovement(Vector3Int initialPosition, World world)
+        public UnitEntityMovement(BaseUnitEntity unit, IWorld world, int movementSpeed)
         {
+            this.unit = unit;
             this.world = world;
-            position = initialPosition;
+            this.movementSpeed = movementSpeed;
+            
             CanMove = true;
-            //world.AddUnitEntity(this);
-        }
-
-        public void MoveTo(Vector3Int destination)
-        {
-            CanMove = false;
-            world.UnitManager.UpdateUnitPosition(position, destination);
-            position = destination;
-            OnMove?.Invoke();
-            UpdateVision();
         }
 
         public BFSPathfinder GetMoveables()
         {
-            BFSPathfinder pathfinder = new BFSPathfinder(position, movementSpeed, world, true);
-            pathfinder.Reachables.Remove(position);
+            BFSPathfinder pathfinder = new BFSPathfinder(unit.Position, movementSpeed, world, true);
+            pathfinder.Reachables.Remove(unit.Position);
             return pathfinder;
-        }
-
-        public void UpdateVision()
-        {
-            Visibles = world.GetLineOfSight(position, sight);
-            BFSPathfinder recon = new BFSPathfinder(position, movementSpeed, world);
-            OnVisionUpdate?.Invoke(recon.Reachables);
         }
 
         public void OnNextTurn(GameMaster game)

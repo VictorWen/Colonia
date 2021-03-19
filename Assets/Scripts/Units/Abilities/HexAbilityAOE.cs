@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Tiles;
 
 namespace Units.Abilities
 {
@@ -13,7 +14,7 @@ namespace Units.Abilities
             this.range = range;
         }
 
-        public override HashSet<Vector3Int> GetAOE(Vector3Int casterPos, Vector3Int targetPos, World world)
+        public override HashSet<Vector3Int> GetAOE(Vector3Int casterPos, Vector3Int targetPos, IWorld world)
         {
             return world.GetTilesInRange(targetPos, range);
         }

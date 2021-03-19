@@ -11,10 +11,10 @@ namespace Units.Intelligence
     /// </summary>
     public abstract class NPCMovementAI
     {
-        public abstract LinkedList<Vector3Int> GetAbilityMovement(UnitEntityMovement self, Ability ability, Vector3Int target, World world);
+        public abstract LinkedList<Vector3Int> GetAbilityMovement(IUnitEntityMovement self, Ability ability, Vector3Int target, World world);
 
-        public abstract LinkedList<Vector3Int> GetRetreatMovement(UnitEntityMovement self, Vector3Int target, World world);
+        public abstract LinkedList<Vector3Int> GetRetreatMovement(IUnitEntityMovement self, Vector3Int target, World world);
 
-        public abstract LinkedList<Vector3Int> GetWanderMovement(UnitEntityMovement self, Vector3Int target, World world);
+        public abstract LinkedList<Vector3Int> GetWanderMovement(IUnitEntityMovement self, Vector3Int target, World world);
     }
 }

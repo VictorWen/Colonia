@@ -92,7 +92,7 @@ namespace Units
             //script.UpdateGraphics();
         }
 
-        public void CastAbility(Ability ability, Vector3Int target, World world)
+/*        public void CastAbility(Ability ability, Vector3Int target, World world)
         {
             CanMove = false;
             CanAttack = false;
@@ -102,7 +102,7 @@ namespace Units
             //Debug.Log("COMBAT: " + Name + " casted " + ability.Name + " at " + target);
             ability.Cast(this, target, world);
             //script.UpdateGraphics();
-        }
+        }*/
 
 /*        public void OnUtilityItemUse()
         {

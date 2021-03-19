@@ -7,17 +7,20 @@ using Units.Combat;
 
 namespace Units
 {
-    public class NPCUnitEntityAI
+    public class NPCUnitEntityAI 
     {
 
         private NPCMainAI mainAI;
         private NPCTargetingAI targetAI;
         private NPCMovementAI moveAI;
 
-        public UnitEntityMovement Movement { get; private set; }
-        public UnitEntityCombat Combat { get; private set; }
+        public Vector3Int Position { get { return new Vector3Int(); } }
+        public HashSet<Vector3Int> Visibles { get { return new HashSet<Vector3Int>(); } }
 
-        public NPCUnitEntityAI(UnitEntityMovement movement, UnitEntityCombat combat, NPCMainAI mainAI, NPCTargetingAI targetAI, NPCMovementAI moveAI)
+        public IUnitEntityMovement Movement { get; private set; }
+        public IUnitEntityCombat Combat { get; private set; }
+
+        public NPCUnitEntityAI(IUnitEntityMovement movement, UnitEntityCombat combat, NPCMainAI mainAI, NPCTargetingAI targetAI, NPCMovementAI moveAI)
         {
             this.Movement = movement;
             this.Combat = combat;
@@ -39,7 +42,7 @@ namespace Units
                     Vector3Int abilityTarget = targetAI.GetAbilityTarget(this, ability, game.World);
                     Vector3Int maneuverTarget = targetAI.GetManeuverTarget(this, ability, abilityTarget, game.World);
 
-                    ExecuteMovement(moveAI.GetAbilityMovement(Movement, ability, maneuverTarget, game.World), game.World);
+                    //ExecuteMovement(moveAI.GetAbilityMovement(Movement, ability, maneuverTarget, game.World), game.World);
 
 /*                    bool targetWithinRange = ability.GetWithinRange(this, game.World).Contains(abilityTarget);
                     if (ability != null && targetWithinRange)
@@ -50,12 +53,12 @@ namespace Units
                     break;
                 case AIState.RETREAT:
                     Vector3Int retreatTarget = targetAI.GetRetreatTarget(this, game.World);
-                    ExecuteMovement(moveAI.GetRetreatMovement(Movement, retreatTarget, game.World), game.World);
+                    //ExecuteMovement(moveAI.GetRetreatMovement(Movement, retreatTarget, game.World), game.World);
 
                     break;
                 case AIState.WANDER:
                     Vector3Int wanderTarget = targetAI.GetWanderTarget(this, game.World);
-                    ExecuteMovement(moveAI.GetWanderMovement(Movement, wanderTarget, game.World), game.World);
+                    //ExecuteMovement(moveAI.GetWanderMovement(Movement, wanderTarget, game.World), game.World);
 
                     break;
             }
@@ -67,7 +70,7 @@ namespace Units
             {
                 Debug.Log("NPC Entity motion: " + motion);
             }
-            this.Movement.MoveTo(movement.Last.Value);
+            //this.Movement.MoveTo(movement.Last.Value);
         }
     }
 }

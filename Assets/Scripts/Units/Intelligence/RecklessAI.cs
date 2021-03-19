@@ -13,13 +13,13 @@ namespace Units.Intelligence
         public override AIState GetState(NPCUnitEntityAI self, World world)
         {
             // Check if there is any enemy visible
-            foreach (Vector3Int visible in self.Movement.Visibles)
+            foreach (Vector3Int visible in self.Visibles)
             {
-                UnitEntity unitAt = world.GetUnitAt(visible);
-/*                if (unitAt != null && self.IsEnemy(unitAt))
+                BaseUnitEntity unitAt = world.UnitManager.GetUnitAt<BaseUnitEntity>(visible);
+                if (unitAt != null && self.Combat.IsEnemy(unitAt.Combat))
                 {
                     return AIState.ABILITY;
-                }*/
+                }
             }
 
             return AIState.WANDER;

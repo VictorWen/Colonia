@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Tiles;
 
 namespace Units.Abilities
 {
@@ -16,16 +17,16 @@ namespace Units.Abilities
             this.attackMultiplier = attackMultiplier;
         }
 
-        public override void Apply(UnitEntity caster, List<UnitEntity> targets, World world)
+        public override void Apply(BaseUnitEntity caster, List<BaseUnitEntity> targets, IWorld world)
         {
-            foreach (UnitEntity target in targets)
+            foreach (BaseUnitEntity target in targets)
             {
                 float attack = attackMultiplier;
                 if (isPhysicalDamage)
-                    attack *= caster.Attack;
+                    attack *= caster.Combat.Attack;
                 else
-                    attack *= caster.Magic;
-                target.DealDamage(baseDamage + attack, caster, world, isPhysicalDamage);
+                    attack *= caster.Combat.Magic;
+                target.Combat.DealDamage(baseDamage + attack, caster.Combat, world, isPhysicalDamage);
             }
         }
 

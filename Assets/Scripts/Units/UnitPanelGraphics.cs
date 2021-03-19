@@ -11,30 +11,14 @@ namespace Units
         private readonly Text namePlate;
         private readonly Text statusText;
 
-        /*    public GameObject unitInfoPanel;
-            private Text infoNamePlate;
-            private Text infoStatusText;*/
-
-        /*    public AbilityMenuScript abilityMenu;
-
-            public HeroInventoryPanel heroInventory;*/
-
         // Action buttons
         private readonly Button moveButton;
         private readonly Button attackButton;
-/*        public Button abilityButton;
-        public Button itemsButton;*/
 
-        private UnitPanel unitPanel;
-        private TempUnitEntity selectedUnit;
+        private BaseUnitEntity selectedUnit;
 
-        public UnitPanelGraphics(UnitPanel unitPanel, GameObject panel, Button moveButton, Button attackButton)
-        {
-            this.unitPanel = unitPanel;
-            unitPanel.OnSelect += SetSelectedUnit;
-            unitPanel.OnSelect += ShowUnitPanel;
-            unitPanel.OnDeselect += RemoveCallbacks;
-            unitPanel.OnDeselect += HideUnitPanel;
+        public UnitPanelGraphics(GameObject panel, Button moveButton, Button attackButton)
+        { 
             selectedUnit = null;
 
             this.panel = panel;
@@ -48,36 +32,30 @@ namespace Units
                 else if (t.name == "Status Text")
                     statusText = t;
             }
-            /*
-            foreach (Text t in unitInfoPanel.GetComponentsInChildren<Text>())
-            {
-                if (t.name == "Name Plate")
-                    infoNamePlate = t;
-                if (t.name == "Status Text")
-                    infoStatusText = t;
-            }*/
         }
 
-        public void ShowUnitPanel()
+        public void OnSelect(BaseUnitEntity unit)
         {
-            panel.SetActive(true);
+            SetSelectedUnit(unit);
+            ShowUnitPanel();
         }
 
-        public void HideUnitPanel()
+        public void OnDeselect()
         {
-            panel.SetActive(false);
+            RemoveCallbacks();
+            HideUnitPanel();
         }
 
-        public void SetSelectedUnit()
+        public void SetSelectedUnit(BaseUnitEntity unit)
         {
             // Remove previous callbacks
             RemoveCallbacks();
 
             // Set local information
-            selectedUnit = unitPanel.SelectedUnit;
+            selectedUnit = unit;
 
             // Add new callbacks
-            selectedUnit.Movement.OnMove += UpdateActionButtons;
+            selectedUnit.OnMove += UpdateActionButtons;
             selectedUnit.Combat.OnAttack += UpdateActionButtons;
 
             // Update graphics
@@ -89,7 +67,7 @@ namespace Units
         {
             if (selectedUnit != null)
             {
-                selectedUnit.Movement.OnMove -= UpdateActionButtons;
+                selectedUnit.OnMove -= UpdateActionButtons;
                 selectedUnit.Combat.OnAttack -= UpdateActionButtons;
             }
         }
@@ -97,7 +75,7 @@ namespace Units
         public void UpdateUnitPanel()
         {
             namePlate.text = selectedUnit.Name;
-            statusText.text = selectedUnit.Combat.GetStatusDescription();
+            statusText.text = selectedUnit.GetStatus();
         }
 
         public void UpdateActionButtons()
@@ -105,55 +83,15 @@ namespace Units
             moveButton.interactable = selectedUnit.Movement.CanMove;
             attackButton.interactable = selectedUnit.Combat.CanAttack;
         }
-    
 
-/*    public void HideUnitInfo()
-    {
-        unitInfoPanel.SetActive(false);
+        public void ShowUnitPanel()
+        {
+            panel.SetActive(true);
+        }
+
+        public void HideUnitPanel()
+        {
+            panel.SetActive(false);
+        }
     }
-
-    public void HideAbilityMenu()
-    {
-        abilityMenu.gameObject.SetActive(false);
-    }*/
-
-        /*    public void UpdateGUI()
-            {
-                // Reset Listeners
-                moveButton.onClick.RemoveAllListeners();
-                attackButton.onClick.RemoveAllListeners();
-                abilityButton.onClick.RemoveAllListeners();
-                itemsButton.onClick.RemoveAllListeners();
-
-                if (selectedUnit != null)
-                {
-                    statusText.text = selectedUnit.Unit.GetStatusDescription();
-
-                    // Toggle buttons
-                    moveButton.interactable = selectedUnit.Unit.CanMove;
-                    attackButton.interactable = selectedUnit.Unit.CanAttack;
-                    abilityButton.interactable = selectedUnit.Unit.CanAttack;
-                    itemsButton.interactable = selectedUnit.Unit.CanAttack;
-
-                    // Add correct listeners
-                    if (selectedUnit.Unit.CanMove)
-                    {
-                        moveButton.onClick.AddListener(selectedUnit.MoveAction);
-                    }
-                    if (selectedUnit.Unit.CanAttack)
-                    {
-                        attackButton.onClick.AddListener(selectedUnit.AttackAction);
-                        abilityButton.onClick.AddListener(() => abilityMenu.Enable(selectedUnit));
-                    }
-                    itemsButton.onClick.AddListener(() => selectedUnit.ShowInventory());
-                }
-
-                // Update info
-                if (unitInfoPanel.activeInHierarchy)
-                {
-                    infoNamePlate.text = hoveredUnit.Name;
-                    infoStatusText.text = hoveredUnit.GetStatusDescription();
-                }
-            }*/
-}
 }

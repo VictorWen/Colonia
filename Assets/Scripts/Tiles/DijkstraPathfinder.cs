@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Tiles;
 using UnityEngine;
 
 public class DijkstraPathfinder
@@ -33,7 +33,7 @@ public class DijkstraPathfinder
     }
 
     // TODO: add labeling of path so it is known during which turn a given move will occur.
-    public DijkstraPathfinder(Vector3Int start, float maxMoveSpeed, Vector3Int target, World world, bool checkUnits = false)
+    public DijkstraPathfinder(Vector3Int start, float maxMoveSpeed, Vector3Int target, IWorld world, bool checkUnits = false)
     {
         this.checkUnits = checkUnits;
 

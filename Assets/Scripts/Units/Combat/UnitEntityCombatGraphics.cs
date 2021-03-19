@@ -7,13 +7,13 @@ namespace Units.Combat
     public class UnitEntityCombatGraphics
     {
         private World world;
-        private UnitEntityCombat combat;
-        private UnitEntityMovement movement;
+        private IUnitEntityCombat combat;
+        private IUnitEntityMovement movement;
         private UnitEntityConfig config;
 
         public HashSet<Vector3Int> ShownAttackables { get; private set; }
 
-        public UnitEntityCombatGraphics(World world, UnitEntityCombat combat, UnitEntityMovement movement, UnitEntityConfig config)
+        public UnitEntityCombatGraphics(World world, IUnitEntityCombat combat, IUnitEntityMovement movement, UnitEntityConfig config)
         {
             this.world = world;
             this.combat = combat;

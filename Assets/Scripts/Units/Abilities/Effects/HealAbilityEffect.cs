@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tiles;
 
 namespace Units.Abilities
 {
@@ -15,9 +16,9 @@ namespace Units.Abilities
             this.healAmount = healAmount;
         }
 
-        public override void Apply(UnitEntity user, List<UnitEntity> targets, World world)
+        public override void Apply(BaseUnitEntity user, List<BaseUnitEntity> targets, IWorld world)
         {
-            foreach (UnitEntity target in targets)
+            foreach (BaseUnitEntity target in targets)
             {
                 target.Heal(healAmount);
             }

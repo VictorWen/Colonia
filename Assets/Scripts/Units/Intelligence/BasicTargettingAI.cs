@@ -12,7 +12,7 @@ namespace Units.Intelligence
         /// </summary>
         public override Vector3Int GetAbilityTarget(NPCUnitEntityAI self, Ability ability, World world)
         {
-            return self.Movement.Position;
+            return self.Position;
 /*            // Find all visible enemey UnitEntities
             List<UnitEntity> targets = new List<UnitEntity>();
             foreach (Vector3Int visible in self.VisibleTiles)
@@ -39,7 +39,7 @@ namespace Units.Intelligence
 
         public override Vector3Int GetManeuverTarget(NPCUnitEntityAI self, Ability ability, Vector3Int abilityTarget, World world)
         {
-            return self.Movement.Position;
+            return self.Position;
 /*            BFSPathfinder bfs = new BFSPathfinder(self.Position, self.MovementSpeed, world, true);
             Vector3Int minDistance = abilityTarget;
             foreach (Vector3Int withinRange in ability.GetReachingTiles(self, abilityTarget, world))
@@ -65,7 +65,7 @@ namespace Units.Intelligence
                     return tile;
                 index++;
             }
-            return self.Movement.Position;
+            return self.Position;
         }
 
         public override Vector3Int GetWanderTarget(NPCUnitEntityAI self, World world)
@@ -79,7 +79,7 @@ namespace Units.Intelligence
                     return tile;
                 index++;
             }
-            return self.Movement.Position;
+            return self.Position;
         }
     }
 }

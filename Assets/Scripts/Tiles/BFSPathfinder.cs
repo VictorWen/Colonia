@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Tiles;
 using UnityEngine;
 
 /// <summary>
@@ -10,7 +10,7 @@ public class BFSPathfinder
     public HashSet<Vector3Int> Reachables { get; private set; }
     private readonly Dictionary<Vector3Int, Vector3Int> priorPosition;
 
-    public BFSPathfinder(Vector3Int start, int speed, World world, bool checkUnits = false)
+    public BFSPathfinder(Vector3Int start, int speed, IWorld world, bool checkUnits = false)
     {
         Reachables = new HashSet<Vector3Int>();
         priorPosition = new Dictionary<Vector3Int, Vector3Int>();
