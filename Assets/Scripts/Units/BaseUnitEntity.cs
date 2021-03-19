@@ -10,37 +10,42 @@ namespace Units
 {
     public class BaseUnitEntity : IUnitEntity
     {
-        public string Name { get; private set; }
-        public Vector3Int Position { get; private set; }
-
-        public int Sight { get { return sight; } }
-        
-        public int Health { get; private set; }
-        public int MaxHealth { get; private set; }
-        public bool IsAlive { get; private set; }
-        public HashSet<Vector3Int> Visibles { get; protected set; }
-
-        public bool IsPlayerControlled { get; private set; }
-        public IUnitEntityMovement Movement { get { return movement; } }
-        public IUnitEntityCombat Combat { get { return combat; } }
-        public Inventory Inventory { get; }
-
         public event Action<int> OnDamaged;
         public event Action OnDeath;
         public event Action OnMove;
         public event Action OnVisionUpdate;
 
+        public string Name { get; private set; }
+        public Vector3Int Position { get; private set; }
+
+        public int Health { get; private set; }
+        public int MaxHealth { get; private set; }
+        public bool IsAlive { get; private set; }
+        public HashSet<Vector3Int> Visibles { get; protected set; }
+
+        // TODO: change to a more extensive faction identifier
+        public bool IsPlayerControlled { get; private set; }
+
+        public int Sight { get { return sight; } }
+
+        public IUnitEntityMovement Movement { get { return movement; } }
+        public IUnitEntityCombat Combat { get { return combat; } }
+        public Inventory Inventory { get { return Inventory; } }
+
         [SerializeField] private readonly int sight;
-        private readonly IWorld world;
 
         [SerializeReference] private readonly IUnitEntityMovement movement;
         [SerializeReference] private readonly IUnitEntityCombat combat;
+        [SerializeReference] private readonly Inventory inventory;
+        private readonly IWorld world;
 
         public BaseUnitEntity(string name, Vector3Int initialPosition, int maxHealth, int sight, IWorld world, bool isPlayerControlled, int movementSpeed)
         {
             Name = name;
             Position = initialPosition;
             MaxHealth = maxHealth;
+            Health = maxHealth;
+            IsAlive = true;
 
             this.sight = sight;
             this.world = world;
@@ -59,6 +64,7 @@ namespace Units
         public void OnNextTurn(GameMaster game)
         {
             movement.OnNextTurn(game);
+            combat.OnNextTurn(game);
         }
 
         public virtual void MoveTo(Vector3Int destination)
@@ -81,8 +87,13 @@ namespace Units
             if (damage > 0 && IsAlive)
             {
                 Health -= damage;
-                if (Health < 0)
+                OnDamaged?.Invoke(damage);
+                
+                if (Health <= 0)
+                {
                     IsAlive = false;
+                    OnDeath?.Invoke();
+                }
             }
         }
 

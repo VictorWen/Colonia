@@ -14,7 +14,7 @@ namespace Items.ItemActions
             this.item = item;
         }
 
-        public override void Action(UnitEntityController actor)
+        public override void Action(UnitEntityPlayerController actor)
         {
             actor.CastAbility(item.Ability);
             //actor.Unit.OnUtilityItemUse();

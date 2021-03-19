@@ -17,7 +17,11 @@ namespace Units.Combat
 
         event Action OnAttack;
 
-        void DealDamage(float baseDamage, IUnitEntityCombat attacker, IWorld world, bool isPhysicalDamage = true);
+        void OnNextTurn(GameMaster game);
+
+        void BasicAttackOnPosition(Vector3Int position);
+
+        void DealDamage(float baseDamage, IUnitEntityCombat attacker, bool isPhysicalDamage = true);
 
         bool IsEnemy(IUnitEntityCombat other);
 

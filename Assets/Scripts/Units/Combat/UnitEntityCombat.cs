@@ -33,7 +33,7 @@ namespace Units.Combat
         private readonly IWorld world;
         private readonly IUnitEntityMovement movement;
 
-        private int attackRange = 1;
+        private readonly int attackRange = 1;
 
         public UnitEntityCombat(BaseUnitEntity unit, IWorld world, IUnitEntityMovement movement)
         {
@@ -44,13 +44,19 @@ namespace Units.Combat
             CanAttack = true;
         }
 
+        public void OnNextTurn(GameMaster game)
+        {
+            CanAttack = true;
+        }
+
         public void BasicAttackOnPosition(Vector3Int position)
         {
             CanAttack = false;
+            world.UnitManager.GetUnitAt<BaseUnitEntity>(position).Combat.DealDamage(attack, this, true);
             OnAttack?.Invoke();
         }
 
-        public void DealDamage(float baseDamage, IUnitEntityCombat attacker, IWorld world, bool isPhysicalDamage = true)
+        public void DealDamage(float baseDamage, IUnitEntityCombat attacker, bool isPhysicalDamage = true)
         {
             if (baseDamage < 0)
                 return;
@@ -59,17 +65,9 @@ namespace Units.Combat
 
             int damage;
             if (isPhysicalDamage)
-            {
-                float reduction = Mathf.Max(0, combatModifier * (defence - attacker.Piercing));
-                reduction *= (float)combatModifier * defence / (attacker.Piercing + 1);
-                damage = (int)(baseDamage - reduction);
-               
-            }
+                damage = CalculatePhysicalDamage(baseDamage, attacker, combatModifier);
             else
-            {
-                float reduction = combatModifier * resistance;
-                damage = (int)(baseDamage - reduction);
-            }
+                damage = CalculateMagicalDamage(baseDamage, combatModifier);
             Unit.Damage(damage);
         }
 
@@ -99,6 +97,21 @@ namespace Units.Combat
             text += "Status Effects: \n";
             text += "* TEST STATUS EFFECT";
             return text;
+        }
+
+        private int CalculatePhysicalDamage(float baseDamage, IUnitEntityCombat attacker, float combatModifier)
+        {
+            float reduction = Mathf.Max(0, combatModifier * (defence - attacker.Piercing));
+            reduction *= (float)combatModifier * defence / (attacker.Piercing + 1);
+            int damage = (int)(baseDamage - reduction);
+            return damage;
+        }
+
+        private int CalculateMagicalDamage(float baseDamage, float combatModifier)
+        {
+            float reduction = combatModifier * resistance;
+            int damage = (int)(baseDamage - reduction);
+            return damage; 
         }
     }
 }

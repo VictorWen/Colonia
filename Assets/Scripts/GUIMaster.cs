@@ -35,9 +35,9 @@ public class GUIMaster : MonoBehaviour
     //TODO: formalize city script text updating
     private CityScript capitalScript;
 
-    public UnitEntityController testUnit;
-    public UnitEntityController testEnemyUnit;
-    public UnitEntityController unitEntityPrefab;
+    public UnitEntityPlayerController testUnit;
+    public UnitEntityPlayerController testEnemyUnit;
+    public UnitEntityPlayerController unitEntityPrefab;
     public UnitPanelController unitPanel;
 
     public void Awake()

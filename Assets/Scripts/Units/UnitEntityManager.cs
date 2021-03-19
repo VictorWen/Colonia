@@ -8,13 +8,11 @@ namespace Units
         public List<IUnitEntity> Units { get; private set; }
         public List<NPCUnitEntityAI> NPCUnits { get; private set; }
 
-        private readonly World world;
         private readonly Dictionary<Vector3Int, IUnitEntity> positions;
         private readonly Dictionary<IUnitEntity, Vector3Int> lastPositions;
 
-        public UnitEntityManager(World world)
+        public UnitEntityManager()
         {
-            this.world = world;
             positions = new Dictionary<Vector3Int, IUnitEntity>();
             lastPositions = new Dictionary<IUnitEntity, Vector3Int>();
             Units = new List<IUnitEntity>();
@@ -32,8 +30,6 @@ namespace Units
 
             if (ai != null)
                 NPCUnits.Add(ai);
-
-            //unit.SetUnitManager(this);
         }
 
         public void RemoveUnit(Vector3Int position)

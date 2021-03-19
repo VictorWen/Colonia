@@ -26,7 +26,7 @@ namespace Units.Abilities
                     attack *= caster.Combat.Attack;
                 else
                     attack *= caster.Combat.Magic;
-                target.Combat.DealDamage(baseDamage + attack, caster.Combat, world, isPhysicalDamage);
+                target.Combat.DealDamage(baseDamage + attack, caster.Combat, isPhysicalDamage);
             }
         }
 

@@ -13,13 +13,17 @@ namespace Units
         [SerializeField] private Button moveButton;
         [SerializeField] private Button attackButton;
 
-        [SerializeReference] private UnitPanelGraphics graphics;
+        [SerializeField] private GameObject infoPanel;
 
-        public UnitEntityController SelectedUnit { get; private set; }
+        [SerializeReference] private UnitPanelGraphics graphics;
+        [SerializeReference] private UnitInfoGraphics infoGraphics;
+
+        public UnitEntityPlayerController SelectedUnit { get; private set; }
 
         private void Awake()
         {
             graphics = new UnitPanelGraphics(actionPanel, moveButton, attackButton);
+            infoGraphics = new UnitInfoGraphics(infoPanel);
 
             moveButton.onClick.AddListener(MoveAction);
             attackButton.onClick.AddListener(AttackAction);
@@ -34,7 +38,7 @@ namespace Units
             }
         }
 
-        public void SetSelectedUnit(UnitEntityController newSelectedUnit)
+        public void SetSelectedUnit(UnitEntityPlayerController newSelectedUnit)
         {
             if (newSelectedUnit != null)
             {
@@ -51,6 +55,17 @@ namespace Units
                 SelectedUnit = null;
                 graphics.OnDeselect();
             }
+        }
+
+        public void ShowUnitInfo(BaseUnitEntity unit)
+        {
+            infoGraphics.SetSelectedUnit(unit);
+            infoGraphics.ShowUnitInfoPanel();
+        }
+
+        public void HideUnitInfo()
+        {
+            infoGraphics.HideUnitInfoPanel();
         }
 
         public void MoveAction()

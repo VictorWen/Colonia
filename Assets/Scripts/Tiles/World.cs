@@ -41,7 +41,7 @@ public class World : MonoBehaviour, IWorld
         GenerateWorld();
         // Generate Resources
         ResourceMap = new ResourceMap(this, config.biomeResources, config.iconPrefab, enableFogOfWar);
-        UnitManager = new UnitEntityManager(this);
+        UnitManager = new UnitEntityManager();
     }
 
     // UnitEntityManager wrappers =======================

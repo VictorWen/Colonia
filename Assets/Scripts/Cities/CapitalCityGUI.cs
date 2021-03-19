@@ -5,9 +5,4 @@ using UnityEngine;
 public class CapitalCityGUI : MonoBehaviour
 {
     //public readonly Inventory inventory = new Inventory();
-
-    private void Start()
-    {
-        
-    }
 }

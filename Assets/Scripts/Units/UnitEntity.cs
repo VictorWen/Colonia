@@ -37,7 +37,7 @@ namespace Units
 
         // Management
         private UnitEntityManager manager; // Manages positioning
-        private UnitEntityController script; // Manages GUI stuff
+        private UnitEntityPlayerController script; // Manages GUI stuff
 
         protected virtual void Awake()
         {

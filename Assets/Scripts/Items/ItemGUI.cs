@@ -20,7 +20,7 @@ namespace Items
 
         private bool isActiveItem;
         private GameObject inventoryPanel;
-        private UnitEntityController actor;
+        private UnitEntityPlayerController actor;
         private VerticalLayoutGroup actionMenu;
         private Button actionButtonPrefab;
 
@@ -74,7 +74,7 @@ namespace Items
             tooltip = item.ToString();
         }
 
-        public void SetItem(Item item, GameObject tooltipPanel, GameObject inventoryPanel, UnitEntityController actor, VerticalLayoutGroup itemActionMenu, Button actionButtonPrefab)
+        public void SetItem(Item item, GameObject tooltipPanel, GameObject inventoryPanel, UnitEntityPlayerController actor, VerticalLayoutGroup itemActionMenu, Button actionButtonPrefab)
         {
             this.item = item;
             title.text = item.Name;

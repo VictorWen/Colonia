@@ -1,23 +1,14 @@
 ﻿# TODO
 
-## UnitEntity Refactorization
-- [X] Refactor BaseUnitEntity
-- [ ] Move controls back to UnitEntityController
-- [ ] Move panel logic away from model
-- [X] Make PlayerControlledUnitEntity into a basic combat unit entity
-- [X] Refactor UnitEntityCombat and UnitEntityMovement
-- [X] Add ICombatableUnit interface
-- [ ] Fix references
-
 ## Combat
-- [X] Basic AI
+- [ ] Basic AI
 - [X] Basic Combat
-- [X] Death
+- [ ] Death
 - [X] Terrain Modifiers
+- [ ] Faction identification
 - [ ] Natural Regen
 - [ ] Status Effects
 - [ ] Spawning
-  - [X] Change UnitEntity format
   - [ ] Fix UnitInfoPanel
   - [ ] Automatic spawn mechanism
 - [ ] Cleanup UI

@@ -13,9 +13,9 @@ namespace Items
         public VerticalLayoutGroup itemActionMenu;
         public Button itemActionButtonPrefab;
 
-        private UnitEntityController selectedUnit;
+        private UnitEntityPlayerController selectedUnit;
 
-        public void Enable(UnitEntityController unit)
+        public void Enable(UnitEntityPlayerController unit)
         {
             selectedUnit = unit;
             OpenInventory();

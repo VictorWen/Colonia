@@ -6,19 +6,17 @@ namespace Units.Combat
 {
     public class UnitEntityCombatGraphics
     {
-        private World world;
-        private IUnitEntityCombat combat;
-        private IUnitEntityMovement movement;
-        private UnitEntityConfig config;
+        private readonly World world;
+        private readonly IUnitEntityCombat combat;
+        private readonly UnitEntityConfig config;
 
         public HashSet<Vector3Int> ShownAttackables { get; private set; }
 
-        public UnitEntityCombatGraphics(World world, IUnitEntityCombat combat, IUnitEntityMovement movement, UnitEntityConfig config)
+        public UnitEntityCombatGraphics(UnitEntityGraphics graphics)
         {
-            this.world = world;
-            this.combat = combat;
-            this.movement = movement;
-            this.config = config;
+            this.world = graphics.World;
+            this.combat = graphics.Unit.Combat;
+            this.config = graphics.Config;
 
             combat.OnAttack += OnAttack;
 

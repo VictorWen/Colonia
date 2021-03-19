@@ -126053,15 +126053,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 769020081}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8aef36fac2c551b49aa3674fc4f58e53, type: 3}
+  m_Script: {fileID: 11500000, guid: c9e86b5c162a75f40821115454017a24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gui: {fileID: 5732125}
   world: {fileID: 1534646887}
   selected: 0
   config: {fileID: 11400000, guid: 9d99fe4f086396f48b950084296b043e, type: 2}
-  unitEntity:
-    id: 0
   graphics:
     id: 0
   references:
@@ -129234,16 +129232,17 @@ MonoBehaviour:
   actionPanel: {fileID: 1626743259}
   moveButton: {fileID: 1047125875}
   attackButton: {fileID: 1785186705}
-  unitPanel:
-    id: 0
+  infoPanel: {fileID: 957765390}
   graphics:
+    id: 0
+  infoGraphics:
     id: 1
   references:
     version: 1
     00000000:
-      type: {class: UnitPanel, ns: Units, asm: Assembly-CSharp}
-    00000001:
       type: {class: UnitPanelGraphics, ns: Units, asm: Assembly-CSharp}
+    00000001:
+      type: {class: UnitInfoGraphics, ns: Units, asm: Assembly-CSharp}
 --- !u!224 &1205894831
 RectTransform:
   m_ObjectHideFlags: 0
@@ -130584,21 +130583,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1453203479}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8aef36fac2c551b49aa3674fc4f58e53, type: 3}
+  m_Script: {fileID: 11500000, guid: ca745e103a91c6240b7faca0ab1cf0b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gui: {fileID: 5732125}
   world: {fileID: 1534646887}
-  selected: 0
-  config: {fileID: 11400000, guid: 57f329b454257df4a9b2b20c5d91da79, type: 2}
-  unitEntity:
-    id: 0
-  graphics:
-    id: 0
-  references:
-    version: 1
-    00000000:
-      type: {class: , ns: , asm: }
 --- !u!58 &1453203481
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -6,68 +6,37 @@ using UnityEngine.Tilemaps;
 namespace Units.Movement {
     public class UnitEntityMovementGraphics
     {
-        private readonly World world;
-        private readonly GameObject obj;
-
-        private readonly UnitEntityConfig config;
-        private bool showingSelectionIndicator;
-
-        private readonly BaseUnitEntity unit;
         public HashSet<Vector3Int> ShownMoveables { get; private set; }
         private HashSet<Vector3Int> visibleTiles;
+        private UnitEntityGraphics graphics;
 
-        public UnitEntityMovementGraphics(World world, GameObject obj, BaseUnitEntity unit, UnitEntityConfig config)
+        public UnitEntityMovementGraphics(UnitEntityGraphics graphics)
         {
-            this.world = world;
-            this.obj = obj;
+            this.graphics = graphics;
 
-            this.unit = unit;
-            unit.OnMove += UpdateUnitPosition;
+            graphics.Unit.OnMove += UpdateUnitPosition;
 
-            if (config.playerControlled)
-                unit.OnVisionUpdate += UpdateVision;
-
-            this.config = config;
-            showingSelectionIndicator = false;
-
+            if (graphics.Config.playerControlled)
+                graphics.Unit.OnVisionUpdate += UpdateVision;
+ 
             ShownMoveables = new HashSet<Vector3Int>();
             visibleTiles = new HashSet<Vector3Int>();
-        }
-
-        public void ShowSelectionIndicator()
-        {
-            if (!showingSelectionIndicator)
-            {
-                world.movement.SetTile(world.grid.WorldToCell(obj.transform.position), config.selectTile);
-                showingSelectionIndicator = true;
-            }
-        }
-
-        public void HideSelectionIndicator()
-        {
-            if (showingSelectionIndicator)
-            {
-                ClearMoveables();
-                //ClearAttackables();
-                world.movement.SetTile(world.grid.WorldToCell(obj.transform.position), null);
-                showingSelectionIndicator = false;
-            }
         }
 
         public void UpdateUnitPosition()
         {
             bool toggledSelected = false;
-            if (showingSelectionIndicator)
+            if (graphics.ShowingSelectionIndicator)
             {
-                HideSelectionIndicator();
+                graphics.HideSelectionIndicator();
                 ClearMoveables();
                 toggledSelected = true;
             }
 
-            obj.transform.position = world.grid.CellToWorld(unit.Position);
+            graphics.Obj.transform.position = graphics.World.grid.CellToWorld(graphics.Unit.Position);
             
             if (toggledSelected)
-                ShowSelectionIndicator();
+                graphics.ShowSelectionIndicator();
         }
 
         public void ShowMoveables(HashSet<Vector3Int> moveables)
@@ -75,7 +44,7 @@ namespace Units.Movement {
             ClearMoveables();
             foreach (Vector3Int moveable in moveables)
             {
-                world.movement.SetTile(moveable, config.moveTile);
+                graphics.World.movement.SetTile(moveable, graphics.Config.moveTile);
             }
             ShownMoveables = new HashSet<Vector3Int>(moveables);
         }
@@ -84,7 +53,7 @@ namespace Units.Movement {
         {
             foreach (Vector3Int moveable in ShownMoveables)
             {
-                world.movement.SetTile(moveable, null);
+                graphics.World.movement.SetTile(moveable, null);
             }
             ShownMoveables = new HashSet<Vector3Int>();
         }
@@ -94,20 +63,14 @@ namespace Units.Movement {
             // Cover up previously viewable tiles
             foreach (Vector3Int fog in visibleTiles)
             {
-                world.AddFogOfWar(fog);
+                graphics.World.AddFogOfWar(fog);
             }
             visibleTiles = new HashSet<Vector3Int>();
 
-            // discover recon tiles
-/*            foreach (Vector3Int withinRecon in recon)
-            {
-                world.RevealTerraIncognita(withinRecon);
-            }*/
-
             // Reveal visible tiles
-            foreach (Vector3Int visible in unit.Visibles)
+            foreach (Vector3Int visible in graphics.Unit.Visibles)
             {
-                world.RevealFogOfWar(visible);
+                graphics.World.RevealFogOfWar(visible);
                 visibleTiles.Add(visible);
             }
         }
