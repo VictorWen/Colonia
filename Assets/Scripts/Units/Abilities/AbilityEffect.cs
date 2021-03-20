@@ -7,7 +7,7 @@ namespace Units.Abilities
 {
     public abstract class AbilityEffect
     {
-        public abstract void Apply(BaseUnitEntity caster, List<BaseUnitEntity> targets, IWorld world);
+        public abstract void Apply(UnitEntity caster, List<UnitEntity> targets, IWorld world);
 
         public abstract string GetDescription();
     }

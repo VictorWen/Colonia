@@ -12,12 +12,12 @@ namespace Units
         public UnitEntityCombatGraphics CombatGraphics { get; private set; }
 
         public bool ShowingSelectionIndicator { get; private set; }
-        public BaseUnitEntity Unit { get; private set; }
+        public UnitEntity Unit { get; private set; }
         public UnitEntityConfig Config { get; private set; }
         public World World { get; private set; }
         public GameObject Obj { get; private set; }
 
-        public UnitEntityGraphics(GameObject obj, BaseUnitEntity unit, UnitEntityConfig config, World world)
+        public UnitEntityGraphics(GameObject obj, UnitEntity unit, UnitEntityConfig config, World world)
         {
             this.Obj = obj;
             ShowingSelectionIndicator = false;

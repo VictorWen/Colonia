@@ -1,5 +1,11 @@
 ﻿# TODO
 
+## UnitEntity Post Refactorization
+- [ ] Abilities
+- [ ] NPC AI
+- [ ] UnitEntity Inventory
+- [ ] Better Visuals
+
 ## Combat
 - [ ] Basic AI
 - [X] Basic Combat

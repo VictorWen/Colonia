@@ -25,12 +25,36 @@ namespace Units.Abilities
             this.unit = unit;
             selectedAbilityID = null;
             abilityDescriptionText.text = "Select an Ability";
-            // Clear layout
+            
+            ClearButtonLayout();            
+            FillButtonLayout();
+
+            SetupListeners();
+            gameObject.SetActive(true);
+        }
+
+        public void SelectAbility(string abilityID)
+        {
+            selectedAbilityID = abilityID;
+            abilityDescriptionText.text = GlobalAbilityDictionary.GetAbility(abilityID).GetDescription();
+        }
+
+        public void ConfirmSelection()
+        {
+            gameObject.SetActive(false);
+            unit.FindAbilityTargetAndCastAbility(GlobalAbilityDictionary.GetAbility(selectedAbilityID));
+        }
+
+        private void ClearButtonLayout()
+        {
             foreach (AbilityButton btn in abilityListLayout.GetComponentsInChildren<AbilityButton>())
             {
                 Destroy(btn.gameObject);
             }
+        }
 
+        private void FillButtonLayout()
+        {
             // Get unit's abilities
             // Foreach ability instantiate ability button prefab
             foreach (string id in unit.Unit.Combat.Abilities)
@@ -41,21 +65,12 @@ namespace Units.Abilities
                 btn.Title.text = GlobalAbilityDictionary.GetAbility(id).Name;
                 btn.transform.SetParent(abilityListLayout.transform);
             }
+        }
+
+        private void SetupListeners()
+        {
             selectButton.onClick.RemoveAllListeners();
             selectButton.onClick.AddListener(ConfirmSelection);
-            gameObject.SetActive(true);
-        }
-
-        public void SelectAbility(string abilityID)
-        {
-            this.selectedAbilityID = abilityID;
-            // Fill in description informaiton
-            abilityDescriptionText.text = GlobalAbilityDictionary.GetAbility(abilityID).GetDescription();
-        }
-
-        public void ConfirmSelection()
-        {
-            unit.CastAbility(GlobalAbilityDictionary.GetAbility(selectedAbilityID));
         }
     }
 }

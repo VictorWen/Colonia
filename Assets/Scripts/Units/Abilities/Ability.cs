@@ -33,13 +33,13 @@ namespace Units.Abilities
             this.targetEnemies = targetEnemies;
         }
 
-        public virtual void Cast(BaseUnitEntity caster, Vector3Int target, IWorld world)
+        public virtual void Cast(UnitEntity caster, Vector3Int target, IWorld world)
         {
             HashSet<Vector3Int> aoe = area.GetAOE(caster.Position, target, world);
-            List<BaseUnitEntity> targets = new List<BaseUnitEntity>();
+            List<UnitEntity> targets = new List<UnitEntity>();
             foreach (Vector3Int tile in aoe)
             {
-                BaseUnitEntity unitAt = world.UnitManager.GetUnitAt<BaseUnitEntity>(tile);
+                UnitEntity unitAt = world.UnitManager.GetUnitAt<UnitEntity>(tile);
                 if (unitAt != null)
                 {
                     bool isEnemy = caster.Combat.IsEnemy(unitAt.Combat);
@@ -53,7 +53,7 @@ namespace Units.Abilities
             }
         }
 
-        public HashSet<Vector3Int> GetWithinRange(BaseUnitEntity caster, IWorld world)
+        public HashSet<Vector3Int> GetWithinRange(UnitEntity caster, IWorld world)
         {
             if (ignoreLoS)
                 return world.GetTilesInRange(caster.Position, range);
@@ -66,7 +66,7 @@ namespace Units.Abilities
         /// <summary>
         /// Determines what tiles can reach the target tile with this ability. (Pretty expensive computation)
         /// </summary>
-        public HashSet<Vector3Int> GetReachingTiles(BaseUnitEntity caster, Vector3Int target, World world)
+        public HashSet<Vector3Int> GetReachingTiles(UnitEntity caster, Vector3Int target, World world)
         {
             HashSet<Vector3Int> reachingTiles = new HashSet<Vector3Int>();
             foreach (Vector3Int tile in world.GetTilesInRange(target, range))

@@ -9,12 +9,12 @@ namespace Units.Movement
     {
         [SerializeField] private int movementSpeed = 3;
 
-        private readonly BaseUnitEntity unit;
+        private readonly UnitEntity unit;
         private readonly IWorld world;
 
         public bool CanMove { get; set; }
 
-        public UnitEntityMovement(BaseUnitEntity unit, IWorld world, int movementSpeed)
+        public UnitEntityMovement(UnitEntity unit, IWorld world, int movementSpeed)
         {
             this.unit = unit;
             this.world = world;

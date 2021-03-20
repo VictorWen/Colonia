@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Tiles;
+using Units.Abilities;
 using Units.Movement;
 using UnityEngine;
-using Tiles;
 
 namespace Units.Combat
 {
@@ -27,21 +28,25 @@ namespace Units.Combat
         public bool CanAttack { get; private set; }
 
         //TODO: fix placeholder abilities list
-        public List<string> Abilities { get { return new List<string>(); } }
+        public List<string> Abilities { get; private set; }
 
-        public BaseUnitEntity Unit { get; private set; }
+        public UnitEntity Unit { get; private set; }
         private readonly IWorld world;
         private readonly IUnitEntityMovement movement;
 
         private readonly int attackRange = 1;
 
-        public UnitEntityCombat(BaseUnitEntity unit, IWorld world, IUnitEntityMovement movement)
+        public UnitEntityCombat(UnitEntity unit, IWorld world, IUnitEntityMovement movement)
         {
             this.Unit = unit;
             this.world = world;
             this.movement = movement;
+            Abilities = new List<string>();
 
             CanAttack = true;
+
+            // TODO: placeholder test stuff
+            Abilities.Add("fireball");
         }
 
         public void OnNextTurn(GameMaster game)
@@ -49,10 +54,17 @@ namespace Units.Combat
             CanAttack = true;
         }
 
+        public void CastAbility(Ability ability, Vector3Int target)
+        {
+            Debug.Log("TEST ABILITY " + ability.Name);
+            CanAttack = false;
+            OnAttack?.Invoke();
+        }
+
         public void BasicAttackOnPosition(Vector3Int position)
         {
             CanAttack = false;
-            world.UnitManager.GetUnitAt<BaseUnitEntity>(position).Combat.DealDamage(attack, this, true);
+            world.UnitManager.GetUnitAt<UnitEntity>(position).Combat.DealDamage(attack, this, true);
             OnAttack?.Invoke();
         }
 
@@ -71,23 +83,23 @@ namespace Units.Combat
             Unit.Damage(damage);
         }
 
-        public bool IsEnemy(IUnitEntityCombat other)
-        {
-            return other.Unit.IsPlayerControlled != Unit.IsPlayerControlled;
-        }
-
         public HashSet<Vector3Int> GetAttackables()
         {
             HashSet<Vector3Int> attackables = new HashSet<Vector3Int>();
             foreach (Vector3Int tile in world.GetLineOfSight(Unit.Position, attackRange))
             {
-                BaseUnitEntity unitAt = world.UnitManager.GetUnitAt<BaseUnitEntity>(tile);
+                UnitEntity unitAt = world.UnitManager.GetUnitAt<UnitEntity>(tile);
                 if (unitAt != null && unitAt.Combat.IsEnemy(this))
                 {
                     attackables.Add(tile);
                 }
             }
             return attackables;
+        }
+
+        public bool IsEnemy(IUnitEntityCombat other)
+        {
+            return other.Unit.IsPlayerControlled != Unit.IsPlayerControlled;
         }
 
         public string GetStatusDescription()

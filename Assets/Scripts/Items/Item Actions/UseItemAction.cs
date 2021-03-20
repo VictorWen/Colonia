@@ -16,7 +16,7 @@ namespace Items.ItemActions
 
         public override void Action(UnitEntityPlayerController actor)
         {
-            actor.CastAbility(item.Ability);
+            actor.FindAbilityTargetAndCastAbility(item.Ability);
             //actor.Unit.OnUtilityItemUse();
         }
     }

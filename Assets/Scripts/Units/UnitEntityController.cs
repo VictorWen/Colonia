@@ -8,8 +8,9 @@ namespace Units
     {
         [SerializeField] protected GUIMaster gui;
         [SerializeField] protected World world;
-        [SerializeField] protected BaseUnitEntity unitEntity;
+        [SerializeField] protected UnitEntity unitEntity;
 
+        private bool allowHovering = true;
         private bool hovering = false;
 
         protected virtual void Awake()
@@ -18,27 +19,42 @@ namespace Units
             transform.position = world.grid.CellToWorld(gridPos);
 
             // TODO: Placeholder unitEntity, should be constructed in the model
-            unitEntity = new BaseUnitEntity(name, gridPos, 100, 4, world, false, 3);
+            unitEntity = new UnitEntity(name, gridPos, 100, 4, world, false, 3);
             world.UnitManager.AddUnit(unitEntity);
         }
 
         private void OnMouseEnter()
         {
-            //TODO: fix second unit panel call
-            if (gui.GUIState.UnitControl)
+            if (gui.GUIState.UnitControl && allowHovering)
             {
-                gui.unitPanel.ShowUnitInfo(unitEntity);
-                hovering = true;
+                HoverInfo(true);
             }
         }
 
         private void OnMouseExit()
         {
-            if (hovering)
+            if (hovering && allowHovering)
             {
-                gui.unitPanel.HideUnitInfo();
-                hovering = false;
+                HoverInfo(false);
             }
+        }
+
+        protected void AllowHovering(bool enable)
+        {
+            allowHovering = enable;
+            if (!enable && hovering)
+            {
+                HoverInfo(false);
+            }
+        }
+
+        public void HoverInfo(bool show)
+        {
+            hovering = show;
+            if (show)
+                gui.unitPanel.ShowUnitInfo(unitEntity);
+            else
+                gui.unitPanel.HideUnitInfo();
         }
     }
 }

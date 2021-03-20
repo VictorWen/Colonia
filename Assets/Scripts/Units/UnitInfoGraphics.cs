@@ -24,7 +24,7 @@ namespace Units
             }
         }
 
-        public void SetSelectedUnit(BaseUnitEntity unit)
+        public void SetSelectedUnit(UnitEntity unit)
         {
             namePlate.text = unit.Name;
             statusText.text = unit.GetStatus();

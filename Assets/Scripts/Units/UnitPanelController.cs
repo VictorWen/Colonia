@@ -12,8 +12,11 @@ namespace Units
         [SerializeField] private GameObject actionPanel;
         [SerializeField] private Button moveButton;
         [SerializeField] private Button attackButton;
+        [SerializeField] private Button abilityButton;
 
         [SerializeField] private GameObject infoPanel;
+
+        [SerializeField] private AbilityMenuScript abilityMenu;
 
         [SerializeReference] private UnitPanelGraphics graphics;
         [SerializeReference] private UnitInfoGraphics infoGraphics;
@@ -22,11 +25,12 @@ namespace Units
 
         private void Awake()
         {
-            graphics = new UnitPanelGraphics(actionPanel, moveButton, attackButton);
+            graphics = new UnitPanelGraphics(actionPanel, moveButton, attackButton, abilityButton);
             infoGraphics = new UnitInfoGraphics(infoPanel);
 
             moveButton.onClick.AddListener(MoveAction);
             attackButton.onClick.AddListener(AttackAction);
+            abilityButton.onClick.AddListener(ShowAbilityMenu);
         }
 
         public void OnNextTurn()
@@ -57,7 +61,12 @@ namespace Units
             }
         }
 
-        public void ShowUnitInfo(BaseUnitEntity unit)
+        public void ShowAbilityMenu()
+        {
+            abilityMenu.Enable(SelectedUnit);
+        }
+
+        public void ShowUnitInfo(UnitEntity unit)
         {
             infoGraphics.SetSelectedUnit(unit);
             infoGraphics.ShowUnitInfoPanel();

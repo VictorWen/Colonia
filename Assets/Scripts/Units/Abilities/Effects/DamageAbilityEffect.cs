@@ -17,9 +17,9 @@ namespace Units.Abilities
             this.attackMultiplier = attackMultiplier;
         }
 
-        public override void Apply(BaseUnitEntity caster, List<BaseUnitEntity> targets, IWorld world)
+        public override void Apply(UnitEntity caster, List<UnitEntity> targets, IWorld world)
         {
-            foreach (BaseUnitEntity target in targets)
+            foreach (UnitEntity target in targets)
             {
                 float attack = attackMultiplier;
                 if (isPhysicalDamage)

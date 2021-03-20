@@ -16,9 +16,9 @@ namespace Units.Abilities
             this.healAmount = healAmount;
         }
 
-        public override void Apply(BaseUnitEntity user, List<BaseUnitEntity> targets, IWorld world)
+        public override void Apply(UnitEntity user, List<UnitEntity> targets, IWorld world)
         {
-            foreach (BaseUnitEntity target in targets)
+            foreach (UnitEntity target in targets)
             {
                 target.Heal(healAmount);
             }

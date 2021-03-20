@@ -14,16 +14,18 @@ namespace Units
         // Action buttons
         private readonly Button moveButton;
         private readonly Button attackButton;
+        private readonly Button abilityButton;
 
-        private BaseUnitEntity selectedUnit;
+        private UnitEntity selectedUnit;
 
-        public UnitPanelGraphics(GameObject panel, Button moveButton, Button attackButton)
+        public UnitPanelGraphics(GameObject panel, Button moveButton, Button attackButton, Button abilityButton)
         { 
             selectedUnit = null;
 
             this.panel = panel;
             this.moveButton = moveButton;
             this.attackButton = attackButton;
+            this.abilityButton = abilityButton;
 
             foreach (Text t in panel.GetComponentsInChildren<Text>())
             {
@@ -34,7 +36,7 @@ namespace Units
             }
         }
 
-        public void OnSelect(BaseUnitEntity unit)
+        public void OnSelect(UnitEntity unit)
         {
             SetSelectedUnit(unit);
             ShowUnitPanel();
@@ -46,7 +48,7 @@ namespace Units
             HideUnitPanel();
         }
 
-        public void SetSelectedUnit(BaseUnitEntity unit)
+        public void SetSelectedUnit(UnitEntity unit)
         {
             // Remove previous callbacks
             RemoveCallbacks();
@@ -82,6 +84,7 @@ namespace Units
         {
             moveButton.interactable = selectedUnit.Movement.CanMove;
             attackButton.interactable = selectedUnit.Combat.CanAttack;
+            abilityButton.interactable = selectedUnit.Combat.CanAttack;
         }
 
         public void ShowUnitPanel()

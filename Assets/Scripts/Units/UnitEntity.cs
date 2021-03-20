@@ -1,236 +1,111 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
-using Units.Abilities;
-using Items.UtilityItems;
+using Tiles;
+using Units.Movement;
+using Units.Combat;
 using Items;
 
 namespace Units
 {
-    public class UnitEntity
+    public class UnitEntity : IUnitEntity
     {
-        // General Information
-        //public string Name { get { return name; } }
+        public event Action<int> OnDamaged;
+        public event Action OnDeath;
+        public event Action OnMove;
+        public event Action OnVisionUpdate;
 
-        // Items
-        public Inventory Inventory { get; private set; }
+        public string Name { get; private set; }
+        public Vector3Int Position { get; private set; }
 
-        // Combat Status
-        //protected List<StatusEffect> statusEffects;
+        public int Health { get; private set; }
+        public int MaxHealth { get; private set; }
+        public bool IsAlive { get; private set; }
+        public HashSet<Vector3Int> Visibles { get; protected set; }
 
-        // Combat Abilities
-        public List<string> Abilities { get; private set; }
+        // TODO: change to a more extensive faction identifier
+        public bool IsPlayerControlled { get; private set; }
 
-        // Combat Attributes
-        public int Attack { get; private set; }
-        public int Magic { get; private set; }
+        public int Sight { get { return sight; } }
 
-        // Vision
-        public int Sight { get; }
-        public HashSet<Vector3Int> VisibleTiles { get; private set; }
+        public IUnitEntityMovement Movement { get { return movement; } }
+        public IUnitEntityCombat Combat { get { return combat; } }
+        public Inventory Inventory { get { return Inventory; } }
 
-        // Movement Controls
-        public Vector3Int Position { get; }
-        public bool CanMove { get; private set; } //TODO: move to a HeroUnitEntity class
-        public bool CanAttack { get; private set; }
-        public int MovementSpeed { get; }
-        public bool PlayerControlled { get; }
+        [SerializeField] private readonly int sight;
 
-        // Management
-        private UnitEntityManager manager; // Manages positioning
-        private UnitEntityPlayerController script; // Manages GUI stuff
+        [SerializeReference] private readonly IUnitEntityMovement movement;
+        [SerializeReference] private readonly IUnitEntityCombat combat;
+        [SerializeReference] private readonly Inventory inventory;
+        private readonly IWorld world;
 
-        protected virtual void Awake()
+        public UnitEntity(string name, Vector3Int initialPosition, int maxHealth, int sight, IWorld world, bool isPlayerControlled, int movementSpeed)
         {
-            //script = GetComponent<UnitEntityController>();
-            VisibleTiles = new HashSet<Vector3Int>();
+            Name = name;
+            Position = initialPosition;
+            MaxHealth = maxHealth;
+            Health = maxHealth;
+            IsAlive = true;
+
+            this.sight = sight;
+            this.world = world;
+
+            IsPlayerControlled = isPlayerControlled;
+
+            movement = new UnitEntityMovement(this, world, movementSpeed);
+            combat = new UnitEntityCombat(this, world, movement);
         }
 
-        public void SetUnitManager(UnitEntityManager manager)
+        public string GetStatus()
         {
-            this.manager = manager;
+            return combat.GetStatusDescription();
         }
 
-        protected virtual void Start()
+        public void OnNextTurn(GameMaster game)
         {
-            //_world.AddUnitEntity(this);
-            CanMove = true;
-            CanAttack = true;
-
-            // Testing Stuff
-            // TODO: placeholder UnitEntity.Inventory weight
-            Inventory = new Inventory(100);
-            // TEST
-            Inventory.AddItem(new UtilityItem("potion", "Health Potion", 1, 3, 1, "Potion", 10, 1, new AbilityEffect[] { new HealAbilityEffect(10) }, new HexAbilityAOE(0)));
-
-            Abilities = new List<string>();
-            //TODO: placeholder UnitEntity.Abilities
-            Abilities.Add("fireball");
-
-            //UpdateVision(_world);
+            movement.OnNextTurn(game);
+            combat.OnNextTurn(game);
         }
 
-        public virtual void OnNextTurn(GameMaster game)
+        public virtual void MoveTo(Vector3Int destination)
         {
-            CanMove = true;
-            CanAttack = true;
-            UpdateVision(game.World);
+            Movement.CanMove = false;
+
+            Position = destination;
+            OnMove?.Invoke();
+            UpdateVision();
         }
 
-        public void MoveTo(Vector3Int destination, World world)
+        public virtual void UpdateVision()
         {
-            //CanMove = false;
-            //manager.SetUnitPosition(this, destination);
-            //UpdateVision(world);
-            //script.UpdateGraphics();
+            Visibles = world.GetLineOfSight(Position, sight);
+            OnVisionUpdate?.Invoke();
         }
 
-        public void AttackUnitEntity(UnitEntity target, World world)
+        public void Damage(int damage)
         {
-            CanMove = false;
-            CanAttack = false;
-            target.DealDamage(Attack, this, world, true); //TODO: change to basic attack ability
-            //script.UpdateGraphics();
-        }
-
-/*        public void CastAbility(Ability ability, Vector3Int target, World world)
-        {
-            CanMove = false;
-            CanAttack = false;
-            // Assumes there is enough mana available
-            // TODO: UnityEntity Ability.manaCost modifiers
-            //_mana -= ability.ManaCost;
-            //Debug.Log("COMBAT: " + Name + " casted " + ability.Name + " at " + target);
-            ability.Cast(this, target, world);
-            //script.UpdateGraphics();
-        }*/
-
-/*        public void OnUtilityItemUse()
-        {
-            CanAttack = false;
-            //script.UpdateGraphics();
-        }*/
-
-        public int Heal(float amount)
-        {
-            //int heal = (int) System.Math.Min(amount, maxHealth - health);
-            //health += heal;
-            //return heal;
-            return 0;
-        }
-
-        public int DealDamage(float baseDamage, UnitEntity attacker, World world, bool isPhysicalDamage = true)
-        {
-            if (baseDamage < 0)
-                return 0;
-
-            float combatModifier = ((TerrainTile)world.terrain.GetTile(Position)).combatModifier;
-
-            if (isPhysicalDamage)
+            if (damage > 0 && IsAlive)
             {
-                //float reduction = Mathf.Max(0, combatModifier * (_defence - attacker._piercing));
-                //reduction *= (float) combatModifier * _defence / (attacker._piercing + 1);
-                //int damage = (int) (baseDamage - reduction);
-                //damage = Mathf.Max(0, damage);
-                //damage = Mathf.Min(damage, health);
-                //health -= damage;
-                //if (health <= 0)
-                 //   Death();
-                //return damage;
-            }
-            else
-            {
-/*                float reduction = combatModifier * _resistance;
-                int damage = (int)(baseDamage - reduction);
-                damage = Mathf.Max(0, damage);
-                damage = Mathf.Min(damage, health);
-                health -= damage;
-                if (health <= 0)
-                    Death();
-                return damage;*/
-            }
-            return 0;
-        }
-
-/*        public virtual void Death()
-        {
-            Debug.Log(Name + " Died");
-            script.OnDeath();
-            Destroy(gameObject);
-            manager.RemoveUnit(this);
-        }*/
-
-/*        public string GetStatusDescription()
-        {
-            string text = "Health: " + health + "/" + maxHealth + "\n";
-            text += "Mana: " + _mana + "/" + _maxMana + "\n";
-            text += "Status Effects: \n";
-            text += "* TEST STATUS EFFECT";
-            return text;
-        }*/
-
-        public void HideScript()
-        {
-            script.gameObject.SetActive(false);
-        }
-
-        public void ShowScript()
-        {
-            script.gameObject.SetActive(true);
-            //script.UpdateGraphics();
-        }
-
-        public void UpdateVision(World world)
-        {
-            // Place FoW on previously viewable tiles
-            if (PlayerControlled)
-            {
-                foreach (Vector3Int visible in VisibleTiles)
+                Health -= damage;
+                OnDamaged?.Invoke(damage);
+                
+                if (Health <= 0)
                 {
-                    world.AddFogOfWar(visible);
+                    IsAlive = false;
+                    OnDeath?.Invoke();
                 }
             }
-            VisibleTiles = new HashSet<Vector3Int>();
-
-            // Reveal Terra Incognita within movement
-            if (PlayerControlled)
-            {
-                BFSPathfinder reconPath = new BFSPathfinder(Position, MovementSpeed, world);
-                foreach (Vector3Int withinRecon in reconPath.Reachables)
-                {
-                    world.RevealTerraIncognita(withinRecon);
-                }
-            }
-
-/*            // Determine sight bonus
-            float bonus = 0;
-            UnityEngine.Tilemaps.TileBase t = world.terrain.GetTile(Position);
-            if (t != null)
-            {
-                bonus = ((TerrainTile)t).sightBonus;
-            }*/
-
-            // Remove FoW from tiles within line of sight
-            VisibleTiles = world.GetLineOfSight(Position, Sight);
-
-            if (PlayerControlled)
-            {
-                foreach (Vector3Int withinSight in VisibleTiles)
-                {
-                    world.RevealTerraIncognita(withinSight);
-                    world.RevealFogOfWar(withinSight);
-                }
-            }
-
-            // Check if the unit is visible or not
-            if (world.vision.GetTile(Position) == null)
-                ShowScript();
-            else
-                HideScript();
         }
 
-        public bool IsEnemy(UnitEntity other)
+        public void Heal(int heal)
         {
-            return PlayerControlled != other.PlayerControlled;
+            if (heal > 0 && IsAlive)
+            {
+                Health += heal;
+                if (Health > MaxHealth)
+                    Health = MaxHealth;
+            }
         }
+
     }
 }
