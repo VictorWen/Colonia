@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Units.Movement;
 using Units.Combat;
 using UnityEngine;
+using UnityEngine.Tilemaps;
+using Units.Abilities;
 
 namespace Units
 {
@@ -16,6 +18,8 @@ namespace Units
         public UnitEntityConfig Config { get; private set; }
         public World World { get; private set; }
         public GameObject Obj { get; private set; }
+
+        private AbilityCastTargeter currentTargeter;
 
         public UnitEntityGraphics(GameObject obj, UnitEntity unit, UnitEntityConfig config, World world)
         {
@@ -69,14 +73,30 @@ namespace Units
 
         public void OnMoveAction(HashSet<Vector3Int> moveables)
         {
-            CombatGraphics.ClearAttackables();
+            ClearTiles();
             MovementGraphics.ShowMoveables(moveables);
         }
 
         public void OnAttackAction(HashSet<Vector3Int> attackables)
         {
-            MovementGraphics.ClearMoveables();
+            ClearTiles();
             CombatGraphics.ShowAttackables(attackables);
+        }
+
+        public void OnAbilityAction(AbilityCastTargeter targeter)
+        {
+            ClearTiles();
+            currentTargeter = targeter;
+        }
+
+        public void ClearTiles()
+        {
+            CombatGraphics.ClearAttackables();
+            MovementGraphics.ClearMoveables();
+            if (currentTargeter != null && currentTargeter.IsActive)
+            {
+                currentTargeter.Disable();
+            }
         }
     }
 }

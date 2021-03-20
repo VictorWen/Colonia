@@ -15,10 +15,11 @@ namespace Units
         private readonly Button moveButton;
         private readonly Button attackButton;
         private readonly Button abilityButton;
+        private readonly Button itemsButton;
 
         private UnitEntity selectedUnit;
 
-        public UnitPanelGraphics(GameObject panel, Button moveButton, Button attackButton, Button abilityButton)
+        public UnitPanelGraphics(GameObject panel, Button moveButton, Button attackButton, Button abilityButton, Button itemsButton)
         { 
             selectedUnit = null;
 
@@ -26,6 +27,7 @@ namespace Units
             this.moveButton = moveButton;
             this.attackButton = attackButton;
             this.abilityButton = abilityButton;
+            this.itemsButton = itemsButton;
 
             foreach (Text t in panel.GetComponentsInChildren<Text>())
             {
@@ -50,15 +52,13 @@ namespace Units
 
         public void SetSelectedUnit(UnitEntity unit)
         {
-            // Remove previous callbacks
             RemoveCallbacks();
-
-            // Set local information
             selectedUnit = unit;
 
             // Add new callbacks
             selectedUnit.OnMove += UpdateActionButtons;
             selectedUnit.Combat.OnAttack += UpdateActionButtons;
+            selectedUnit.OnStatusChanged += UpdateUnitPanel;
 
             // Update graphics
             UpdateUnitPanel();
@@ -71,6 +71,7 @@ namespace Units
             {
                 selectedUnit.OnMove -= UpdateActionButtons;
                 selectedUnit.Combat.OnAttack -= UpdateActionButtons;
+                selectedUnit.OnStatusChanged -= UpdateUnitPanel;
             }
         }
 
@@ -85,6 +86,7 @@ namespace Units
             moveButton.interactable = selectedUnit.Movement.CanMove;
             attackButton.interactable = selectedUnit.Combat.CanAttack;
             abilityButton.interactable = selectedUnit.Combat.CanAttack;
+            itemsButton.interactable = selectedUnit.Combat.CanAttack;
         }
 
         public void ShowUnitPanel()

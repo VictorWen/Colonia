@@ -11,6 +11,8 @@ namespace Units
         private readonly Text namePlate;
         private readonly Text statusText;
 
+        private UnitEntity selectedUnit;
+
         public UnitInfoGraphics(GameObject panel)
         {
             this.panel = panel;
@@ -26,8 +28,17 @@ namespace Units
 
         public void SetSelectedUnit(UnitEntity unit)
         {
-            namePlate.text = unit.Name;
-            statusText.text = unit.GetStatus();
+            if (selectedUnit != null)
+                selectedUnit.OnStatusChanged -= UpdateStatus;
+            selectedUnit = unit;
+            UpdateStatus();
+            unit.OnStatusChanged += UpdateStatus;
+        }
+
+        public void UpdateStatus()
+        {
+            namePlate.text = selectedUnit.Name;
+            statusText.text = selectedUnit.GetStatus();
         }
 
         public void ShowUnitInfoPanel()

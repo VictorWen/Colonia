@@ -1,17 +1,13 @@
-﻿using Items;
-using System.Collections;
-using System.Collections.Generic;
-using Units.Abilities;
-using Units.Combat;
-using Units.Intelligence;
-using Units.Movement;
+﻿using Units.Abilities;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Tilemaps;
 
 namespace Units
 {
     public class UnitEntityPlayerController : UnitEntityController
     {
-        private enum WaitingStatus {
+        public enum WaitingStatus {
             NONE, MOVEMENT, ATTACK, ABILITY
         }
 
@@ -20,7 +16,7 @@ namespace Units
         [SerializeReference] private UnitEntityGraphics graphics;
 
         public bool IsSelected { get; private set; }
-        private WaitingStatus status;
+        public WaitingStatus Status { get; private set; }
 
         public UnitEntity Unit { get { return unitEntity; } }
 
@@ -58,8 +54,11 @@ namespace Units
 
         private void Update()
         {
-            if (config.playerControlled && Input.GetMouseButtonUp(0) && (status != WaitingStatus.NONE))
+            if (config.playerControlled && Input.GetMouseButtonUp(0) && (Status != WaitingStatus.NONE))
             {
+                if (EventSystem.current.IsPointerOverGameObject())
+                    return;
+
                 Vector3 pos = gui.playerCam.ScreenToWorldPoint(Input.mousePosition);
                 Vector3Int gridPos = world.grid.WorldToCell(pos);
                 OnTileClick(gridPos);
@@ -72,7 +71,7 @@ namespace Units
             AllowHovering(false);
 
             IsSelected = true;
-            status = WaitingStatus.NONE;
+            Status = WaitingStatus.NONE;
 
             panel.SetSelectedUnit(this);
             graphics.OnSelect();
@@ -91,27 +90,29 @@ namespace Units
 
         public void MoveAction() 
         {
-            status = WaitingStatus.MOVEMENT;
+            Status = WaitingStatus.MOVEMENT;
             graphics.OnMoveAction(unitEntity.Movement.GetMoveables().Reachables);
         }
 
         public void AttackAction()
         {
-            status = WaitingStatus.ATTACK;
+            Status = WaitingStatus.ATTACK;
             graphics.OnAttackAction(unitEntity.Combat.GetAttackables());
         }
 
-        public void FindAbilityTargetAndCastAbility(Ability ability)
+        public void AbilityAction(Ability ability)
         {
-            AbilityCastTargeter targeter = new AbilityCastTargeter(ability, world, Unit, config);
+            Status = WaitingStatus.ABILITY;
+            AbilityCastTargeter targeter = new AbilityCastTargeter(ability, gui.GUIState, world, this, config);
+            graphics.OnAbilityAction(targeter);
             StartCoroutine(targeter.TargetAndCastAbilityCoroutine());
         }
 
         private void OnTileClick(Vector3Int tilePos)
         {
-            if (status == WaitingStatus.MOVEMENT && graphics.MovementGraphics.ShownMoveables.Contains(tilePos))
+            if (Status == WaitingStatus.MOVEMENT && graphics.MovementGraphics.ShownMoveables.Contains(tilePos))
                 unitEntity.MoveTo(tilePos);
-            else if (status == WaitingStatus.ATTACK && graphics.CombatGraphics.ShownAttackables.Contains(tilePos))
+            else if (Status == WaitingStatus.ATTACK && graphics.CombatGraphics.ShownAttackables.Contains(tilePos))
                 unitEntity.Combat.BasicAttackOnPosition(tilePos);
         }
 

@@ -56,7 +56,7 @@ namespace Units.Combat
 
         public void CastAbility(Ability ability, Vector3Int target)
         {
-            Debug.Log("TEST ABILITY " + ability.Name);
+            ability.Cast(Unit, target, world);
             CanAttack = false;
             OnAttack?.Invoke();
         }

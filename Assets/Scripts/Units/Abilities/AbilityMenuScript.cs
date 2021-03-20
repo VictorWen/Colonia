@@ -42,7 +42,7 @@ namespace Units.Abilities
         public void ConfirmSelection()
         {
             gameObject.SetActive(false);
-            unit.FindAbilityTargetAndCastAbility(GlobalAbilityDictionary.GetAbility(selectedAbilityID));
+            unit.AbilityAction(GlobalAbilityDictionary.GetAbility(selectedAbilityID));
         }
 
         private void ClearButtonLayout()

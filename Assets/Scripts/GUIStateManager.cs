@@ -25,6 +25,8 @@ public class GUIStateManager
     public static readonly GUIStatePreset MAP = new GUIStatePreset("map", true, true, true, true);
     // GameState for when unit is selected
     public static readonly GUIStatePreset UNIT = new GUIStatePreset("unit", true, true, false, true);
+    // GameState for when an ability is being used
+    public static readonly GUIStatePreset ABILITY = new GUIStatePreset("ability", true, false, false, true);
     // GameState for when the player has a City panel open
     public static readonly GUIStatePreset CITY = new GUIStatePreset("city", false, false, false, false, true);
     // GameState for when the player is placing a tile improvement
