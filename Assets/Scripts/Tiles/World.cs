@@ -47,7 +47,7 @@ public class World : MonoBehaviour, IWorld
     // UnitEntityManager wrappers =======================
     public void ExecuteNPCTurns(GameMaster game)
     {
-        UnitManager.ExecuteNPCTurns(game);
+        //UnitManager.ExecuteNPCTurns(game);
     }
 
     public void UnitsOnNextTurn(GameMaster game)

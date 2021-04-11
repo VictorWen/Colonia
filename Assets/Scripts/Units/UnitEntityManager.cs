@@ -6,7 +6,6 @@ namespace Units
     public class UnitEntityManager
     {
         public List<IUnitEntity> Units { get; private set; }
-        public List<NPCUnitEntityAI> NPCUnits { get; private set; }
 
         private readonly Dictionary<Vector3Int, IUnitEntity> positions;
         private readonly Dictionary<IUnitEntity, Vector3Int> lastPositions;
@@ -16,20 +15,16 @@ namespace Units
             positions = new Dictionary<Vector3Int, IUnitEntity>();
             lastPositions = new Dictionary<IUnitEntity, Vector3Int>();
             Units = new List<IUnitEntity>();
-            NPCUnits = new List<NPCUnitEntityAI>();
         }
 
         // TODO: fix removal of NPCUnitEntityAIs
-        public void AddUnit(IUnitEntity unit, NPCUnitEntityAI ai = null)
+        public void AddUnit(IUnitEntity unit)
         {
             Units.Add(unit);
             positions.Add(unit.Position, unit);
             lastPositions.Add(unit, unit.Position);
 
             unit.OnMove += () => UpdateUnitPosition(unit);
-
-            if (ai != null)
-                NPCUnits.Add(ai);
         }
 
         public void RemoveUnit(Vector3Int position)
@@ -73,14 +68,6 @@ namespace Units
             foreach (IUnitEntity data in Units)
             {
                 data.OnNextTurn(game);
-            }
-        }
-
-        public void ExecuteNPCTurns(GameMaster game)
-        {
-            foreach (NPCUnitEntityAI ai in NPCUnits)
-            {
-                ai.ExecuteTurn(game);
             }
         }
     }

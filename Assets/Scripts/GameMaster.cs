@@ -18,6 +18,8 @@ public class GameMaster
     private readonly List<City> cities;
     private readonly ResourceModifiers globalModifiers;
 
+    public List<NPCIntelligence> npcList = new List<NPCIntelligence>();
+
     public GameMaster(World world)
     {
         this.World = world;
@@ -31,6 +33,9 @@ public class GameMaster
     // TODO: Move game control methods to a separate interface or class
     public void NextTurn(GUIMaster gui)
     {
+        foreach (NPCIntelligence npc in npcList)
+            npc.ExecuteCombat(this);
+
         World.ExecuteNPCTurns(this);
         
         foreach (City city in cities)

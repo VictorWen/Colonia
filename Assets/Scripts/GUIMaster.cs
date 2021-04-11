@@ -83,4 +83,8 @@ public class GUIMaster : MonoBehaviour
         capitalScript.title.text = capital.Name + "(" + capital.population + ")"; //TODO: move population text update location
     }
 
+    public void AddNPCIntelligence(NPCIntelligence npc)
+    {
+        Game.npcList.Add(npc);
+    }
 }

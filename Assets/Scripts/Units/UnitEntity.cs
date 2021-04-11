@@ -62,6 +62,8 @@ namespace Units
                 new Abilities.HealAbilityEffect(10)
             }, new Abilities.HexAbilityAOE(0), true, false));
             Health = 20;
+
+            UpdateVision();
         }
 
         public string GetStatus()

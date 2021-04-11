@@ -10,6 +10,8 @@ namespace Units
         [SerializeField] protected World world;
         [SerializeField] protected UnitEntity unitEntity;
 
+        public UnitEntity Unit { get { return unitEntity; } }
+
         private bool allowHovering = true;
         private bool hovering = false;
 
@@ -20,7 +22,13 @@ namespace Units
 
             // TODO: Placeholder unitEntity, should be constructed in the model
             unitEntity = new UnitEntity(name, gridPos, 100, 4, world, false, 3);
+            unitEntity.OnMove += UpdateUnitPosition;
             world.UnitManager.AddUnit(unitEntity);
+        }
+
+        private void UpdateUnitPosition()
+        {
+            transform.position = world.grid.CellToWorld(unitEntity.Position);
         }
 
         private void OnMouseEnter()
