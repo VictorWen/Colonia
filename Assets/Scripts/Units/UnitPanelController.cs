@@ -9,20 +9,20 @@ namespace Units
     [ExecuteInEditMode]
     public class UnitPanelController : MonoBehaviour
     {
-        [SerializeField] private GameObject actionPanel;
-        [SerializeField] private Button moveButton;
-        [SerializeField] private Button attackButton;
-        [SerializeField] private Button abilityButton;
-        [SerializeField] private Button itemsButton;
+        [SerializeField] private GameObject actionPanel = null;
+        [SerializeField] private Button moveButton = null;
+        [SerializeField] private Button attackButton = null;
+        [SerializeField] private Button abilityButton = null;
+        [SerializeField] private Button itemsButton = null;
 
-        [SerializeField] private GameObject infoPanel;
+        [SerializeField] private GameObject infoPanel = null;
 
-        [SerializeField] private AbilityMenuScript abilityMenu;
+        [SerializeField] private AbilityMenuScript abilityMenu = null;
 
-        [SerializeReference] private HeroInventoryPanel inventoryPanel;
+        [SerializeReference] private HeroInventoryPanel inventoryPanel = null;
 
-        [SerializeReference] private UnitPanelGraphics graphics;
-        [SerializeReference] private UnitInfoGraphics infoGraphics;
+        [SerializeReference] private UnitPanelGraphics graphics = null;
+        [SerializeReference] private UnitInfoGraphics infoGraphics = null;
 
         public UnitEntityPlayerController SelectedUnit { get; private set; }
 

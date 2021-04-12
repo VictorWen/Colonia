@@ -24,7 +24,7 @@ public class World : MonoBehaviour, IWorld
     public bool autoUpdate;
     public int seed;
 
-    [SerializeField] private WorldGenerationConfig config;
+    [SerializeField] private WorldGenerationConfig config = null;
 
     //TODO: fix/organize this
     public ResourceMap ResourceMap { get; private set; }

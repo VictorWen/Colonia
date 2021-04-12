@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Units.Abilities;
 
 namespace Units.Intelligence
 {
@@ -13,7 +14,6 @@ namespace Units.Intelligence
         {
             List<KeyValuePair<Vector3Int, float>> scores = posScores.ToList();
             scores.Sort(PositioningCompare);
-            Debug.Log(scores[0] + " " + scores[scores.Count - 1]);
             return self.Movement.GetMoveables().GetPathTo(scores[0].Key);
         }
 
@@ -25,6 +25,22 @@ namespace Units.Intelligence
                 return 1;
             else
                 return 0;
+        }
+
+        public override void ExecuteAbility(UnitEntity self, World world)
+        {
+            List<string> abilities = self.Combat.Abilities;
+            if (abilities.Contains("attack"))
+            {
+                foreach (Vector3Int tile in world.GetAdjacents(self.Position))
+                {
+                    if (world.UnitManager.GetUnitAt<UnitEntity>(tile) != null)
+                    {
+                        self.Combat.CastAbility(GlobalAbilityDictionary.GetAbility("attack"), tile);
+                        break;
+                    }
+                }
+            }
         }
     }
 }

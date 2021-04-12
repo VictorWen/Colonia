@@ -1,13 +1,22 @@
 ﻿# TODO
 
+## Extra Refactorization
+- [ ] Extract World data and graphics
+- [ ] Decouple parts of the GUI?
+- [ ] Decouple parts of the GameMaster
+- [ ] Create Unit Tests
+
 ## UnitEntity Post Refactorization
-- [ ] Abilities
+- [X] Abilities
 - [ ] NPC AI
-- [ ] UnitEntity Inventory
+  - [X] Surveyer
+  - [ ] Planner
+  - [ ] Extracting certain calculations
+- [X] UnitEntity Inventory
 - [ ] Better Visuals
 
 ## Combat
-- [ ] Basic AI
+- [X] Basic AI
 - [X] Basic Combat
 - [ ] Death
 - [X] Terrain Modifiers
@@ -27,6 +36,3 @@
   - [ ] Weapons
   - [ ] Armor
 - [ ] NPC Drops
-- [ ] Better AI
-  - [ ] Better Ability AI
-  - [ ] Better Maneuver Targeting AI

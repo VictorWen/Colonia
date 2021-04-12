@@ -12,7 +12,11 @@ namespace Units.Abilities
         {
             abilities = new Dictionary<string, Ability>();
 
-            //Fireball
+            // Basic Attack
+            AbilityEffect[] attackEffects = new AbilityEffect[] { new DamageAbilityEffect(0, true, 1) };
+            AddAbility("attack", "Basic Attack", 0, 1, false, attackEffects, new HexAbilityAOE(0));
+
+            // Fireball
             AbilityEffect[] fireballEffects = new AbilityEffect[] { new DamageAbilityEffect(5, false, 0.8f) };
             AddAbility("fireball", "Fireball", 3, 3, false, fireballEffects, new HexAbilityAOE(1));
         }

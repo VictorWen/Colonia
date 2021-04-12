@@ -12,13 +12,13 @@ namespace Units
         }
 
         [SerializeField] private bool selected;
-        [SerializeField] private UnitEntityConfig config;
+        [SerializeField] private UnitEntityConfig config = null;
         [SerializeReference] private UnitEntityGraphics graphics;
 
         public bool IsSelected { get; private set; }
         public WaitingStatus Status { get; private set; }
 
-        public UnitEntity Unit { get { return unitEntity; } }
+        //public UnitEntity Unit { get { return unitEntity; } }
 
         private UnitPanelController panel;
 

@@ -11,5 +11,7 @@ namespace Units.Intelligence
     {
         // Determine both the desired target location and how to get there
         public abstract LinkedList<Vector3Int> GetMovementPath(UnitEntity self, Dictionary<Vector3Int, float> posScores);
+
+        public abstract void ExecuteAbility(UnitEntity self, World world);
     }
 }

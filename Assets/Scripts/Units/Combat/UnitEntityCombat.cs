@@ -41,7 +41,7 @@ namespace Units.Combat
             this.Unit = unit;
             this.world = world;
             this.movement = movement;
-            Abilities = new List<string>();
+            Abilities = new List<string>() { "attack" };
 
             CanAttack = true;
 

@@ -13,8 +13,8 @@ namespace Units
         public GUIMaster gui;
 
         private INPCStateMachine stateMachine;
-        [SerializeField] private INPCSurveyer surveyer;
-        [SerializeField] private INPCPlanner planner;
+        [SerializeField] private INPCSurveyer surveyer = null;
+        [SerializeField] private INPCPlanner planner = null;
         private UnitEntity unit;
 
         private void Start()
@@ -37,6 +37,8 @@ namespace Units
                     unit.MoveTo(tile);
                 }
             }
+
+            planner.ExecuteAbility(unit, game.World);
         }
 
         public List<Vector3Int> GetTelegraph()
