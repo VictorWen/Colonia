@@ -29,11 +29,18 @@ namespace Units
 
             // TODO: Placeholder unitEntity, should be constructed in the model
             unitEntity = new UnitEntity(name, gridPos, 100, 4, world, true, 3);
+            unitEntity.OnDeath += OnDeath;
 
             world.UnitManager.AddUnit(unitEntity);
             graphics = new UnitEntityGraphics(gameObject, unitEntity, config, world);
 
             panel = gui.unitPanel;
+        }
+
+        protected override void OnDeath()
+        {
+            Deselect();
+            base.OnDeath();
         }
 
         private void Start()

@@ -34,6 +34,13 @@ namespace Units
             lastPositions.Remove(positions[position]);
         }
 
+        public void RemoveUnit(IUnitEntity unit)
+        {
+            Units.Remove(unit);
+            positions.Remove(unit.Position);
+            lastPositions.Remove(unit);
+        }
+
         public void UpdateUnitPosition(IUnitEntity unit)
         {
             positions.Remove(lastPositions[unit]);

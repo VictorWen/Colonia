@@ -24,6 +24,14 @@ namespace Units
             unitEntity = new UnitEntity(name, gridPos, 100, 4, world, false, 3);
             unitEntity.OnMove += UpdateUnitPosition;
             world.UnitManager.AddUnit(unitEntity);
+
+            unitEntity.OnDeath += OnDeath;
+        }
+
+        protected virtual void OnDeath()
+        {
+            world.UnitManager.RemoveUnit(unitEntity);
+            Destroy(gameObject);
         }
 
         private void UpdateUnitPosition()
