@@ -8,7 +8,11 @@ namespace Units
     {
         [SerializeField] protected GUIMaster gui;
         [SerializeField] protected World world;
-        [SerializeField] protected UnitEntity unitEntity;
+        [SerializeField] protected int maxHealth = 100;
+        [SerializeField] protected int sight = 4;
+        [SerializeField] protected int movementSpeed = 3;
+
+        [SerializeReference] protected UnitEntity unitEntity;
 
         public UnitEntity Unit { get { return unitEntity; } }
 
@@ -21,7 +25,7 @@ namespace Units
             transform.position = world.grid.CellToWorld(gridPos);
 
             // TODO: Placeholder unitEntity, should be constructed in the model
-            unitEntity = new UnitEntity(name, gridPos, 100, 4, world, false, 3);
+            unitEntity = new UnitEntity(name, gridPos, maxHealth, sight, world, false, movementSpeed);
             unitEntity.OnMove += UpdateUnitPosition;
             world.UnitManager.AddUnit(unitEntity);
 

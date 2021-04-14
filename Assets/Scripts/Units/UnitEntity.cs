@@ -19,8 +19,11 @@ namespace Units
         public string Name { get; private set; }
         public Vector3Int Position { get; private set; }
 
-        public int Health { get; private set; }
-        public int MaxHealth { get; private set; }
+        [SerializeField] private int health;
+        [SerializeField] private int maxHealth;
+
+        public int Health { get { return health; } private set { health = value; } }
+        public int MaxHealth { get { return maxHealth; } private set { maxHealth = value; } }
         public bool IsAlive { get; private set; }
         public HashSet<Vector3Int> Visibles { get; protected set; }
 
@@ -61,7 +64,7 @@ namespace Units
             inventory.AddItem(new Items.UtilityItems.UtilityItem("health_potion", "Health Potion", 1, 1, 1, "Potion", 1, 0, new Abilities.AbilityEffect[] {
                 new Abilities.HealAbilityEffect(10)
             }, new Abilities.HexAbilityAOE(0), true, false));
-            Health = 20;
+            //Health = 20;
 
             UpdateVision();
         }

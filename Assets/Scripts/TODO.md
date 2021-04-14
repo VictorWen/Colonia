@@ -10,7 +10,7 @@
 - [X] Abilities
 - [ ] NPC AI
   - [X] Surveyer
-  - [ ] Planner
+  - [X] Planner
   - [ ] Extracting certain calculations
 - [X] UnitEntity Inventory
 - [ ] Better Visuals
@@ -18,7 +18,7 @@
 ## Combat
 - [X] Basic AI
 - [X] Basic Combat
-- [ ] Death
+- [X] Death
 - [X] Terrain Modifiers
 - [ ] Faction identification
 - [ ] Natural Regen
