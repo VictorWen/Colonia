@@ -7,6 +7,16 @@ using UnityEngine;
 
 namespace Units.Combat
 {
+    public class UnitEntityCombatData
+    {
+        public int maxMana;
+        public int attack;
+        public int defence;
+        public int piercing;
+        public int magic;
+        public int resistance;
+    }
+
     public class UnitEntityCombat : IUnitEntityCombat
     {
         [Header("Mana")]
@@ -47,6 +57,18 @@ namespace Units.Combat
 
             // TODO: placeholder test stuff
             Abilities.Add("fireball");
+        }
+
+        public UnitEntityCombat(UnitEntity unit, IWorld world, IUnitEntityMovement movement, UnitEntityCombatData data) : this(unit, world, movement)
+        {
+            mana = data.maxMana;
+            maxMana = data.maxMana;
+
+            attack = data.attack;
+            defence = data.defence;
+            piercing = data.piercing;
+            magic = data.magic;
+            resistance = data.resistance;
         }
 
         public void OnNextTurn(GameMaster game)

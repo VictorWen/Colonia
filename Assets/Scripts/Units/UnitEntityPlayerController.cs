@@ -24,14 +24,7 @@ namespace Units
 
         protected override void Awake()
         {
-            Vector3Int gridPos = world.grid.WorldToCell(transform.position);
-            transform.position = world.grid.CellToWorld(gridPos);
-
-            // TODO: Placeholder unitEntity, should be constructed in the model
-            unitEntity = new UnitEntity(name, gridPos, maxHealth, sight, world, true, movementSpeed);
-            unitEntity.OnDeath += OnDeath;
-
-            world.UnitManager.AddUnit(unitEntity);
+            CreateUnitEntity(true);
             graphics = new UnitEntityGraphics(gameObject, unitEntity, config, world);
 
             panel = gui.unitPanel;

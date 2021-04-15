@@ -27,18 +27,13 @@ namespace Units
             unit.OnMove += () => UpdateUnitPosition(unit);
         }
 
-        public void RemoveUnit(Vector3Int position)
-        {
-            Units.Remove(positions[position]);
-            positions.Remove(position);
-            lastPositions.Remove(positions[position]);
-        }
-
         public void RemoveUnit(IUnitEntity unit)
         {
             Units.Remove(unit);
             positions.Remove(unit.Position);
             lastPositions.Remove(unit);
+
+            unit.OnMove -= () => UpdateUnitPosition(unit);
         }
 
         public void UpdateUnitPosition(IUnitEntity unit)

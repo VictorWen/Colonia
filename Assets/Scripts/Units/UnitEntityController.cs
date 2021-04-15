@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Units.Combat;
 
 namespace Units
 {
@@ -8,9 +9,7 @@ namespace Units
     {
         [SerializeField] protected GUIMaster gui;
         [SerializeField] protected World world;
-        [SerializeField] protected int maxHealth = 100;
-        [SerializeField] protected int sight = 4;
-        [SerializeField] protected int movementSpeed = 3;
+        [SerializeField] protected UnitEntityData unitData;
 
         [SerializeReference] protected UnitEntity unitEntity;
 
@@ -21,14 +20,28 @@ namespace Units
 
         protected virtual void Awake()
         {
+            CreateUnitEntity(false);
+            unitEntity.OnMove += UpdateUnitPosition;
+        }
+
+        protected virtual void CreateUnitEntity(bool isPlayerControlled)
+        {
             Vector3Int gridPos = world.grid.WorldToCell(transform.position);
             transform.position = world.grid.CellToWorld(gridPos);
 
-            // TODO: Placeholder unitEntity, should be constructed in the model
-            unitEntity = new UnitEntity(name, gridPos, maxHealth, sight, world, false, movementSpeed);
-            unitEntity.OnMove += UpdateUnitPosition;
-            world.UnitManager.AddUnit(unitEntity);
+            UnitEntityCombatData combatData = new UnitEntityCombatData()
+            {
+                maxMana = unitData.maxMana,
+                attack = unitData.attack,
+                defence = unitData.defence,
+                piercing = unitData.piercing,
+                magic = unitData.magic,
+                resistance = unitData.resistance
+            };
 
+            unitEntity = new UnitEntity(this.name, gridPos, unitData.maxHealth, unitData.sight, world, isPlayerControlled, unitData.movementSpeed, combatData);
+
+            //world.UnitManager.AddUnit(unitEntity);
             unitEntity.OnDeath += OnDeath;
         }
 
