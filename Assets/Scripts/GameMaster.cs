@@ -37,12 +37,20 @@ public class GameMaster
         // Place tile improvements <- this is difficult!
     }
 
-    private void PlaceStarterTileImprovements(City city)
+    public void PlaceStarterTileImprovements(City city)
     {
         // Find candidate tiles for each tile improvement
         // Add tile improvement to city
         // Set World tile data to corresponding tile improvement <- how to identify what tile to put down?
         // Place tile improvement graphics down at corresponding tile <- is a higher level and should be somewhere else?
+        Vector3Int farmTile = new Vector3Int(0, 0, 0);
+        ProjectData farmProjectData = GlobalProjectDictionary.GetProjectData("farm");
+        IProject farmProject = farmProjectData.Project;
+        string farmPath = System.IO.Path.Combine("Projects", "Constructed Tiles", "farm");
+        ConstructedTile farmConstructedTile = Resources.Load<ConstructedTile>(farmPath);
+        World.PlaceConstructedTile(farmTile, farmConstructedTile);
+        World.FinishConstructionOfCityTile(city, (ConstructedTileProject)farmProject, farmTile);
+        city.AddNextTurnEffect((CityNextTurnEffect)farmProject);
     }
 
     // TODO: Move game control methods to a separate interface or class

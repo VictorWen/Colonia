@@ -58,6 +58,8 @@ public class GUIMaster : MonoBehaviour
         capitalScript = CityScript.Create("Test", new Vector3(-1, 0, 0), this);
         capital = capitalScript.city;
         //capital.inv = inv;
+
+        Game.PlaceStarterTileImprovements(capital);
     }
 
     //Called by End Turn Button

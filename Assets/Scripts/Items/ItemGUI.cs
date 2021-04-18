@@ -57,7 +57,7 @@ namespace Items
             {
                 tooltipPanel.transform.position = Input.mousePosition + new Vector3(10, 0);
             }
-            if (actionMenu.gameObject.activeInHierarchy && Input.GetMouseButtonUp(0))
+            if (actionMenu != null && actionMenu.gameObject.activeInHierarchy && Input.GetMouseButtonUp(0))
             {
                 actionMenu.gameObject.SetActive(false);
             }

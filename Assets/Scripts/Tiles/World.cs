@@ -19,7 +19,7 @@ public class World : MonoBehaviour, IWorld
 
     [Header("Vision")]
     public bool enableFogOfWar;
-    public Tilemap vision;
+    [SerializeField] private Tilemap vision;
     public Dictionary<Vector3Int, int> Visible { get; private set; }
 
     [Header("Generation Settings")]
