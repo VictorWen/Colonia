@@ -16,11 +16,10 @@ namespace Units
         public event Action OnMove;
         public event Action OnVisionUpdate;
 
+
+
         public string Name { get; private set; }
         public Vector3Int Position { get; private set; }
-
-        [SerializeField] private int health;
-        [SerializeField] private int maxHealth;
 
         public int Health { get { return health; } private set { health = value; } }
         public int MaxHealth { get { return maxHealth; } private set { maxHealth = value; } }
@@ -36,17 +35,24 @@ namespace Units
         public IUnitEntityCombat Combat { get { return combat; } }
         public Inventory Inventory { get { return inventory; } }
 
-        [SerializeField] private readonly int sight;
+        
+        
+        [SerializeField] private int health;
+        [SerializeField] private int maxHealth;
+
+        [SerializeField] private int sight;
 
         [SerializeReference] private IUnitEntityMovement movement;
         [SerializeReference] private IUnitEntityCombat combat;
         [SerializeReference] private Inventory inventory;
+
         private readonly IWorld world;
 
-        public UnitEntity(string name, Vector3Int initialPosition, int maxHealth, int sight, IWorld world, bool isPlayerControlled, int movementSpeed, UnitEntityCombatData combatData)
+        public UnitEntity(string name, Vector3Int initialPosition, int maxHealth, int sight, bool isPlayerControlled, int movementSpeed, IWorld world, UnitEntityCombatData combatData)
         {
             Name = name;
             Position = initialPosition;
+            
             MaxHealth = maxHealth;
             Health = maxHealth;
             IsAlive = true;
@@ -122,6 +128,5 @@ namespace Units
                 OnStatusChanged?.Invoke();
             }
         }
-
     }
 }

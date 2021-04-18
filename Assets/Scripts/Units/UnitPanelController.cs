@@ -56,7 +56,7 @@ namespace Units
                     graphics.OnDeselect();
                 }
                 SelectedUnit = newSelectedUnit;
-                graphics.OnSelect(newSelectedUnit.Unit);
+                graphics.OnSelect(newSelectedUnit);
             }
             else
             {
@@ -75,7 +75,7 @@ namespace Units
             inventoryPanel.Enable(SelectedUnit);
         }
 
-        public void ShowUnitInfo(UnitEntity unit)
+        public void ShowUnitInfo(UnitEntityController unit)
         {
             infoGraphics.SetSelectedUnit(unit);
             infoGraphics.ShowUnitInfoPanel();

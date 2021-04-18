@@ -69,9 +69,9 @@ namespace Cities.Construction
                 if (IsValidTile(position, game.World, city))
                 {
                     // If the valid tile is not empty, check if it can be upgraded and afforded
-                    if (game.World.cities.GetTile(position) != null && IsUpgradeableTile(position, game.World))
+                    if (game.World.GetConstructedTile(position) != null && IsUpgradeableTile(position, game.World))
                     {
-                        upgradee = ((ConstructedTile)game.World.cities.GetTile(position)).Project;
+                        upgradee = (game.World.GetConstructedTile(position)).Project;
                         bool upgradeCost = true;
                         foreach (KeyValuePair<string, int> resource in GetResourceCost(city, game))
                         {
@@ -117,21 +117,13 @@ namespace Cities.Construction
 
         public virtual void OnCancel(City city, GUIMaster gui)
         {
-            gui.Game.World.cities.SetTile(position, null);
+            gui.Game.World.PlaceConstructedTile(position, null);
             //TODO: Manage deselect constructed tile upgrade case
         }
         
         public virtual void Complete(City city, GUIMaster gui)
         {
-            ConstructedTile tile = (ConstructedTile) gui.Game.World.cities.GetTile(position);
-            tile.FinishConstruction(city, ProjectType, this);
-            gui.Game.World.cities.SetColor(position, new Color(1, 1, 1));
-
-            if (upgradee != null)
-            {
-                //TODO: Manage replacing old constructed tile after upgrade
-                OnUpgrade(upgradee);
-            }
+            gui.Game.World.FinishConstructionOfCityTile(city, this, position, upgradee);
         }
 
         public abstract void OnUpgrade(ConstructedTileProject upgradee);

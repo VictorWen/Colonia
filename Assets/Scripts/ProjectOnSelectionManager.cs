@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Cities.Construction 
 {
-    public class ProjectSelectionManager : MonoBehaviour
+    public class ProjectOnSelectionManager : MonoBehaviour
     {
         public void StartSelection(IProject selection, ConstructionPanelScript panel, City selectedCity, GUIMaster gui)
         {

@@ -30,7 +30,7 @@ public class ResourceMap
 
             foreach (Vector3Int position in world.BiomeChunks[biome.biomeIndex])
             {
-                string terrainName = world.terrain.GetTile(position).name;
+                string terrainName = world.GetTerrainTile(position).name;
                 if (!terrainTiles.ContainsKey(terrainName))
                 {
                     terrainTiles.Add(terrainName, new List<Vector3Int>());

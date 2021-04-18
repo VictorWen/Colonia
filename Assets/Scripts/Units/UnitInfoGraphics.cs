@@ -10,8 +10,10 @@ namespace Units
         private readonly GameObject panel;
         private readonly Text namePlate;
         private readonly Text statusText;
+        private readonly Image unitImage;
 
         private UnitEntity selectedUnit;
+        private Sprite unitSprite;
 
         public UnitInfoGraphics(GameObject panel)
         {
@@ -24,10 +26,18 @@ namespace Units
                 else if (t.name == "Status Text")
                     statusText = t;
             }
+
+            foreach (Image img in panel.GetComponentsInChildren<Image>())
+            {
+                if (img.name == "Image")
+                    unitImage = img;
+            }
         }
 
-        public void SetSelectedUnit(UnitEntity unit)
+        public void SetSelectedUnit(UnitEntityController ctrl)
         {
+            UnitEntity unit = ctrl.Unit;
+            unitSprite = ctrl.GetComponent<SpriteRenderer>().sprite;
             if (selectedUnit != null)
                 selectedUnit.OnStatusChanged -= UpdateStatus;
             selectedUnit = unit;
@@ -39,6 +49,7 @@ namespace Units
         {
             namePlate.text = selectedUnit.Name;
             statusText.text = selectedUnit.GetStatus();
+            unitImage.sprite = unitSprite;
         }
 
         public void ShowUnitInfoPanel()

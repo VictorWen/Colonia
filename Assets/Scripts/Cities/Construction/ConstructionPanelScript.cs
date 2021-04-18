@@ -25,7 +25,7 @@ namespace Cities.Construction
         public Text selectionDesc;
         public Text currentDesc;
 
-        public ProjectSelectionManager selectionManager;
+        public ProjectOnSelectionManager selectionManager;
 
         [Header("Prefabs")]
         public ProjectButton projectButtonPrefab;

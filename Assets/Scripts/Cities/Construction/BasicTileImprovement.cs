@@ -80,7 +80,7 @@ namespace Cities.Construction
 
         public override bool IsValidTile(Vector3Int position, World world, City city)
         {
-            return validTiles.Contains(world.terrain.GetTile(position).name);
+            return validTiles.Contains(world.GetTerrainTile(position).name);
         }
 
         public override string GetTooltipText(Vector3Int position, World world)
@@ -97,7 +97,7 @@ namespace Cities.Construction
 
         public override bool IsUpgradeableTile(Vector3Int position, World world)
         {
-            return ((ConstructedTile)world.cities.GetTile(position)).Completed && validUpgrades.Contains(((ConstructedTile) world.cities.GetTile(position)).Project.ID);
+            return (world.GetConstructedTile(position)).Completed && validUpgrades.Contains((world.GetConstructedTile(position)).Project.ID);
         }
     }
 }

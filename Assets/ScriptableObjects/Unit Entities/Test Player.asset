@@ -17,7 +17,7 @@ MonoBehaviour:
   sight: 4
   maxMana: 100
   attack: 10
-  defence: 5
+  defence: 7
   piercing: 3
   magic: 10
-  resistance: 3
+  resistance: 4

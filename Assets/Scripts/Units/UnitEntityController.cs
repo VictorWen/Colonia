@@ -39,9 +39,7 @@ namespace Units
                 resistance = unitData.resistance
             };
 
-            unitEntity = new UnitEntity(this.name, gridPos, unitData.maxHealth, unitData.sight, world, isPlayerControlled, unitData.movementSpeed, combatData);
-
-            //world.UnitManager.AddUnit(unitEntity);
+            unitEntity = new UnitEntity(this.name, gridPos, unitData.maxHealth, unitData.sight, isPlayerControlled, unitData.movementSpeed, world, combatData);
             unitEntity.OnDeath += OnDeath;
         }
 
@@ -85,7 +83,7 @@ namespace Units
         {
             hovering = show;
             if (show)
-                gui.unitPanel.ShowUnitInfo(unitEntity);
+                gui.unitPanel.ShowUnitInfo(this);
             else
                 gui.unitPanel.HideUnitInfo();
         }

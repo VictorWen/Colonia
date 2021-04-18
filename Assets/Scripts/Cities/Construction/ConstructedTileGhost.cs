@@ -31,7 +31,7 @@ namespace Cities.Construction
             foreach (Vector3Int pos in range)
             {
                 if (IsValidTile(pos, city, world, project))
-                    world.movement.SetTile(pos, green);
+                    world.SetMovementTile(pos, green);
             }
 
             yield return new WaitForSeconds(0.1f);
@@ -73,21 +73,16 @@ namespace Cities.Construction
             }
 
             ConstructedTile tile = Resources.Load<ConstructedTile>("Projects" + sepChar + "Constructed Tiles" + sepChar + project.ID);
-            tile.StartConstruction();
-            //TODO: Manage upgrade old constructed tile case
-
-            if (world.cities.GetTile(gridPos) != null)
-                project.OnPlacement(gridPos, ((ConstructedTile)world.cities.GetTile(gridPos)).Project);
+            if (world.GetConstructedTile(gridPos) != null)
+                project.OnPlacement(gridPos, (world.GetConstructedTile(gridPos)).Project);
             else
                 project.OnPlacement(gridPos);
 
-            world.cities.SetTile(gridPos, tile);
-            world.cities.SetTileFlags(gridPos, UnityEngine.Tilemaps.TileFlags.None);
-            world.cities.SetColor(gridPos, new Color(0.5f, 0.5f, 0.5f));
+            world.StartConstructionOfCityTile(tile, gridPos);
 
             foreach (Vector3Int pos in range)
             {
-                world.movement.SetTile(pos, null);
+                world.SetMovementTile(pos, null);
             }
 
             Debug.Log("Tile Selected");
@@ -97,7 +92,7 @@ namespace Cities.Construction
 
         private bool IsValidTile(Vector3Int pos, City city, World world, ConstructedTileProject project)
         {
-            bool upgradeable = world.cities.GetTile(pos) == null || project.IsUpgradeableTile(pos, world);
+            bool upgradeable = world.GetConstructedTile(pos) == null || project.IsUpgradeableTile(pos, world);
             return city.WithinCityRange(pos) && project.IsValidTile(pos, world, city) && upgradeable; 
         }
     }

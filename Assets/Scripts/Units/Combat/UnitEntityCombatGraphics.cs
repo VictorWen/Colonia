@@ -33,7 +33,7 @@ namespace Units.Combat
             ClearAttackables();
             foreach (Vector3Int attackable in attackables)
             {
-                world.movement.SetTile(attackable, config.attackTile);
+                world.SetMovementTile(attackable, config.attackTile);
             }
             ShownAttackables = new HashSet<Vector3Int>(attackables);
         }
@@ -42,7 +42,7 @@ namespace Units.Combat
         {
             foreach (Vector3Int tilePos in ShownAttackables)
             {
-                world.movement.SetTile(tilePos, null);
+                world.SetMovementTile(tilePos, null);
             }
             ShownAttackables = new HashSet<Vector3Int>();
         }

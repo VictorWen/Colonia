@@ -116,13 +116,7 @@ namespace Units
                 unitEntity.Combat.BasicAttackOnPosition(tilePos);
         }
 
-        /*     public void OnDeath()
-               {
-                   //if (hovering)
-                       //gui.unitPanel.HideUnitInfo();
-               }
 
-       */
         /*        public void ShowInventory()
                 {
                     //gui.unitPanel.heroInventory.Enable(this);

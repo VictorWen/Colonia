@@ -15,6 +15,18 @@
 - [X] UnitEntity Inventory
 - [ ] Better Visuals
 
+## Turn Zero
+- [X] World Generation
+- [ ] Enemy spawner
+- [ ] Starter hero(es) spawn
+- [ ] Starter tile improvements
+
+## Turn One to Ten
+- [ ] Basic Construction
+- [ ] Redesign of Population mechanic
+- [ ] City vision
+- [ ] 
+
 ## Combat
 - [X] Basic AI
 - [X] Basic Combat

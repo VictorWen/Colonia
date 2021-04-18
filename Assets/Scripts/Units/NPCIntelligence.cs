@@ -23,6 +23,8 @@ namespace Units
             unit = GetComponent<UnitEntityController>().Unit;
 
             gui.AddNPCIntelligence(this);
+
+            unit.OnDeath += () => gui.RemoveNPCIntelligence(this);
         }
 
         public void ExecuteCombat(GameMaster game)

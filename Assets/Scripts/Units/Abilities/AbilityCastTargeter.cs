@@ -51,7 +51,7 @@ namespace Units.Abilities
         public void Disable()
         {
             ClearArea();
-            world.movement.SetTile(unit.Unit.Position, config.selectTile);
+            world.SetMovementTile(unit.Unit.Position, config.selectTile);
             gui.SetState(GUIStateManager.UNIT);
             IsActive = false;
         }
@@ -78,7 +78,7 @@ namespace Units.Abilities
         {
             foreach (Vector3Int tile in area)
             {
-                world.movement.SetTile(tile, null);
+                world.SetMovementTile(tile, null);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Units.Abilities
             area = ability.GetAreaOfEffect(unit.Unit.Position, gridPos, world);
             foreach (Vector3Int tile in area)
             {
-                world.movement.SetTile(tile, config.attackTile);
+                world.SetMovementTile(tile, config.attackTile);
             }
         }
     }

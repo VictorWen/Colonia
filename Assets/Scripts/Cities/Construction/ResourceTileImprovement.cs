@@ -33,6 +33,7 @@ namespace Cities.Construction
                 }
             }
         }
+
         public override void Complete(City city, GUIMaster gui)
         {
             base.Complete(city, gui);
@@ -85,7 +86,7 @@ namespace Cities.Construction
 
         public override bool IsUpgradeableTile(Vector3Int position, World world)
         {
-            return ((ConstructedTile)world.cities.GetTile(position)).Completed && validUpgrades.Contains(((ConstructedTile)world.cities.GetTile(position)).Project.ID);
+            return (world.GetConstructedTile(position)).Completed && validUpgrades.Contains((world.GetConstructedTile(position)).Project.ID);
         }
 
         public override bool IsValidTile(Vector3Int position, World world, City city)

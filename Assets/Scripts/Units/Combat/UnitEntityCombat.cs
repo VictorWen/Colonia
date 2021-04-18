@@ -79,6 +79,8 @@ namespace Units.Combat
         public void CastAbility(Ability ability, Vector3Int target)
         {
             ability.Cast(Unit, target, world);
+            UseMana(ability.ManaCost);
+            movement.CanMove = false;
             CanAttack = false;
             OnAttack?.Invoke();
         }
@@ -86,6 +88,7 @@ namespace Units.Combat
         public void BasicAttackOnPosition(Vector3Int position)
         {
             CanAttack = false;
+            movement.CanMove = false;
             world.UnitManager.GetUnitAt<UnitEntity>(position).Combat.DealDamage(attack, this, true);
             OnAttack?.Invoke();
         }
@@ -131,6 +134,14 @@ namespace Units.Combat
             text += "Status Effects: \n";
             text += "* TEST STATUS EFFECT";
             return text;
+        }
+
+        private void UseMana(int manaCost)
+        {
+            if (manaCost <= mana)
+                mana -= manaCost;
+            else
+                Debug.LogError(Unit.Name + " overused mana, cost: " + manaCost);
         }
 
         private int CalculatePhysicalDamage(float baseDamage, IUnitEntityCombat attacker, float combatModifier)

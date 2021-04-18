@@ -44,7 +44,7 @@ namespace Units.Movement {
             ClearMoveables();
             foreach (Vector3Int moveable in moveables)
             {
-                graphics.World.movement.SetTile(moveable, graphics.Config.moveTile);
+                graphics.World.SetMovementTile(moveable, graphics.Config.moveTile);
             }
             ShownMoveables = new HashSet<Vector3Int>(moveables);
         }
@@ -53,7 +53,7 @@ namespace Units.Movement {
         {
             foreach (Vector3Int moveable in ShownMoveables)
             {
-                graphics.World.movement.SetTile(moveable, null);
+                graphics.World.SetMovementTile(moveable, null);
             }
             ShownMoveables = new HashSet<Vector3Int>();
         }

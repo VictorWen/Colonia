@@ -13,7 +13,7 @@ using Items;
 // TODO: determine Capital implementation
 public class GUIMaster : MonoBehaviour
 {
-    [Obsolete("Should be created on new/load game. Use Game.world instead")]
+    [Obsolete("Should be created on new/load game. Use Game.World instead")]
     public World world;
     public CityGUIScript cityGUI;
     //public static CapitalCity capital;
@@ -30,13 +30,9 @@ public class GUIMaster : MonoBehaviour
     public GameMaster Game { get; private set; }
 
     //TESTING!
-    //private City openedCity;
     private City capital;
-    //TODO: formalize city script text updating
     private CityScript capitalScript;
 
-    public UnitEntityPlayerController testUnit;
-    public UnitEntityPlayerController testEnemyUnit;
     public UnitEntityPlayerController unitEntityPrefab;
     public UnitPanelController unitPanel;
 
@@ -62,17 +58,6 @@ public class GUIMaster : MonoBehaviour
         capitalScript = CityScript.Create("Test", new Vector3(-1, 0, 0), this);
         capital = capitalScript.city;
         //capital.inv = inv;
-        
-
-/*        testUnit.Unit.UpdateVision(Game.World);
-
-        testEnemyUnit.gui = this;*/
-        //testEnemyUnit.Unit.UpdateVision(Game.World);
-        //UpdateAllUnitVisibilities();
-        //cityGUI.OpenCityGUI(capital);
-        //districtSelectorScript.Enable(capital);
-
-        //-------------------
     }
 
     //Called by End Turn Button
@@ -86,5 +71,10 @@ public class GUIMaster : MonoBehaviour
     public void AddNPCIntelligence(NPCIntelligence npc)
     {
         Game.npcList.Add(npc);
+    }
+
+    public void RemoveNPCIntelligence(NPCIntelligence npc)
+    {
+        Game.npcList.Remove(npc);
     }
 }

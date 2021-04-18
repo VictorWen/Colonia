@@ -30,6 +30,21 @@ public class GameMaster
         globalModifiers = new ResourceModifiers();
     }
 
+    private void SetupCapitalCity()
+    {
+        // Create Capital City
+        // Fill it with resources
+        // Place tile improvements <- this is difficult!
+    }
+
+    private void PlaceStarterTileImprovements(City city)
+    {
+        // Find candidate tiles for each tile improvement
+        // Add tile improvement to city
+        // Set World tile data to corresponding tile improvement <- how to identify what tile to put down?
+        // Place tile improvement graphics down at corresponding tile <- is a higher level and should be somewhere else?
+    }
+
     // TODO: Move game control methods to a separate interface or class
     public void NextTurn(GUIMaster gui)
     {

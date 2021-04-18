@@ -87,7 +87,7 @@ namespace Cities.Construction
             foreach (Vector3 check in checks)
             {
                 Vector3Int checkPos = world.grid.WorldToCell(world.grid.CellToWorld(gridPos) + check);
-                ConstructedTile tile = (ConstructedTile) world.cities.GetTile(checkPos);
+                ConstructedTile tile = world.GetConstructedTile(checkPos);
                 if (checkPos.Equals(city.Position) || (tile != null && tile.City == city && tile.Type.Equals("District")))
                 {
                     validBorder = true;
@@ -95,7 +95,7 @@ namespace Cities.Construction
                 }
             }
 
-            return validBorder && !invalidTiles.Contains(world.terrain.GetTile(gridPos).name);
+            return validBorder && !invalidTiles.Contains(world.GetTerrainTile(gridPos).name);
         }
 
         // Call when district is upgraded
@@ -122,9 +122,9 @@ namespace Cities.Construction
 
         public override bool IsUpgradeableTile(Vector3Int position, World world)
         {
-            if (((ConstructedTile)world.cities.GetTile(position)).Completed)
+            if ((world.GetConstructedTile(position)).Completed)
             {
-                ConstructedTileProject old = ((ConstructedTile)world.cities.GetTile(position)).Project;
+                ConstructedTileProject old = (world.GetConstructedTile(position)).Project;
                 //TODO: move district levels to a higher level class
                 string[] levels = { "lower district", "middle district", "upper district" };
                 if (old.ProjectType == "District")

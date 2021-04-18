@@ -10,6 +10,7 @@ namespace Units
         private readonly GameObject panel;
         private readonly Text namePlate;
         private readonly Text statusText;
+        private readonly Image image;
 
         // Action buttons
         private readonly Button moveButton;
@@ -18,6 +19,7 @@ namespace Units
         private readonly Button itemsButton;
 
         private UnitEntity selectedUnit;
+        private Sprite unitSprite;
 
         public UnitPanelGraphics(GameObject panel, Button moveButton, Button attackButton, Button abilityButton, Button itemsButton)
         { 
@@ -36,9 +38,15 @@ namespace Units
                 else if (t.name == "Status Text")
                     statusText = t;
             }
+
+            foreach (Image img in panel.GetComponentsInChildren<Image>())
+            {
+                if (img.name == "Image")
+                    image = img;
+            }
         }
 
-        public void OnSelect(UnitEntity unit)
+        public void OnSelect(UnitEntityPlayerController unit)
         {
             SetSelectedUnit(unit);
             ShowUnitPanel();
@@ -50,10 +58,12 @@ namespace Units
             HideUnitPanel();
         }
 
-        public void SetSelectedUnit(UnitEntity unit)
+        public void SetSelectedUnit(UnitEntityPlayerController ctrl)
         {
+            UnitEntity unit = ctrl.Unit;
             RemoveCallbacks();
             selectedUnit = unit;
+            unitSprite = ctrl.GetComponent<SpriteRenderer>().sprite;
 
             // Add new callbacks
             selectedUnit.OnMove += UpdateActionButtons;
@@ -79,6 +89,7 @@ namespace Units
         {
             namePlate.text = selectedUnit.Name;
             statusText.text = selectedUnit.GetStatus();
+            image.sprite = unitSprite;
         }
 
         public void UpdateActionButtons()

@@ -40,8 +40,8 @@ namespace Units.Intelligence
             List<Vector3Int> tiles = new List<Vector3Int>(scores.Keys);
             foreach (Vector3Int tile in tiles)
             {
-                scores[tile] += TERRAIN_COMBAT_SCALE * ((TerrainTile)world.terrain.GetTile(tile)).combatModifier;
-                scores[tile] += TERRAIN_SIGHT_SCALE * ((TerrainTile)world.terrain.GetTile(tile)).sightBonus;
+                scores[tile] += TERRAIN_COMBAT_SCALE * world.GetTerrainTile(tile).combatModifier;
+                scores[tile] += TERRAIN_SIGHT_SCALE * world.GetTerrainTile(tile).sightBonus;
             }
         }
 

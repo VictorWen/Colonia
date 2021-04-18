@@ -4,6 +4,8 @@ using Tiles;
 using Units;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Cities;
+using Cities.Construction;
 
 // The interface for the terrain map
 // Generates and accesses the terrain
@@ -11,9 +13,9 @@ using UnityEngine.Tilemaps;
 public class World : MonoBehaviour, IWorld
 {
     public Grid grid;
-    public Tilemap terrain;
-    public Tilemap cities;
-    public Tilemap movement;
+    [SerializeField] private Tilemap terrain;
+    [SerializeField] private Tilemap cities;
+    [SerializeField] private Tilemap movement;
 
     [Header("Vision")]
     public bool enableFogOfWar;
@@ -54,7 +56,6 @@ public class World : MonoBehaviour, IWorld
     {
         UnitManager.NextTurn(game);
     }
-    // =========================================
 
     // World Vision ===========================
     public void AddFogOfWar(Vector3Int position)
@@ -160,7 +161,6 @@ public class World : MonoBehaviour, IWorld
         }
         return sight;
     }
-    // ===========================================
 
     // Utility Tile Grabbers =====================================
     public List<Vector3Int> GetAdjacents(Vector3Int tile)
@@ -255,8 +255,7 @@ public class World : MonoBehaviour, IWorld
         }
         return 0f;
     }
-    // ==================================================
-
+    
     // World Generation ==========================================
     public void GenerateWorld()
     {
@@ -484,5 +483,48 @@ public class World : MonoBehaviour, IWorld
     {
         return ((TerrainTile)terrain.GetTile(tilePos)).combatModifier;
     }
-    // =============================================================
+    
+    // Terrain Tiles =============================================
+    public TerrainTile GetTerrainTile(Vector3Int position)
+    {
+        return (TerrainTile)terrain.GetTile(position);
+    }
+
+    // City Tiles =================================================
+    public ConstructedTile GetConstructedTile(Vector3Int position)
+    {
+        return (ConstructedTile)cities.GetTile(position);
+    }
+
+    public void StartConstructionOfCityTile(ConstructedTile tile, Vector3Int position)
+    {
+        tile.StartConstruction();
+        PlaceConstructedTile(position, tile);
+        cities.SetTileFlags(position, TileFlags.None);
+        cities.SetColor(position, new Color(0.5f, 0.5f, 0.5f));
+    }
+
+    public void FinishConstructionOfCityTile(City city, ConstructedTileProject project, Vector3Int position, ConstructedTileProject upgradee = null)
+    {
+        ConstructedTile tile = GetConstructedTile(position);
+        tile.FinishConstruction(city, project.ProjectType, project);
+        cities.SetColor(position, new Color(1, 1, 1));
+
+        if (upgradee != null)
+        {
+            //TODO: Manage replacing old constructed tile after upgrade
+            project.OnUpgrade(upgradee);
+        }
+    }
+
+    public void PlaceConstructedTile(Vector3Int position, ConstructedTile tile)
+    {
+        cities.SetTile(position, tile);
+    }
+
+    // Movement Tiles ================================================
+    public void SetMovementTile(Vector3Int position, TileBase tile)
+    {
+        movement.SetTile(position, tile);
+    }
 }
