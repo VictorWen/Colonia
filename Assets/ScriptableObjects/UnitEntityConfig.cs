@@ -9,7 +9,5 @@ namespace Units
         public TileBase selectTile;
         public TileBase moveTile;
         public TileBase attackTile;
-
-        public bool playerControlled;
     }
 }

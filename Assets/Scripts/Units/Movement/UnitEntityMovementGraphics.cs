@@ -16,7 +16,7 @@ namespace Units.Movement {
 
             graphics.Unit.OnMove += UpdateUnitPosition;
 
-            if (graphics.Config.playerControlled)
+            if (graphics.Unit.IsPlayerControlled)
                 graphics.Unit.OnVisionUpdate += UpdateVision;
  
             ShownMoveables = new HashSet<Vector3Int>();

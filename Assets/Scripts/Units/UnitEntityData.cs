@@ -6,6 +6,7 @@ namespace Units
     public class UnitEntityData : ScriptableObject
     {
         [Header("General")]
+        public bool isPlayerControlled = false;
         public int maxHealth = 100;
         public int movementSpeed = 3;
         public int sight = 4;

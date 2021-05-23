@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 38bfb58ba5ec6964dae0046241092d1e, type: 3}
-  m_Name: Test Player
+  m_Name: testPlayer
   m_EditorClassIdentifier: 
+  isPlayerControlled: 1
   maxHealth: 100
   movementSpeed: 3
   sight: 4

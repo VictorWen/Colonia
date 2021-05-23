@@ -20,6 +20,7 @@ namespace Units
 
         private UnitEntity selectedUnit;
         private Sprite unitSprite;
+        private Color unitColor;
 
         public UnitPanelGraphics(GameObject panel, Button moveButton, Button attackButton, Button abilityButton, Button itemsButton)
         { 
@@ -63,16 +64,27 @@ namespace Units
             UnitEntity unit = ctrl.Unit;
             RemoveCallbacks();
             selectedUnit = unit;
-            unitSprite = ctrl.GetComponent<SpriteRenderer>().sprite;
 
-            // Add new callbacks
-            selectedUnit.OnMove += UpdateActionButtons;
-            selectedUnit.Combat.OnAttack += UpdateActionButtons;
-            selectedUnit.OnStatusChanged += UpdateUnitPanel;
+            SetUpUnitEntityVisual(ctrl);
+            AddCallbacks();
 
             // Update graphics
             UpdateUnitPanel();
             UpdateActionButtons();
+        }
+
+        private void SetUpUnitEntityVisual(PlayerUnitEntityController ctrl)
+        {
+            SpriteRenderer renderer = ctrl.GetComponent<SpriteRenderer>();
+            unitSprite = renderer.sprite;
+            unitColor = renderer.color;
+        }
+
+        private void AddCallbacks()
+        {
+            selectedUnit.OnMove += UpdateActionButtons;
+            selectedUnit.Combat.OnAttack += UpdateActionButtons;
+            selectedUnit.OnStatusChanged += UpdateUnitPanel;
         }
 
         public void RemoveCallbacks()

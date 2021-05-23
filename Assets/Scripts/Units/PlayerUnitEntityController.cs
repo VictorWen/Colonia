@@ -40,7 +40,7 @@ namespace Units
 
         private void OnMouseOver()
         {
-            if (gui.GUIState.UnitControl && config.playerControlled && Input.GetMouseButtonUp(0))
+            if (gui.GUIState.UnitControl && unitEntity.IsPlayerControlled && Input.GetMouseButtonUp(0))
             {
                 if (!IsSelected)
                     Select();
@@ -51,7 +51,7 @@ namespace Units
 
         private void Update()
         {
-            if (config.playerControlled && Input.GetMouseButtonUp(0) && (Status != WaitingStatus.NONE))
+            if (unitEntity.IsPlayerControlled && Input.GetMouseButtonUp(0) && (Status != WaitingStatus.NONE))
             {
                 if (EventSystem.current.IsPointerOverGameObject())
                     return;

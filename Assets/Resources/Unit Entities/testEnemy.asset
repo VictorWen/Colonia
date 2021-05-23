@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 38bfb58ba5ec6964dae0046241092d1e, type: 3}
-  m_Name: Test Enemy
+  m_Name: testEnemy
   m_EditorClassIdentifier: 
+  isPlayerControlled: 0
   maxHealth: 50
   movementSpeed: 3
   sight: 3

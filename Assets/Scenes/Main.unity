@@ -137311,6 +137311,17 @@ PrefabInstance:
       propertyPath: world
       value: 
       objectReference: {fileID: 1534646887}
+    - target: {fileID: 1437875174735446140, guid: e5cee4632e0070040b68183c1870dae5,
+        type: 3}
+      propertyPath: unitData
+      value: 
+      objectReference: {fileID: 11400000, guid: 2d11dc0969a77224ab751a2bfbfca7ba,
+        type: 2}
+    - target: {fileID: 1437875174735446140, guid: e5cee4632e0070040b68183c1870dae5,
+        type: 3}
+      propertyPath: unitID
+      value: testPlayer
+      objectReference: {fileID: 0}
     - target: {fileID: 1437875174735446143, guid: e5cee4632e0070040b68183c1870dae5,
         type: 3}
       propertyPath: m_Name

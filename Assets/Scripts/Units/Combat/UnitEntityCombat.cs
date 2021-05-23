@@ -15,6 +15,20 @@ namespace Units.Combat
         public int piercing;
         public int magic;
         public int resistance;
+
+        public static UnitEntityCombatData LoadFromSO(UnitEntityData so)
+        {
+            UnitEntityCombatData data = new UnitEntityCombatData()
+            {
+                maxMana = so.maxMana,
+                attack = so.attack,
+                defence = so.defence,
+                piercing = so.piercing,
+                magic = so.magic,
+                resistance = so.resistance,
+            };
+            return data;
+        }
     }
 
     public class UnitEntityCombat : IUnitEntityCombat

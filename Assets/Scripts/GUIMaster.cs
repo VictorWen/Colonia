@@ -40,6 +40,7 @@ public class GUIMaster : MonoBehaviour
     public void Awake()
     {
         Debug.Log("GAME START");
+        GlobalUnitEntityDictionary.LoadCombatData("Unit Entities");
         Game = new GameMaster(world);
         Game.OnUnitSpawn += CreateUnitEntityController;
 
@@ -63,6 +64,7 @@ public class GUIMaster : MonoBehaviour
 
         Game.PlaceStarterTileImprovements(capital);
         Game.SpawnStarterHeroes();
+
     }
 
     //Called by End Turn Button
@@ -73,17 +75,17 @@ public class GUIMaster : MonoBehaviour
         capitalScript.title.text = capital.Name + "(" + capital.population + ")"; //TODO: move population text update location
     }
 
-    private void CreateUnitEntityController(UnitEntity unitEntity)
+    private void CreateUnitEntityController(UnitEntity unitEntity, string id)
     {
         if (unitEntity.IsPlayerControlled)
         {
-            PlayerUnitEntityController controller = Instantiate(playerUnitEntityPrefab);
-            controller.Initialize(unitEntity.Position, this, Game.World, unitEntity);
+            PlayerUnitEntityController controller = (PlayerUnitEntityController) Instantiate(playerUnitEntityPrefab);
+            controller.Initialize(id, unitEntity.Position, this, Game.World, unitEntity);
         }
         else
         {
-            NPCUnitEntityController controller = Instantiate(unitEntityPrefab);
-            controller.Initialize(unitEntity.Position, this, Game.World, unitEntity);
+            NPCUnitEntityController controller = (NPCUnitEntityController) Instantiate(unitEntityPrefab);
+            controller.Initialize(id, unitEntity.Position, this, Game.World, unitEntity);
         }
     }
 }

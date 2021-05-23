@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Cities;
+﻿using Cities;
 using Cities.Construction;
-using Units;
-using Units.Intelligence;
 using Items;
 using System;
+using System.Collections.Generic;
+using Units;
 using Units.Combat;
+using UnityEngine;
 
 //Handles background game state (Server)
 public class GameMaster
@@ -21,7 +19,7 @@ public class GameMaster
     private readonly ResourceModifiers globalModifiers;
 
     public List<NPCIntelligence> npcList = new List<NPCIntelligence>();
-    public event Action<UnitEntity> OnUnitSpawn;
+    public event Action<UnitEntity, string> OnUnitSpawn;
 
     public GameMaster(World world)
     {
@@ -37,41 +35,24 @@ public class GameMaster
     {
         // Create Capital City
         // Fill it with resources
-        // Place tile improvements <- this is difficult!
     }
 
     public void SpawnStarterHeroes()
     {
-        SpawnUnitEntity("The New Guy", new Vector3Int(2, 2, 0), 10, 4, true, 3, new UnitEntityCombatData()
-        {
-            attack = 1,
-            defence = 2,
-            magic = 3,
-            maxMana = 4,
-            piercing = 5,
-            resistance = 6
-        });
-
-        SpawnUnitEntity("Bad guy", new Vector3Int(-1, -1, 0), 10, 4, false, 3, new UnitEntityCombatData()
-        {
-            attack = 6,
-            defence = 5,
-            magic = 4,
-            maxMana = 3,
-            piercing = 2,
-            resistance = 1
-        });
+        SpawnUnitEntity("testPlayer", "The New Guy", new Vector3Int(2, 2, 0));
+        SpawnUnitEntity("testEnemy", "Test Enemy", new Vector3Int(-2, -2, 0));
     }
 
-    public void SpawnUnitEntity(string name, Vector3Int position, int health, int sight, bool playerControlled, int moveSpeed, UnitEntityCombatData combatData)
+    public void SpawnUnitEntity(string id, string name, Vector3Int position)
     {
-        UnitEntity unitEntity = new UnitEntity(name, position, health, sight, playerControlled, moveSpeed, World, combatData);
-        OnUnitSpawn?.Invoke(unitEntity);
+        UnitEntityData unitData = GlobalUnitEntityDictionary.GetUnitEntityData("Unit Entities", id); // This might be too tightly coupled to Unity?
+        UnitEntityCombatData combatData = UnitEntityCombatData.LoadFromSO(unitData);
+        UnitEntity unitEntity = new UnitEntity(name, position, unitData.maxHealth, unitData.sight, unitData.isPlayerControlled, unitData.movementSpeed, World, combatData);
+        OnUnitSpawn?.Invoke(unitEntity, id);
     }
 
     public void PlaceStarterTileImprovements(City city)
     {
-        // TODO: check if a tile is valid first
         HashSet<Vector3Int> tiles = city.GetCityRange(World);
         List<Vector3Int> sortedFertility = new List<Vector3Int>(tiles);
         sortedFertility.Sort((x1, x2) => CompareTileFertility(x1, x2));

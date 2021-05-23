@@ -9,7 +9,7 @@ namespace Units
     {
         [SerializeField] protected GUIMaster gui;
         [SerializeField] protected World world;
-        [SerializeField] protected UnitEntityData unitData;
+        [SerializeField] string unitID;
 
         [SerializeReference] protected UnitEntity unitEntity;
 
@@ -25,12 +25,18 @@ namespace Units
             unitEntity.OnMove += UpdateUnitPosition;
         }
 
-        public void Initialize(Vector3Int position, GUIMaster gui, World world, UnitEntity unitEntity)
+        public void Initialize(string id, Vector3Int position, GUIMaster gui, World world, UnitEntity unitEntity)
         {
+            unitID = id;
+            Sprite sprite = Resources.Load<Sprite>("Unit Entity Sprites/" + id);
+            GetComponent<SpriteRenderer>().sprite = sprite;
+
             transform.position = world.CellToWorld(position);
             this.gui = gui;
             this.world = world;
             this.unitEntity = unitEntity;
+
+            unitEntity.OnDeath += OnDeath;
         }
 
         protected virtual void CreateUnitEntity(bool isPlayerControlled)
@@ -38,22 +44,22 @@ namespace Units
             Vector3Int gridPos = world.WorldToCell(transform.position);
             transform.position = world.CellToWorld(gridPos);
 
-            UnitEntityCombatData combatData = new UnitEntityCombatData()
-            {
-                maxMana = unitData.maxMana,
-                attack = unitData.attack,
-                defence = unitData.defence,
-                piercing = unitData.piercing,
-                magic = unitData.magic,
-                resistance = unitData.resistance
-            };
+            UnitEntityData unitData = GlobalUnitEntityDictionary.GetUnitEntityData("Unit Entities", unitID);
+            UnitEntityCombatData combatData = UnitEntityCombatData.LoadFromSO(unitData);
 
             unitEntity = new UnitEntity(this.name, gridPos, unitData.maxHealth, unitData.sight, isPlayerControlled, unitData.movementSpeed, world, combatData);
             unitEntity.OnDeath += OnDeath;
+
+            Sprite sprite = Resources.Load<Sprite>("Unit Entity Sprites/" + unitID);
+            GetComponent<SpriteRenderer>().sprite = sprite;
         }
 
         protected virtual void OnDeath()
         {
+            if (hovering)
+            {
+                HoverInfo(false);
+            }
             world.UnitManager.RemoveUnit(unitEntity);
             Destroy(gameObject);
         }

@@ -14,6 +14,7 @@ namespace Units
 
         private UnitEntity selectedUnit;
         private Sprite unitSprite;
+        private Color unitColor;
 
         public UnitInfoGraphics(GameObject panel)
         {
@@ -37,7 +38,12 @@ namespace Units
         public void SetSelectedUnit(BaseUnitEntityController ctrl)
         {
             UnitEntity unit = ctrl.Unit;
-            unitSprite = ctrl.GetComponent<SpriteRenderer>().sprite;
+            
+            // Maybe move to different class?
+            SpriteRenderer renderer = ctrl.GetComponent<SpriteRenderer>();
+            unitSprite = renderer.sprite;
+            unitColor = renderer.color;
+
             if (selectedUnit != null)
                 selectedUnit.OnStatusChanged -= UpdateStatus;
             selectedUnit = unit;
@@ -50,6 +56,7 @@ namespace Units
             namePlate.text = selectedUnit.Name;
             statusText.text = selectedUnit.GetStatus();
             unitImage.sprite = unitSprite;
+            unitImage.color = unitColor;
         }
 
         public void ShowUnitInfoPanel()

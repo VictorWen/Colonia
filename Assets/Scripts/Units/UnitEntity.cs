@@ -17,9 +17,12 @@ namespace Units
         public event Action OnVisionUpdate;
 
 
-
         public string Name { get; private set; }
+        //public string ID { get; private set; }
         public Vector3Int Position { get; private set; }
+
+        public int Level { get; private set; }
+        public int Experience { get; private set; }
 
         public int Health { get { return health; } private set { health = value; } }
         public int MaxHealth { get { return maxHealth; } private set { maxHealth = value; } }
@@ -34,8 +37,6 @@ namespace Units
         public IUnitEntityMovement Movement { get { return movement; } }
         public IUnitEntityCombat Combat { get { return combat; } }
         public Inventory Inventory { get { return inventory; } }
-
-        
         
         [SerializeField] private int health;
         [SerializeField] private int maxHealth;
@@ -50,8 +51,12 @@ namespace Units
 
         public UnitEntity(string name, Vector3Int initialPosition, int maxHealth, int sight, bool isPlayerControlled, int movementSpeed, IWorld world, UnitEntityCombatData combatData)
         {
+            //ID = id;
             Name = name;
             Position = initialPosition;
+
+            Level = 0;
+            Experience = 0;
             
             MaxHealth = maxHealth;
             Health = maxHealth;
