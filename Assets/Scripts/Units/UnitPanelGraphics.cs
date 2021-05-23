@@ -46,7 +46,7 @@ namespace Units
             }
         }
 
-        public void OnSelect(UnitEntityPlayerController unit)
+        public void OnSelect(PlayerUnitEntityController unit)
         {
             SetSelectedUnit(unit);
             ShowUnitPanel();
@@ -58,7 +58,7 @@ namespace Units
             HideUnitPanel();
         }
 
-        public void SetSelectedUnit(UnitEntityPlayerController ctrl)
+        public void SetSelectedUnit(PlayerUnitEntityController ctrl)
         {
             UnitEntity unit = ctrl.Unit;
             RemoveCallbacks();

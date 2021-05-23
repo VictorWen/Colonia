@@ -7,11 +7,11 @@ using UnityEngine;
 
 namespace Units.Intelligence
 {
-    public abstract class INPCPlanner : MonoBehaviour
+    public interface INPCPlanner
     {
         // Determine both the desired target location and how to get there
-        public abstract LinkedList<Vector3Int> GetMovementPath(UnitEntity self, Dictionary<Vector3Int, float> posScores);
+        LinkedList<Vector3Int> GetMovementPath(UnitEntity self, Dictionary<Vector3Int, float> posScores);
 
-        public abstract void ExecuteAbility(UnitEntity self, World world);
+        void ExecuteAbility(UnitEntity self, World world);
     }
 }

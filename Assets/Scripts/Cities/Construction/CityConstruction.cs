@@ -27,11 +27,11 @@ namespace Cities.Construction
         }
 
         // TODO: formalize construction tick
-        public void UpdateConstruction(GUIMaster gui)
+        public void UpdateConstruction(GameMaster game)
         {
             if (selectedProjectID != null)
             {
-                UpdateConstructionProgressCost(gui.Game);
+                UpdateConstructionProgressCost(game);
                 constructionProgress += constructionDev;
 
                 //FOR TESTING---------------------------------------
@@ -41,7 +41,7 @@ namespace Cities.Construction
                 //Project is completed
                 if (constructionProgress >= requiredConstructionProgress)
                 {
-                    project.Complete(city, gui);
+                    project.Complete(city, game.World);
                     int pop = GlobalProjectDictionary.GetProjectData(selectedProjectID).Employment;
                     city.idlePop -= pop;
                     city.workingPop += pop;

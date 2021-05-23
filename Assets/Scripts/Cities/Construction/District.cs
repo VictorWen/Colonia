@@ -68,9 +68,9 @@ namespace Cities.Construction
             return "Name: " + Name;
         }
 
-        public override void Complete(City city, GUIMaster game)
+        public override void Complete(City city, World world)
         {
-            base.Complete(city, game);
+            base.Complete(city, world);
             Name = GenerateName();
             city.Districts.Add(this);
         }
@@ -86,7 +86,7 @@ namespace Cities.Construction
             bool validBorder = false;
             foreach (Vector3 check in checks)
             {
-                Vector3Int checkPos = world.grid.WorldToCell(world.grid.CellToWorld(gridPos) + check);
+                Vector3Int checkPos = world.WorldToCell(world.CellToWorld(gridPos) + check);
                 ConstructedTile tile = world.GetConstructedTile(checkPos);
                 if (checkPos.Equals(city.Position) || (tile != null && tile.City == city && tile.Type.Equals("District")))
                 {

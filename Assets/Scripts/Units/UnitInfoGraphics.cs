@@ -34,7 +34,7 @@ namespace Units
             }
         }
 
-        public void SetSelectedUnit(UnitEntityController ctrl)
+        public void SetSelectedUnit(BaseUnitEntityController ctrl)
         {
             UnitEntity unit = ctrl.Unit;
             unitSprite = ctrl.GetComponent<SpriteRenderer>().sprite;

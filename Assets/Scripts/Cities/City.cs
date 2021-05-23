@@ -47,23 +47,23 @@ namespace Cities
             Districts = new List<District>() { new District("city center", 5, new Dictionary<string, int>(), new string[0], "Test City Center")};
         }
 
-        public void OnNextTurn(GUIMaster gui)
+        public void OnNextTurn(GameMaster game)
         {
-            construction.UpdateConstruction(gui);
+            construction.UpdateConstruction(game);
             foreach (District district in Districts)
             {
-                district.OnNextTurn(this, gui.Game);
+                district.OnNextTurn(this, game);
             }
             foreach (CityNextTurnEffect nextTurnEffect in nextTurnEffects)
             {
-                nextTurnEffect.OnNextTurn(this, gui.Game);
+                nextTurnEffect.OnNextTurn(this, game);
             }
 
             //TODO: TEMPORARY POPULATION GROWTH IMPLEMENTATION, REMOVE
             int foodCost = Mathf.RoundToInt(population / 10f);
-            if (gui.Game.GlobalInventory.GetResourceCount("food") >= foodCost)
+            if (game.GlobalInventory.GetResourceCount("food") >= foodCost)
             {
-                gui.Game.GlobalInventory.AddItem(new ResourceItem("food", -foodCost));
+                game.GlobalInventory.AddItem(new ResourceItem("food", -foodCost));
                 int delta = Mathf.RoundToInt(population * popGrowthRate);
                 population += delta;
                 idlePop += delta;
@@ -128,8 +128,8 @@ namespace Cities
 
             for (int i = 1; i <= cityRadius; i++)
             {
-                cityRange.Add(world.grid.WorldToCell(i * new Vector3(-1, 0) + Position));
-                cityRange.Add(world.grid.WorldToCell(i * new Vector3(1, 0) + Position));
+                cityRange.Add(world.WorldToCell(i * new Vector3(-1, 0) + Position));
+                cityRange.Add(world.WorldToCell(i * new Vector3(1, 0) + Position));
             }
 
             Vector3 topEdge = new Vector3(0.5f - cityRadius, 0.75f) + Position;
@@ -139,8 +139,8 @@ namespace Cities
                 // Move to next layer and fill line
                 for (int i = 0; i < cityRadius * 2 - layer; i++)
                 {
-                    cityRange.Add(world.grid.WorldToCell(i * new Vector3(1, 0) + topEdge));
-                    cityRange.Add(world.grid.WorldToCell(i * new Vector3(1, 0) + lowerEdge));
+                    cityRange.Add(world.WorldToCell(i * new Vector3(1, 0) + topEdge));
+                    cityRange.Add(world.WorldToCell(i * new Vector3(1, 0) + lowerEdge));
                 }
                 topEdge += new Vector3(0.5f, 0.75f);
                 lowerEdge += new Vector3(0.5f, -0.75f);

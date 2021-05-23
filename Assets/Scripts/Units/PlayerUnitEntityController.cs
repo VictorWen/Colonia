@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 namespace Units
 {
-    public class UnitEntityPlayerController : UnitEntityController
+    public class PlayerUnitEntityController : BaseUnitEntityController
     {
         public enum WaitingStatus {
             NONE, MOVEMENT, ATTACK, ABILITY
@@ -22,23 +22,20 @@ namespace Units
 
         private UnitPanelController panel;
 
-        protected override void Awake()
+        protected override void Start()
         {
-            CreateUnitEntity(true);
+            if (unitEntity == null)
+                CreateUnitEntity(true);
             graphics = new UnitEntityGraphics(gameObject, unitEntity, config, world);
 
             panel = gui.unitPanel;
+            unitEntity.UpdateVision();
         }
 
         protected override void OnDeath()
         {
             Deselect();
             base.OnDeath();
-        }
-
-        private void Start()
-        {
-            unitEntity.UpdateVision();
         }
 
         private void OnMouseOver()
@@ -60,7 +57,7 @@ namespace Units
                     return;
 
                 Vector3 pos = gui.playerCam.ScreenToWorldPoint(Input.mousePosition);
-                Vector3Int gridPos = world.grid.WorldToCell(pos);
+                Vector3Int gridPos = world.WorldToCell(pos);
                 OnTileClick(gridPos);
             }
         }

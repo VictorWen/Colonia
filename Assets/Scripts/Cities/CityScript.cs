@@ -18,7 +18,7 @@ namespace Cities
         {
             CityScript script = Instantiate(gui.cityPrefab, position, new Quaternion());
             script.state = gui.GUIState;
-            script.city = new City(name, gui.Game.World.grid.WorldToCell(position));
+            script.city = new City(name, gui.Game.World.WorldToCell(position));
             script.panel = gui.cityGUI;
 
             gui.Game.AddNewCity(script.city);

@@ -12,9 +12,6 @@ GameObject:
   - component: {fileID: 6718334270767522924}
   - component: {fileID: 6718334270767522927}
   - component: {fileID: 6718334270767522926}
-  - component: {fileID: 6718334270767522920}
-  - component: {fileID: 6718334270767522923}
-  - component: {fileID: 6718334270767522922}
   m_Layer: 0
   m_Name: Test Enemy
   m_TagString: Untagged
@@ -112,7 +109,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6718334270767522913}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca745e103a91c6240b7faca0ab1cf0b9, type: 3}
+  m_Script: {fileID: 11500000, guid: ae59cf552a5c5ed4bbfc50a0481760fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gui: {fileID: 0}
@@ -124,46 +121,3 @@ MonoBehaviour:
     version: 1
     00000000:
       type: {class: , ns: , asm: }
---- !u!114 &6718334270767522920
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6718334270767522913}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3642ae62341d95544b96bac9770ceaa7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gui: {fileID: 0}
-  surveyer: {fileID: 6718334270767522922}
-  planner: {fileID: 6718334270767522923}
---- !u!114 &6718334270767522923
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6718334270767522913}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b69c31898708e64492e10a868d19d50, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6718334270767522922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6718334270767522913}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a17fa795e03c61f45b70c246f4c0a7b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TERRAIN_COMBAT_SCALE: 3
-  TERRAIN_SIGHT_SCALE: 3
-  BASE_TARGET_VALUE: 10
-  MAX_FOLLOW_DISTANCE: 3

@@ -33,13 +33,15 @@ public class GUIMaster : MonoBehaviour
     private City capital;
     private CityScript capitalScript;
 
-    public UnitEntityPlayerController unitEntityPrefab;
+    public NPCUnitEntityController unitEntityPrefab;
+    public PlayerUnitEntityController playerUnitEntityPrefab;
     public UnitPanelController unitPanel;
 
     public void Awake()
     {
         Debug.Log("GAME START");
         Game = new GameMaster(world);
+        Game.OnUnitSpawn += CreateUnitEntityController;
 
         GUIState = new GUIStateManager(cityGUI, mapHUD);
     }
@@ -60,23 +62,28 @@ public class GUIMaster : MonoBehaviour
         //capital.inv = inv;
 
         Game.PlaceStarterTileImprovements(capital);
+        Game.SpawnStarterHeroes();
     }
 
     //Called by End Turn Button
     public void NextTurn()
     {
-        Game.NextTurn(this);
+        Game.NextTurn();
         unitPanel.OnNextTurn();
         capitalScript.title.text = capital.Name + "(" + capital.population + ")"; //TODO: move population text update location
     }
 
-    public void AddNPCIntelligence(NPCIntelligence npc)
+    private void CreateUnitEntityController(UnitEntity unitEntity)
     {
-        Game.npcList.Add(npc);
-    }
-
-    public void RemoveNPCIntelligence(NPCIntelligence npc)
-    {
-        Game.npcList.Remove(npc);
+        if (unitEntity.IsPlayerControlled)
+        {
+            PlayerUnitEntityController controller = Instantiate(playerUnitEntityPrefab);
+            controller.Initialize(unitEntity.Position, this, Game.World, unitEntity);
+        }
+        else
+        {
+            NPCUnitEntityController controller = Instantiate(unitEntityPrefab);
+            controller.Initialize(unitEntity.Position, this, Game.World, unitEntity);
+        }
     }
 }

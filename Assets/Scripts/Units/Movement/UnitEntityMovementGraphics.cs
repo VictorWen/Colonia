@@ -33,7 +33,7 @@ namespace Units.Movement {
                 toggledSelected = true;
             }
 
-            graphics.Obj.transform.position = graphics.World.grid.CellToWorld(graphics.Unit.Position);
+            graphics.Obj.transform.position = graphics.World.CellToWorld(graphics.Unit.Position);
             
             if (toggledSelected)
                 graphics.ShowSelectionIndicator();

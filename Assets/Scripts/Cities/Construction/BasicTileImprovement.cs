@@ -43,9 +43,9 @@ namespace Cities.Construction
             validUpgrades = copy.validUpgrades;
         }
 
-        public override void Complete(City city, GUIMaster gui)
+        public override void Complete(City city, World world)
         {
-            base.Complete(city, gui);
+            base.Complete(city, world);
             city.AddNextTurnEffect(this);
         }
 

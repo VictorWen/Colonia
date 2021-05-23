@@ -23,7 +23,7 @@ namespace Cities.Construction
 
         void OnCancel(City city, GUIMaster gui);
 
-        void Complete(City city, GUIMaster gui);
+        void Complete(City city, World world);
 
         IProject Copy();
 

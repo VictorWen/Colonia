@@ -66,7 +66,7 @@ public class ResourceMap
 
                             // Add ResourceIcon GameObject
                             ResourceIconScript icon = Object.Instantiate(iconPrefab);
-                            icon.transform.position = world.grid.CellToWorld(validTiles[index]);
+                            icon.transform.position = world.CellToWorld(validTiles[index]);
                             icon.transform.position += new Vector3(-0.5f, 0.25f);
                             icon.SetResource(resource.resourceID);
                             Icons.Add(validTiles[index], icon);

@@ -5,7 +5,7 @@ using Units.Combat;
 
 namespace Units
 {
-    public class UnitEntityController : MonoBehaviour
+    public class BaseUnitEntityController : MonoBehaviour
     {
         [SerializeField] protected GUIMaster gui;
         [SerializeField] protected World world;
@@ -18,16 +18,25 @@ namespace Units
         private bool allowHovering = true;
         private bool hovering = false;
 
-        protected virtual void Awake()
+        protected virtual void Start()
         {
-            CreateUnitEntity(false);
+            if (unitEntity == null)
+                CreateUnitEntity(false);
             unitEntity.OnMove += UpdateUnitPosition;
+        }
+
+        public void Initialize(Vector3Int position, GUIMaster gui, World world, UnitEntity unitEntity)
+        {
+            transform.position = world.CellToWorld(position);
+            this.gui = gui;
+            this.world = world;
+            this.unitEntity = unitEntity;
         }
 
         protected virtual void CreateUnitEntity(bool isPlayerControlled)
         {
-            Vector3Int gridPos = world.grid.WorldToCell(transform.position);
-            transform.position = world.grid.CellToWorld(gridPos);
+            Vector3Int gridPos = world.WorldToCell(transform.position);
+            transform.position = world.CellToWorld(gridPos);
 
             UnitEntityCombatData combatData = new UnitEntityCombatData()
             {
@@ -51,7 +60,7 @@ namespace Units
 
         private void UpdateUnitPosition()
         {
-            transform.position = world.grid.CellToWorld(unitEntity.Position);
+            transform.position = world.CellToWorld(unitEntity.Position);
         }
 
         private void OnMouseEnter()

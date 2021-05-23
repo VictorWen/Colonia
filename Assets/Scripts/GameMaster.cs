@@ -6,6 +6,8 @@ using Cities.Construction;
 using Units;
 using Units.Intelligence;
 using Items;
+using System;
+using Units.Combat;
 
 //Handles background game state (Server)
 public class GameMaster
@@ -19,6 +21,7 @@ public class GameMaster
     private readonly ResourceModifiers globalModifiers;
 
     public List<NPCIntelligence> npcList = new List<NPCIntelligence>();
+    public event Action<UnitEntity> OnUnitSpawn;
 
     public GameMaster(World world)
     {
@@ -37,24 +40,55 @@ public class GameMaster
         // Place tile improvements <- this is difficult!
     }
 
+    public void SpawnStarterHeroes()
+    {
+        SpawnUnitEntity("The New Guy", new Vector3Int(2, 2, 0), 10, 4, true, 3, new UnitEntityCombatData()
+        {
+            attack = 1,
+            defence = 2,
+            magic = 3,
+            maxMana = 4,
+            piercing = 5,
+            resistance = 6
+        });
+
+        SpawnUnitEntity("Bad guy", new Vector3Int(-1, -1, 0), 10, 4, false, 3, new UnitEntityCombatData()
+        {
+            attack = 6,
+            defence = 5,
+            magic = 4,
+            maxMana = 3,
+            piercing = 2,
+            resistance = 1
+        });
+    }
+
+    public void SpawnUnitEntity(string name, Vector3Int position, int health, int sight, bool playerControlled, int moveSpeed, UnitEntityCombatData combatData)
+    {
+        UnitEntity unitEntity = new UnitEntity(name, position, health, sight, playerControlled, moveSpeed, World, combatData);
+        OnUnitSpawn?.Invoke(unitEntity);
+    }
+
     public void PlaceStarterTileImprovements(City city)
     {
-        // Find candidate tiles for each tile improvement
-        // Add tile improvement to city
-        // Set World tile data to corresponding tile improvement <- how to identify what tile to put down?
-        // Place tile improvement graphics down at corresponding tile <- is a higher level and should be somewhere else?
-        Vector3Int farmTile = new Vector3Int(0, 0, 0);
-        ProjectData farmProjectData = GlobalProjectDictionary.GetProjectData("farm");
-        IProject farmProject = farmProjectData.Project;
-        string farmPath = System.IO.Path.Combine("Projects", "Constructed Tiles", "farm");
-        ConstructedTile farmConstructedTile = Resources.Load<ConstructedTile>(farmPath);
-        World.PlaceConstructedTile(farmTile, farmConstructedTile);
-        World.FinishConstructionOfCityTile(city, (ConstructedTileProject)farmProject, farmTile);
-        city.AddNextTurnEffect((CityNextTurnEffect)farmProject);
+        // TODO: check if a tile is valid first
+        HashSet<Vector3Int> tiles = city.GetCityRange(World);
+        List<Vector3Int> sortedFertility = new List<Vector3Int>(tiles);
+        sortedFertility.Sort((x1, x2) => CompareTileFertility(x1, x2));
+        List<Vector3Int> sortedRichness = new List<Vector3Int>(tiles);
+        sortedRichness.Sort((x1, x2) => CompareTileRichness(x1, x2));
+
+        int farms = 3;
+        int lumber = 2;
+        int quarries = 1;
+
+        PlaceNTileImprovements(farms, "farm", sortedFertility, city);
+        PlaceNTileImprovements(lumber, "lumber mill", sortedFertility, city);
+        PlaceNTileImprovements(quarries, "quarry", sortedRichness, city);
     }
 
     // TODO: Move game control methods to a separate interface or class
-    public void NextTurn(GUIMaster gui)
+    public void NextTurn()
     {
         foreach (NPCIntelligence npc in npcList)
             npc.ExecuteCombat(this);
@@ -63,7 +97,7 @@ public class GameMaster
         
         foreach (City city in cities)
         {
-            city.OnNextTurn(gui);
+            city.OnNextTurn(this);
         }
 
         World.UnitsOnNextTurn(this);
@@ -102,4 +136,55 @@ public class GameMaster
     {
         return globalModifiers.GetResourceMod(attr, id) * (city != null ? city.ResourceMods.GetResourceMod(attr, id) : 1) * (district != null ? district.ResourceMods.GetResourceMod(attr, id) : 1);
     }
+
+    private int CompareTileFertility(Vector3Int tile1, Vector3Int tile2)
+    {
+        float fert1 = World.GetFertilityAtTile(tile1);
+        float fert2 = World.GetFertilityAtTile(tile2);
+
+        if (fert1 < fert2)
+            return 1;
+        else if (fert2 < fert1)
+            return -1;
+        else
+            return 0;
+    }
+
+    private int CompareTileRichness(Vector3Int tile1, Vector3Int tile2)
+    {
+        float rich1 = World.GetRichnessAtTile(tile1);
+        float rich2 = World.GetRichnessAtTile(tile2);
+
+        if (rich1 < rich2)
+            return 1;
+        else if (rich2 < rich1)
+            return -1;
+        else
+            return 0;
+    }
+
+    private void PlaceNTileImprovements(int n, string id, List<Vector3Int> tiles, City city)
+    {
+        for (int i = 0, count = 0; count < n && i < tiles.Count; i++)
+        {
+            if (PlaceCityTile(id, tiles[i], city))
+                count++;
+        }
+    }
+
+    private bool PlaceCityTile(string id, Vector3Int pos, City city)
+    {
+        ProjectData projectData = GlobalProjectDictionary.GetProjectData(id);
+        ConstructedTileProject project = (ConstructedTileProject)projectData.Project;
+        if (!project.IsValidTile(pos, World, city))
+            return false;
+
+        project.OnPlacement(pos);
+
+        World.InstantiateConstructedTile(id, pos);
+        project.Complete(city, World);
+
+        return true;
+    }
+
 }

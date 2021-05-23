@@ -8,23 +8,30 @@ using Tiles;
 
 namespace Units
 {
-    public class NPCIntelligence : MonoBehaviour, INPCCombatAI
+    public class NPCIntelligence : INPCCombatAI
     {
-        public GUIMaster gui;
+        private GameMaster game;
 
         private INPCStateMachine stateMachine;
         [SerializeField] private INPCSurveyer surveyer = null;
         [SerializeField] private INPCPlanner planner = null;
         private UnitEntity unit;
 
-        private void Start()
+        public NPCIntelligence(GameMaster game, INPCSurveyer surveyer, INPCPlanner planner)
         {
-            // TODO: Placeholder?
-            unit = GetComponent<UnitEntityController>().Unit;
+            this.game = game;
+            this.game.npcList.Add(this);
 
-            gui.AddNPCIntelligence(this);
+            this.surveyer = surveyer;
+            this.planner = planner;
+        }
 
-            unit.OnDeath += () => gui.RemoveNPCIntelligence(this);
+        public void AssignUnitEntity(UnitEntity unitEntity)
+        {
+            if (unit != null)
+                unit.OnDeath -= () => game.npcList.Remove(this);
+            unit = unitEntity;
+            unit.OnDeath += () => game.npcList.Remove(this);
         }
 
         public void ExecuteCombat(GameMaster game)

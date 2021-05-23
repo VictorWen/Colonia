@@ -54,7 +54,7 @@ namespace Units
         {
             if (!ShowingSelectionIndicator)
             {
-                Vector3Int spritePosition = World.grid.WorldToCell(Obj.transform.position);
+                Vector3Int spritePosition = World.WorldToCell(Obj.transform.position);
                 World.SetMovementTile(spritePosition, Config.selectTile);
                 ShowingSelectionIndicator = true;
             }
@@ -64,7 +64,7 @@ namespace Units
         {
             if (ShowingSelectionIndicator)
             {
-                Vector3Int spritePosition = World.grid.WorldToCell(Obj.transform.position);
+                Vector3Int spritePosition = World.WorldToCell(Obj.transform.position);
                 MovementGraphics.ClearMoveables();
                 World.SetMovementTile(spritePosition, null);
                 ShowingSelectionIndicator = false;

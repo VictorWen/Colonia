@@ -17,10 +17,10 @@ namespace Units.Abilities
         public World world;
         public Tile red;
 
-        private UnitEntityPlayerController unit;
+        private PlayerUnitEntityController unit;
         private string selectedAbilityID;
 
-        public void Enable(UnitEntityPlayerController unit)
+        public void Enable(PlayerUnitEntityController unit)
         {
             this.unit = unit;
             selectedAbilityID = null;

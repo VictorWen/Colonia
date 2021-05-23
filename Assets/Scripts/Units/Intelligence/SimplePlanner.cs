@@ -10,7 +10,7 @@ namespace Units.Intelligence
 {
     public class SimplePlanner : INPCPlanner
     {
-        public override LinkedList<Vector3Int> GetMovementPath(UnitEntity self, Dictionary<Vector3Int, float> posScores)
+        public LinkedList<Vector3Int> GetMovementPath(UnitEntity self, Dictionary<Vector3Int, float> posScores)
         {
             List<KeyValuePair<Vector3Int, float>> scores = posScores.ToList();
             scores.Sort(PositioningCompare);
@@ -27,7 +27,7 @@ namespace Units.Intelligence
                 return 0;
         }
 
-        public override void ExecuteAbility(UnitEntity self, World world)
+        public void ExecuteAbility(UnitEntity self, World world)
         {
             List<string> abilities = self.Combat.Abilities;
 

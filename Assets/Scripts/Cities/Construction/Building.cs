@@ -105,7 +105,7 @@ namespace Cities.Construction
             destination = null;
         }
 
-        public void Complete(City city, GUIMaster gui)
+        public void Complete(City city, World world)
         {
             foreach (BuildingEffect effect in GlobalBuildingDictionary.GetCompletionEffects(ID))
             {

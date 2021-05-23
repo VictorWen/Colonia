@@ -121,9 +121,9 @@ namespace Cities.Construction
             //TODO: Manage deselect constructed tile upgrade case
         }
         
-        public virtual void Complete(City city, GUIMaster gui)
+        public virtual void Complete(City city, World world)
         {
-            gui.Game.World.FinishConstructionOfCityTile(city, this, position, upgradee);
+            world.FinishConstructionOfCityTile(city, this, position, upgradee);
         }
 
         public abstract void OnUpgrade(ConstructedTileProject upgradee);

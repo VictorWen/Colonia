@@ -24,7 +24,7 @@ namespace Cities.Construction
             spriteRenderer.sprite = Resources.Load<Sprite>("Projects" + sepChar + "Constructed Tiles" + sepChar + project.ID);
             spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f);
 
-            Vector3Int gridPos = world.grid.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            Vector3Int gridPos = world.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 
             HashSet<Vector3Int> range = city.GetCityRange(world);
             UnityEngine.Tilemaps.Tile green = Resources.Load<UnityEngine.Tilemaps.Tile>(System.IO.Path.Combine("Tiles", "Green"));
@@ -39,8 +39,8 @@ namespace Cities.Construction
             bool click = Input.GetMouseButtonUp(0);
             while (!click || !IsValidTile(gridPos, city, world, project))
             {
-                gridPos = world.grid.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-                transform.position = world.grid.CellToWorld(gridPos);
+                gridPos = world.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                transform.position = world.CellToWorld(gridPos);
 
                 string text = project.GetTooltipText(gridPos, world);
                 if (text != null)

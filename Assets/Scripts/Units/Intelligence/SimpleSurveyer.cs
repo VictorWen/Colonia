@@ -16,7 +16,7 @@ namespace Units.Intelligence
         [SerializeField] private float BASE_TARGET_VALUE = 10f;
         [SerializeField] private int MAX_FOLLOW_DISTANCE = 3;
 
-        public override Dictionary<Vector3Int, float> SurveyPositioning(UnitEntity self, World world)
+        public Dictionary<Vector3Int, float> SurveyPositioning(UnitEntity self, World world)
         {
             Dictionary<Vector3Int, float> scores = new Dictionary<Vector3Int, float>();
             InitializePositioningScores(scores, self);

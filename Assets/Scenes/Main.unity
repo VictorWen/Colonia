@@ -161,7 +161,10 @@ MonoBehaviour:
   districtSelectorScript: {fileID: 1167203838}
   mapHUD: {fileID: 1992668459}
   playerCam: {fileID: 519420031}
-  unitEntityPrefab: {fileID: 0}
+  unitEntityPrefab: {fileID: 6718334270767522926, guid: 0a10676792e4e71489a0a7ccb6d32c4b,
+    type: 3}
+  playerUnitEntityPrefab: {fileID: 1437875174735446140, guid: e5cee4632e0070040b68183c1870dae5,
+    type: 3}
   unitPanel: {fileID: 1205894830}
 --- !u!4 &5732126
 Transform:
@@ -124661,7 +124664,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 151
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -137231,12 +137234,12 @@ PrefabInstance:
     - target: {fileID: 1437875174735446139, guid: e5cee4632e0070040b68183c1870dae5,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.52
       objectReference: {fileID: 0}
     - target: {fileID: 1437875174735446139, guid: e5cee4632e0070040b68183c1870dae5,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.74
       objectReference: {fileID: 0}
     - target: {fileID: 1437875174735446139, guid: e5cee4632e0070040b68183c1870dae5,
         type: 3}

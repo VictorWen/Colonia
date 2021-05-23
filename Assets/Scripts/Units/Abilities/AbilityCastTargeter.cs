@@ -14,13 +14,13 @@ namespace Units.Abilities
         private readonly Ability ability;
         private readonly GUIStateManager gui;
         private readonly World world;
-        private readonly UnitEntityPlayerController unit;
+        private readonly PlayerUnitEntityController unit;
         private readonly UnitEntityConfig config;
 
         private readonly HashSet<Vector3Int> range;
         private HashSet<Vector3Int> area;
 
-        public AbilityCastTargeter(Ability ability, GUIStateManager gui, World world, UnitEntityPlayerController unit, UnitEntityConfig config)
+        public AbilityCastTargeter(Ability ability, GUIStateManager gui, World world, PlayerUnitEntityController unit, UnitEntityConfig config)
         {
             this.ability = ability;
             this.gui = gui;
@@ -37,7 +37,7 @@ namespace Units.Abilities
             IsActive = true;
             bool hasSelected = false;
             gui.SetState(GUIStateManager.ABILITY);
-            while (IsActive && !hasSelected && unit.Status == UnitEntityPlayerController.WaitingStatus.ABILITY && !Input.GetMouseButtonUp(1))
+            while (IsActive && !hasSelected && unit.Status == PlayerUnitEntityController.WaitingStatus.ABILITY && !Input.GetMouseButtonUp(1))
             {
                 hasSelected = CheckForValidClick();
                 yield return null;
@@ -85,7 +85,7 @@ namespace Units.Abilities
         private Vector3Int GetMousePosition()
         {
             Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            return world.grid.WorldToCell(worldPos);
+            return world.WorldToCell(worldPos);
         }
 
         private void GetAndHighlightAOE(Vector3Int gridPos)

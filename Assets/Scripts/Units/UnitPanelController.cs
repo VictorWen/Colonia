@@ -24,7 +24,7 @@ namespace Units
         [SerializeReference] private UnitPanelGraphics graphics = null;
         [SerializeReference] private UnitInfoGraphics infoGraphics = null;
 
-        public UnitEntityPlayerController SelectedUnit { get; private set; }
+        public PlayerUnitEntityController SelectedUnit { get; private set; }
 
         private void Awake()
         {
@@ -46,7 +46,7 @@ namespace Units
             }
         }
 
-        public void SetSelectedUnit(UnitEntityPlayerController newSelectedUnit)
+        public void SetSelectedUnit(PlayerUnitEntityController newSelectedUnit)
         {
             if (newSelectedUnit != null)
             {
@@ -75,7 +75,7 @@ namespace Units
             inventoryPanel.Enable(SelectedUnit);
         }
 
-        public void ShowUnitInfo(UnitEntityController unit)
+        public void ShowUnitInfo(BaseUnitEntityController unit)
         {
             infoGraphics.SetSelectedUnit(unit);
             infoGraphics.ShowUnitInfoPanel();

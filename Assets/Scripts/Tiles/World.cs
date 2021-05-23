@@ -12,7 +12,7 @@ using Cities.Construction;
 // TODO: Organize World class
 public class World : MonoBehaviour, IWorld
 {
-    public Grid grid;
+    [SerializeField] private Grid grid;
     [SerializeField] private Tilemap terrain;
     [SerializeField] private Tilemap cities;
     [SerializeField] private Tilemap movement;
@@ -163,6 +163,21 @@ public class World : MonoBehaviour, IWorld
     }
 
     // Utility Tile Grabbers =====================================
+    public Vector3 CellToWorld(Vector3Int cell)
+    {
+        return grid.CellToWorld(cell);
+    }
+
+    public Vector3Int WorldToCell(Vector3 world)
+    {
+        return grid.WorldToCell(world);
+    }
+
+    public Vector3 SnapWorldToCell(Vector3 world)
+    {
+        return CellToWorld(WorldToCell(world));
+    }
+
     public List<Vector3Int> GetAdjacents(Vector3Int tile)
     {
         List<Vector3Int> adjacents = new List<Vector3Int>();
@@ -198,7 +213,7 @@ public class World : MonoBehaviour, IWorld
 
     public HashSet<Vector3Int> GetTilesInRange(Vector3Int start, int range)
     {
-        HashSet<Vector3Int> tileRange = new HashSet<Vector3Int>
+        HashSet<Vector3Int> tileRange = new HashSet<Vector3Int>()
         {
             start
         };
@@ -494,6 +509,13 @@ public class World : MonoBehaviour, IWorld
     public ConstructedTile GetConstructedTile(Vector3Int position)
     {
         return (ConstructedTile)cities.GetTile(position);
+    }
+
+    public void InstantiateConstructedTile(string id, Vector3Int pos)
+    {
+        string path = System.IO.Path.Combine("Projects", "Constructed Tiles", id);
+        ConstructedTile tile = Resources.Load<ConstructedTile>(path);
+        PlaceConstructedTile(pos, tile);
     }
 
     public void StartConstructionOfCityTile(ConstructedTile tile, Vector3Int position)

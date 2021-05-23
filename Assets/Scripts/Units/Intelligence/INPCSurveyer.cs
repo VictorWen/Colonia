@@ -9,10 +9,10 @@ namespace Units.Intelligence
 {
     /*  The Surveyer calculates scores for positioning and provides danger, target, and efficiency scores for each nearby enemy.
      */
-    public abstract class INPCSurveyer : MonoBehaviour
+    public interface INPCSurveyer
     {
         // Look through as movable tiles and calculate positioning score of that tile
-        public abstract Dictionary<Vector3Int, float> SurveyPositioning(UnitEntity self, World world);
+        Dictionary<Vector3Int, float> SurveyPositioning(UnitEntity self, World world);
 
 /*        int CalculateDangerScore(UnitEntity self, UnitEntity other);
 
