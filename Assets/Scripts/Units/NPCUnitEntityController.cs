@@ -10,6 +10,9 @@ namespace Units
         override protected void Start()
         {
             base.Start();
+
+            //unitEntity.OnVisionUpdate += UpdateVisibility;
+
             if (intelligence == null)
             {
                 SimpleSurveyer surveyer = new SimpleSurveyer();
@@ -17,6 +20,14 @@ namespace Units
                 intelligence = new NPCIntelligence(gui.Game, surveyer, planner);
                 intelligence.AssignUnitEntity(unitEntity);
             }
+        }
+
+        private void UpdateVisibility()
+        {
+            if (world.IsVisibleTile(unitEntity.Position))
+                Show();
+            else
+                Hide();
         }
     }
 }

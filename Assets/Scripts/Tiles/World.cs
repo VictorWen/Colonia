@@ -20,7 +20,8 @@ public class World : MonoBehaviour, IWorld
     [Header("Vision")]
     public bool enableFogOfWar;
     [SerializeField] private Tilemap vision;
-    public Dictionary<Vector3Int, int> Visible { get; private set; }
+    private Dictionary<Vector3Int, int> visibles;
+    private Dictionary<UnitEntity, BaseUnitEntityController> unitControllers;
 
     [Header("Generation Settings")]
     public bool autoUpdate;
@@ -37,12 +38,14 @@ public class World : MonoBehaviour, IWorld
     private Dictionary<Vector3Int, float> richness;
 
     public UnitEntityManager UnitManager { get; private set; }
+    private SpawnerMap spawnerMap;
 
     private void Awake()
     {
         GenerateWorld();
         // Generate Resources
         ResourceMap = new ResourceMap(this, config.biomeResources, config.iconPrefab, enableFogOfWar);
+        spawnerMap = new SpawnerMap(this, config.spawners);
         UnitManager = new UnitEntityManager();
     }
 
@@ -54,54 +57,64 @@ public class World : MonoBehaviour, IWorld
 
     public void UnitsOnNextTurn(GameMaster game)
     {
+        spawnerMap.NextTurn(game);
         UnitManager.NextTurn(game);
     }
 
     // World Vision ===========================
     public void AddFogOfWar(Vector3Int position)
     {
-        if (Visible.ContainsKey(position))
+        if (visibles.ContainsKey(position))
         {
-            Visible[position]--;
-            if (Visible[position] == 0)
+            visibles[position]--;
+            if (visibles[position] == 0)
             {
-                Visible.Remove(position);
+                //Visible.Remove(position);
                 if (enableFogOfWar)
                 {
                     vision.SetTile(position, config.fog);
-/*                    UnitEntity unitAt = GetUnitAt(position);
-                    if (unitAt != null && !unitAt.PlayerControlled)
-                        unitAt.HideScript();*/
+                    UnitEntity unitAt = UnitManager.GetUnitAt<UnitEntity>(position);
+                    if (unitAt != null && !unitAt.IsPlayerControlled)
+                        unitControllers[unitAt].Hide();
                 }
             }
         }
     }
 
-    public void RevealTerraIncognita(Vector3Int position)
+    public void RevealFogOfWar(Vector3Int position)
     {
-        TileBase tile = vision.GetTile(position);
-        if (tile != null && tile.name == "Cloud")
+        if (visibles.ContainsKey(position))
         {
-            vision.SetTile(position, config.fog);
+            if (visibles[position]++ == 0)
+            {
+                vision.SetTile(position, null);
+                UnitEntity unitAt = UnitManager.GetUnitAt<UnitEntity>(position);
+                if (unitAt != null && !unitAt.IsPlayerControlled)
+                    unitControllers[unitAt].Show();
+            }
+        }
+        else
+        {
+            visibles.Add(position, 1);
+
+            vision.SetTile(position, null);
+            UnitEntity unitAt = UnitManager.GetUnitAt<UnitEntity>(position);
+            if (unitAt != null && !unitAt.IsPlayerControlled)
+                unitControllers[unitAt].Show();
+
             if (ResourceMap.Icons.ContainsKey(position))
                 ResourceMap.Icons[position].gameObject.SetActive(true);
         }
     }
 
-    public void RevealFogOfWar(Vector3Int position)
+    public bool IsVisibleTile(Vector3Int position)
     {
-        if (Visible.ContainsKey(position))
-        {
-            Visible[position]++;
-        }
-        else
-        {
-            Visible.Add(position, 1);
-            vision.SetTile(position, null);
-/*            UnitEntity unitAt = GetUnitAt(position);
-            if (unitAt != null && !unitAt.PlayerControlled)
-                unitAt.ShowScript();*/
-        }
+        return visibles.ContainsKey(position) && visibles[position] > 0;
+    }
+
+    public void AddUnitEntityController(UnitEntity unitEntity, BaseUnitEntityController controller)
+    {
+        unitControllers.Add(unitEntity, controller);
     }
     
     /// <summary>
@@ -274,7 +287,9 @@ public class World : MonoBehaviour, IWorld
     // World Generation ==========================================
     public void GenerateWorld()
     {
-        Visible = new Dictionary<Vector3Int, int>();
+        visibles = new Dictionary<Vector3Int, int>();
+        unitControllers = new Dictionary<UnitEntity, BaseUnitEntityController>();
+
         terrain.ClearAllTiles();
         vision.ClearAllTiles();
         Array.Sort(config.tiles, (x1, x2) => x1.height.CompareTo(x2.height));

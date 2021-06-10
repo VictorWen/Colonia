@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Tiles;
 
 [CreateAssetMenu(fileName = "World Gen Config", menuName = "ScriptableObjects/World Generation Config", order = 1)]
 public class WorldGenerationConfig : ScriptableObject
@@ -41,4 +42,7 @@ public class WorldGenerationConfig : ScriptableObject
     [Header("Resource Generation")]
     public BiomeResources[] biomeResources;
     public ResourceIconScript iconPrefab;
+
+    [Header("Spawner Generation")]
+    public NPCSpawnerSO[] spawners;
 }

@@ -8,18 +8,18 @@
 
 ## UnitEntity Post Refactorization
 - [X] Abilities
-- [ ] NPC AI
+- [X] NPC AI
   - [X] Surveyer
   - [X] Planner
-  - [ ] Extracting certain calculations
+  - [X] Extracting certain calculations
 - [X] UnitEntity Inventory
 - [ ] Better Visuals
 
 ## Turn Zero
 - [X] World Generation
 - [ ] Enemy spawner
-- [ ] Starter hero(es) spawn
-- [ ] Starter tile improvements
+- [X] Starter hero(es) spawn
+- [X] Starter tile improvements
 
 ## Turn One to Ten
 - [ ] Basic Construction
