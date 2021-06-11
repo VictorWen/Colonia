@@ -22,6 +22,9 @@ namespace Units
         {
             if (unitEntity == null)
                 CreateUnitEntity(false);
+            unitEntity.OnMove += UpdateUnitPosition;
+            unitEntity.OnDeath += OnDeath;
+            unitEntity.UpdateVision();
         }
 
         public void Initialize(string id, Vector3Int position, GUIMaster gui, World world, UnitEntity unitEntity)
@@ -35,8 +38,6 @@ namespace Units
             this.world = world;
             this.unitEntity = unitEntity;
             world.AddUnitEntityController(unitEntity, this);
-            unitEntity.OnMove += UpdateUnitPosition;
-            unitEntity.OnDeath += OnDeath;
         }
 
         protected virtual void CreateUnitEntity(bool isPlayerControlled)
@@ -48,8 +49,6 @@ namespace Units
             UnitEntityCombatData combatData = UnitEntityCombatData.LoadFromSO(unitData);
 
             unitEntity = new UnitEntity(this.name, gridPos, unitData.maxHealth, unitData.sight, isPlayerControlled, unitData.movementSpeed, world, combatData);
-            unitEntity.OnMove += UpdateUnitPosition;
-            unitEntity.OnDeath += OnDeath;
 
             Sprite sprite = Resources.Load<Sprite>("Unit Entity Sprites/" + unitID);
             GetComponent<SpriteRenderer>().sprite = sprite;
@@ -63,7 +62,6 @@ namespace Units
             {
                 HoverInfo(false);
             }
-            world.UnitManager.RemoveUnit(unitEntity);
             Destroy(gameObject);
         }
 

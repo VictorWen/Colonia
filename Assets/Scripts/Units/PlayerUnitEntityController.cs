@@ -26,6 +26,7 @@ namespace Units
         {
             if (unitEntity == null)
                 CreateUnitEntity(true);
+            unitEntity.OnDeath += OnDeath;
             graphics = new UnitEntityGraphics(gameObject, unitEntity, config, world);
 
             panel = gui.unitPanel;

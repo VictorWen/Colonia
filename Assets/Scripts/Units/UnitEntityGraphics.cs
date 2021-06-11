@@ -68,6 +68,7 @@ namespace Units
                 MovementGraphics.ClearMoveables();
                 World.SetMovementTile(spritePosition, null);
                 ShowingSelectionIndicator = false;
+                Debug.Log(spritePosition);
             }
         }
 

@@ -58,7 +58,7 @@ public class GUIMaster : MonoBehaviour
         inv.AddItem(new ResourceItem("stone", 25));
         //inv.AddItem(new ResourceItem("steel", 100));
 
-        capitalScript = CityScript.Create("Test", new Vector3(-1, 0, 0), this);
+        capitalScript = CityScript.Create("Test", new Vector3(0, 0, 0), this);
         capital = capitalScript.city;
         //capital.inv = inv;
 

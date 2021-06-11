@@ -9,9 +9,8 @@ namespace Units
 
         override protected void Start()
         {
+            unitEntity.OnVisionUpdate += UpdateVisibility;
             base.Start();
-
-            //unitEntity.OnVisionUpdate += UpdateVisibility;
 
             if (intelligence == null)
             {

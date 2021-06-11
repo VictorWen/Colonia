@@ -17,6 +17,8 @@ namespace Units
         [SerializeField] private INPCPlanner planner = null;
         private UnitEntity unit;
 
+        private Vector3Int homeSpawner;
+
         public NPCIntelligence(GameMaster game, INPCSurveyer surveyer, INPCPlanner planner)
         {
             this.game = game;

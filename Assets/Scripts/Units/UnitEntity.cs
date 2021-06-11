@@ -102,7 +102,10 @@ namespace Units
 
         public virtual void UpdateVision()
         {
-            Visibles = world.GetLineOfSight(Position, sight);
+            if (IsAlive)
+                Visibles = world.GetLineOfSight(Position, sight);
+            else
+                Visibles.Clear();
             OnVisionUpdate?.Invoke();
         }
 
@@ -116,6 +119,8 @@ namespace Units
                 if (Health <= 0)
                 {
                     IsAlive = false;
+                    world.UnitManager.RemoveUnit(this);
+                    UpdateVision();                    
                     OnDeath?.Invoke();
                 }
 
