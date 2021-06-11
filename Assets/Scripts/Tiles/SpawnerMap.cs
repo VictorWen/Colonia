@@ -46,6 +46,7 @@ namespace Tiles
                         if (distance >= spawner.minDistance && distance <= spawner.maxDistance)
                         {
                             Spawners.Add(new NPCSpawner(spawner.unitID, validTiles[index], spawner.spawnThreshold));
+                            world.PlaceSpawnerTile(validTiles[index]);
                             count++;
                         }
                         check.Add(index);

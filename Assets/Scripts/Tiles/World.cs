@@ -559,6 +559,12 @@ public class World : MonoBehaviour, IWorld
         cities.SetTile(position, tile);
     }
 
+    public void PlaceSpawnerTile(Vector3Int position)
+    {
+        TileBase spawnerTile = Resources.Load<TileBase>("Tiles/Spawners/Camp");
+        cities.SetTile(position, spawnerTile);
+    }
+
     // Movement Tiles ================================================
     public void SetMovementTile(Vector3Int position, TileBase tile)
     {
