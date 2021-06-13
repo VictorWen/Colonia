@@ -14,6 +14,8 @@ namespace Units.Intelligence
         // Look through as movable tiles and calculate positioning score of that tile
         Dictionary<Vector3Int, float> SurveyPositioning(UnitEntity self, World world);
 
+        Dictionary<Vector3Int, float> SurveyWandering(UnitEntity self, World world);
+
 /*        int CalculateDangerScore(UnitEntity self, UnitEntity other);
 
         int CalculateTargetScore(UnitEntity self, UnitEntity other);

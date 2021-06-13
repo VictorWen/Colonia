@@ -12,20 +12,23 @@ namespace Units
     {
         private GameMaster game;
 
-        private INPCStateMachine stateMachine;
+        [SerializeField] private INPCStateMachine stateMachine;
         [SerializeField] private INPCSurveyer surveyer = null;
         [SerializeField] private INPCPlanner planner = null;
         private UnitEntity unit;
 
         private Vector3Int homeSpawner;
 
-        public NPCIntelligence(GameMaster game, INPCSurveyer surveyer, INPCPlanner planner)
+        public NPCIntelligence(GameMaster game, INPCStateMachine sm, INPCSurveyer surveyer, INPCPlanner planner, Vector3Int home)
         {
             this.game = game;
             this.game.npcList.Add(this);
 
+            this.stateMachine = sm;
             this.surveyer = surveyer;
             this.planner = planner;
+
+            homeSpawner = home;
         }
 
         public void AssignUnitEntity(UnitEntity unitEntity)
@@ -38,7 +41,18 @@ namespace Units
 
         public void ExecuteCombat(GameMaster game)
         {
-            Dictionary<Vector3Int, float> positioningScores = surveyer.SurveyPositioning(unit, game.World);
+            Dictionary<Vector3Int, float> positioningScores;
+            switch (stateMachine.GetState(unit, game.World)) {
+                case AIState.COMBAT:                
+                    positioningScores = surveyer.SurveyPositioning(unit, game.World);
+                    break;
+                case AIState.WANDER:
+                    positioningScores = surveyer.SurveyWandering(unit, game.World);
+                    break;
+                default:
+                    positioningScores = new Dictionary<Vector3Int, float>();
+                    break;
+            }
             LinkedList<Vector3Int> movementPath = planner.GetMovementPath(unit, positioningScores);
 
             if (movementPath != null)

@@ -9,14 +9,17 @@ namespace Units
 
         override protected void Start()
         {
-            unitEntity.OnVisionUpdate += UpdateVisibility;
             base.Start();
+            
+            unitEntity.OnVisionUpdate += UpdateVisibility;
+            unitEntity.UpdateVision();
 
             if (intelligence == null)
             {
+                SimpleStateMachine sm = new SimpleStateMachine();
                 SimpleSurveyer surveyer = new SimpleSurveyer();
                 SimplePlanner planner = new SimplePlanner();
-                intelligence = new NPCIntelligence(gui.Game, surveyer, planner);
+                intelligence = new NPCIntelligence(gui.Game, sm, surveyer, planner, unitEntity.Position);
                 intelligence.AssignUnitEntity(unitEntity);
             }
         }

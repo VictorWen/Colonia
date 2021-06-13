@@ -16,6 +16,10 @@ namespace Units.Intelligence
         [SerializeField] private float BASE_TARGET_VALUE = 10f;
         [SerializeField] private int MAX_FOLLOW_DISTANCE = 3;
 
+        [SerializeField] private float BASE_WANDER_VALUE = 1.5f;
+        [SerializeField] private float RANDOM_SCALE = 2.5f;
+        [SerializeField] private int MAX_WANDER_DISTANCE = 3;
+
         public Dictionary<Vector3Int, float> SurveyPositioning(UnitEntity self, World world)
         {
             Dictionary<Vector3Int, float> scores = new Dictionary<Vector3Int, float>();
@@ -23,6 +27,18 @@ namespace Units.Intelligence
 
             CalculateTerrainScores(scores, self, world);
             CalculateTargetScores(scores, self, world);
+
+            return scores;
+        }
+
+        public Dictionary<Vector3Int, float> SurveyWandering(UnitEntity self, World world)
+        {
+            Dictionary<Vector3Int, float> scores = new Dictionary<Vector3Int, float>();
+            InitializePositioningScores(scores, self);
+
+            CalculateTerrainScores(scores, self, world);
+            CalculateDistanceIncrease(scores, self, world);
+            CalculateRandomAdditions(scores, self, world);
 
             return scores;
         }
@@ -53,18 +69,44 @@ namespace Units.Intelligence
                 UnitEntity unit = world.UnitManager.GetUnitAt<UnitEntity>(visible);
                 if (unit != null && unit.Combat.IsEnemy(self.Combat))
                 {
-                    List<List<Vector3Int>> ranges = world.GetRangeList(unit.Position, MAX_FOLLOW_DISTANCE);
-                    for (int distance = 1; distance < ranges.Count; distance++)
+                    CalculateDistanceReduction(scores, unit.Position, world);
+                }
+            }
+        }
+
+        private void CalculateDistanceReduction(Dictionary<Vector3Int, float> scores, Vector3Int position, World world)
+        {
+            List<List<Vector3Int>> ranges = world.GetRangeList(position, MAX_FOLLOW_DISTANCE);
+            for (int distance = 1; distance < ranges.Count; distance++)
+            {
+                foreach (Vector3Int tile in ranges[distance])
+                {
+                    if (scores.ContainsKey(tile))
                     {
-                        foreach (Vector3Int tile in ranges[distance])
-                        {
-                            if (scores.ContainsKey(tile))
-                            {
-                                scores[tile] += BASE_TARGET_VALUE / distance / distance;
-                            }
-                        }
+                        scores[tile] += BASE_TARGET_VALUE / distance / distance;
                     }
                 }
+            }
+        }
+
+        private void CalculateDistanceIncrease(Dictionary<Vector3Int, float> scores, UnitEntity self, World world)
+        {
+            List<List<Vector3Int>> ranges = world.GetRangeList(self.Position, MAX_WANDER_DISTANCE);
+            for (int distance = 1; distance < ranges.Count; distance++)
+            {
+                foreach (Vector3Int tile in ranges[distance])
+                {
+                    if (scores.ContainsKey(tile))
+                        scores[tile] += distance * distance * BASE_WANDER_VALUE;
+                }
+            }
+        }
+
+        private void CalculateRandomAdditions(Dictionary<Vector3Int, float> scores, UnitEntity self, World world)
+        {
+            foreach (Vector3Int tile in self.Movement.GetMoveables().Reachables)
+            {
+                scores[tile] += (2 * (float) world.RNG.NextDouble() - 1) * RANDOM_SCALE;
             }
         }
     }
