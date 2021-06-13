@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bf96a23c685ab945a0a7667b4964332, type: 3}
   m_Name: Test Spawner
   m_EditorClassIdentifier: 
-  unitID: 
-  validTerrainNames: []
-  count: 0
-  minDistance: 0
-  maxDistance: 0
+  unitID: testEnemy
+  validTerrainNames:
+  - Forest
+  - Hills
+  count: 6
+  minDistance: 10
+  maxDistance: 23
+  growthMultiplier: 1
+  spawnThreshold: 3

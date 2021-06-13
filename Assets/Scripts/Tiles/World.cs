@@ -109,6 +109,8 @@ public class World : MonoBehaviour, IWorld
 
     public bool IsVisibleTile(Vector3Int position)
     {
+        if (!enableFogOfWar)
+            return true;
         return visibles.ContainsKey(position) && visibles[position] > 0;
     }
 

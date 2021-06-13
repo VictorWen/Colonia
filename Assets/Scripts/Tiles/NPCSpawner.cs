@@ -15,6 +15,9 @@ namespace Tiles
 
         private int spawnPoints;
         private int spawnThreshold;
+        private int spawnLimit = 3;
+
+        private HashSet<UnitEntity> spawned;
 
         public NPCSpawner(string unitID, Vector3Int position, int threshold)
         {
@@ -23,22 +26,31 @@ namespace Tiles
 
             spawnPoints = 0;
             spawnThreshold = threshold;
+
+            spawned = new HashSet<UnitEntity>();
         }
 
         public void OnNextTurn(GameMaster game)
         {
             spawnPoints += CalulcateSpawnGrowth(game.World);
 
-            if (spawnPoints >= spawnThreshold)
+            if (spawned.Count < spawnLimit && spawnPoints >= spawnThreshold && game.World.UnitManager.GetUnitAt<UnitEntity>(Position) == null)
             {
                 spawnPoints -= spawnThreshold;
-                SpawnNPCUnit(game);    
+                SpawnNPCUnit(game);
+            }
+
+            if (spawnPoints > spawnThreshold)
+            {
+                spawnPoints = spawnThreshold;
             }
         }
 
         private void SpawnNPCUnit(GameMaster game)
         {
-            game.SpawnUnitEntity(UnitID, "TEST SPAWNED ENTITY", Position);
+            UnitEntity unit = game.SpawnUnitEntity(UnitID, "TEST SPAWNED ENTITY", Position);
+            spawned.Add(unit);
+            unit.OnDeath += () => spawned.Remove(unit);
         }
 
         private int CalulcateSpawnGrowth(World world)

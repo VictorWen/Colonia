@@ -49,3 +49,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f4ec32ecaa0adf54690e221745964c60, type: 2}
   iconPrefab: {fileID: 8672234480903314696, guid: 1bff54e7af4da8045a516481433dd0ec,
     type: 3}
+  spawners:
+  - {fileID: 11400000, guid: 36d1e400b53d02243908a458e9af07fa, type: 2}

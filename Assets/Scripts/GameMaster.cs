@@ -40,15 +40,16 @@ public class GameMaster
     public void SpawnStarterHeroes()
     {
         SpawnUnitEntity("testPlayer", "The New Guy", new Vector3Int(2, 2, 0));
-        SpawnUnitEntity("testEnemy", "Test Enemy", new Vector3Int(-2, -2, 0));
+        //SpawnUnitEntity("testEnemy", "Test Enemy", new Vector3Int(-2, -2, 0));
     }
 
-    public void SpawnUnitEntity(string id, string name, Vector3Int position)
+    public UnitEntity SpawnUnitEntity(string id, string name, Vector3Int position)
     {
         UnitEntityData unitData = GlobalUnitEntityDictionary.GetUnitEntityData("Unit Entities", id); // This might be too tightly coupled to Unity?
         UnitEntityCombatData combatData = UnitEntityCombatData.LoadFromSO(unitData);
         UnitEntity unitEntity = new UnitEntity(name, position, unitData.maxHealth, unitData.sight, unitData.isPlayerControlled, unitData.movementSpeed, World, combatData);
         OnUnitSpawn?.Invoke(unitEntity, id);
+        return unitEntity;
     }
 
     public void PlaceStarterTileImprovements(City city)
