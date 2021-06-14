@@ -15,6 +15,7 @@ namespace Units.Combat
         public int piercing;
         public int magic;
         public int resistance;
+        public string[] abilities;
 
         public static UnitEntityCombatData LoadFromSO(UnitEntityData so)
         {
@@ -26,6 +27,7 @@ namespace Units.Combat
                 piercing = so.piercing,
                 magic = so.magic,
                 resistance = so.resistance,
+                abilities = so.abilities,
             };
             return data;
         }
@@ -53,7 +55,6 @@ namespace Units.Combat
         public int Magic { get { return magic; } }
         public bool CanAttack { get; private set; }
 
-        //TODO: fix placeholder abilities list
         public List<string> Abilities { get; private set; }
 
         public UnitEntity Unit { get; private set; }
@@ -67,12 +68,9 @@ namespace Units.Combat
             this.Unit = unit;
             this.world = world;
             this.movement = movement;
-            Abilities = new List<string>() { "attack" };
+            Abilities = new List<string>();
 
             CanAttack = true;
-
-            // TODO: placeholder test stuff
-            Abilities.Add("fireball");
         }
 
         public UnitEntityCombat(UnitEntity unit, IWorld world, IUnitEntityMovement movement, UnitEntityCombatData data) : this(unit, world, movement)
@@ -85,6 +83,11 @@ namespace Units.Combat
             piercing = data.piercing;
             magic = data.magic;
             resistance = data.resistance;
+
+            foreach (string id in data.abilities)
+            {
+                Abilities.Add(id);
+            }
         }
 
         public void OnNextTurn(GameMaster game)

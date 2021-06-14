@@ -65,34 +65,41 @@ namespace Units.Intelligence
 
         private void CalculateAbilityScores(UnitEntity self, World world, Dictionary<string, float> scores, Dictionary<string, Vector3Int> targets)
         {
-            foreach (Vector3Int tile in world.GetAdjacents(self.Position))
+            if (self.Combat.Abilities.Contains("attack"))
             {
-                UnitEntity unit = world.UnitManager.GetUnitAt<UnitEntity>(tile);
-                if (unit != null && unit.Combat.IsEnemy(self.Combat)){
-                    scores["attack"] = 4;
-                    targets["attack"] = tile;
-                    break;
+                foreach (Vector3Int tile in world.GetAdjacents(self.Position))
+                {
+                    UnitEntity unit = world.UnitManager.GetUnitAt<UnitEntity>(tile);
+                    if (unit != null && unit.Combat.IsEnemy(self.Combat))
+                    {
+                        scores["attack"] = 4;
+                        targets["attack"] = tile;
+                        break;
+                    }
                 }
             }
 
-            Ability fireball = GlobalAbilityDictionary.GetAbility("fireball");
-            foreach (Vector3Int tile in fireball.GetWithinRange(self, world))
+            if (self.Combat.Abilities.Contains("fireball"))
             {
-                int count = 0;
-                foreach (Vector3Int area in fireball.GetAreaOfEffect(self.Position, tile, world))
+                Ability fireball = GlobalAbilityDictionary.GetAbility("fireball");
+                foreach (Vector3Int tile in fireball.GetWithinRange(self, world))
                 {
-                    UnitEntity unit = world.UnitManager.GetUnitAt<UnitEntity>(area);
-                    if (unit != null && unit.Combat.IsEnemy(self.Combat))
+                    int count = 0;
+                    foreach (Vector3Int area in fireball.GetAreaOfEffect(self.Position, tile, world))
                     {
-                        count++;
+                        UnitEntity unit = world.UnitManager.GetUnitAt<UnitEntity>(area);
+                        if (unit != null && unit.Combat.IsEnemy(self.Combat))
+                        {
+                            count++;
+                        }
                     }
-                }
 
-                float score = 2.5f * count;
-                if (scores["fireball"] < score)
-                {
-                    scores["fireball"] = score;
-                    targets["fireball"] = tile;
+                    float score = 2.5f * count;
+                    if (scores["fireball"] < score)
+                    {
+                        scores["fireball"] = score;
+                        targets["fireball"] = tile;
+                    }
                 }
             }
         }

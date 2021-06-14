@@ -17,7 +17,7 @@
 
 ## Turn Zero
 - [X] World Generation
-- [ ] Enemy spawner
+- [X] Enemy spawner
 - [X] Starter hero(es) spawn
 - [X] Starter tile improvements
 
@@ -25,7 +25,6 @@
 - [ ] Basic Construction
 - [ ] Redesign of Population mechanic
 - [ ] City vision
-- [ ] 
 
 ## Combat
 - [X] Basic AI

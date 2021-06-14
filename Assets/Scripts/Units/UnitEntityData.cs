@@ -20,5 +20,7 @@ namespace Units
         public int piercing = 3;
         public int magic = 10;
         public int resistance = 3;
+
+        public string[] abilities;
     }
 }
