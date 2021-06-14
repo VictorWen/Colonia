@@ -47,7 +47,7 @@ public class World : MonoBehaviour, IWorld
         ResourceMap = new ResourceMap(this, config.biomeResources, config.iconPrefab, enableFogOfWar);
         spawnerMap = new SpawnerMap(this, config.spawners);
         UnitManager = new UnitEntityManager();
-    }
+    } 
 
     // UnitEntityManager wrappers =======================
     public void ExecuteNPCTurns(GameMaster game)
@@ -256,6 +256,26 @@ public class World : MonoBehaviour, IWorld
         }
 
         return tileRange;
+    }
+
+    public Dictionary<string, List<Vector3Int>> GetBiomeTiles(int biomeIndex)
+    {
+        Dictionary<string, List<Vector3Int>> terrainTiles = new Dictionary<string, List<Vector3Int>>();
+
+        if (biomeIndex < 0 || biomeIndex >= BiomeChunks.Length)
+            return terrainTiles;
+
+        foreach (Vector3Int position in BiomeChunks[biomeIndex])
+        {
+            string terrainName = GetTerrainTile(position).name;
+            if (!terrainTiles.ContainsKey(terrainName))
+            {
+                terrainTiles.Add(terrainName, new List<Vector3Int>());
+            }
+            terrainTiles[terrainName].Add(position);
+        }
+
+        return terrainTiles;
     }
     // ===========================================================
 
