@@ -69,7 +69,7 @@ namespace Units.Intelligence
             {
                 UnitEntity unit = world.UnitManager.GetUnitAt<UnitEntity>(tile);
                 if (unit != null && unit.Combat.IsEnemy(self.Combat)){
-                    scores["attack"] = 2;
+                    scores["attack"] = 4;
                     targets["attack"] = tile;
                     break;
                 }

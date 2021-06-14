@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: testEnemy
   m_EditorClassIdentifier: 
   isPlayerControlled: 0
-  maxHealth: 50
+  maxHealth: 5
   movementSpeed: 3
   sight: 3
-  maxMana: 100
-  attack: 10
-  defence: 5
-  piercing: 3
-  magic: 10
-  resistance: 3
+  maxMana: 10
+  attack: 2
+  defence: 1
+  piercing: 0
+  magic: 1
+  resistance: 0

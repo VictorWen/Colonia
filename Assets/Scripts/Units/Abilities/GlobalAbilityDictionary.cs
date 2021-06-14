@@ -17,7 +17,7 @@ namespace Units.Abilities
             AddAbility("attack", "Basic Attack", 0, 1, false, attackEffects, new HexAbilityAOE(0));
 
             // Fireball
-            AbilityEffect[] fireballEffects = new AbilityEffect[] { new DamageAbilityEffect(5, false, 0.8f) };
+            AbilityEffect[] fireballEffects = new AbilityEffect[] { new DamageAbilityEffect(1, false, 0.5f) };
             AddAbility("fireball", "Fireball", 3, 3, false, fireballEffects, new HexAbilityAOE(1));
         }
 

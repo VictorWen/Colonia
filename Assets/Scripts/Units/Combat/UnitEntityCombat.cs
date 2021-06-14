@@ -46,6 +46,8 @@ namespace Units.Combat
 
         public event Action OnAttack;
 
+        public int Mana { get { return mana; } }
+
         public int Attack { get { return attack; } }
         public int Piercing { get { return piercing; } }
         public int Magic { get { return magic; } }
@@ -116,7 +118,7 @@ namespace Units.Combat
 
             int damage;
             if (isPhysicalDamage)
-                damage = CalculatePhysicalDamage(baseDamage, attacker, combatModifier);
+                damage = CalculatePhysicalDamage((int)baseDamage, attacker, combatModifier);
             else
                 damage = CalculateMagicalDamage(baseDamage, combatModifier);
             Unit.Damage(damage);
@@ -158,12 +160,15 @@ namespace Units.Combat
                 Debug.LogError(Unit.Name + " overused mana, cost: " + manaCost);
         }
 
-        private int CalculatePhysicalDamage(float baseDamage, IUnitEntityCombat attacker, float combatModifier)
+        private int CalculatePhysicalDamage(int damage, IUnitEntityCombat attacker, float combatModifier)
         {
-            float reduction = Mathf.Max(0, combatModifier * (defence - attacker.Piercing));
-            reduction *= (float)combatModifier * defence / (attacker.Piercing + 1);
-            int damage = (int)(baseDamage - reduction);
-            return damage;
+            damage -= defence;
+            return (int) ((Mathf.Max(damage, 0) + attacker.Piercing) / combatModifier);
+
+            //float reduction = Mathf.Max(0, combatModifier * (defence - attacker.Piercing));
+            //reduction *= (float)combatModifier * defence / (attacker.Piercing + 1);
+            //int damage = (int)(damage - reduction);
+            //return damage;
         }
 
         private int CalculateMagicalDamage(float baseDamage, float combatModifier)

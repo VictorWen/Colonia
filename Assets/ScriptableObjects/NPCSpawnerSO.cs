@@ -18,5 +18,6 @@ namespace Tiles
 
         public int growthMultiplier = 1;
         public int spawnThreshold;
+        public int spawnLimit = 3;
     }
 }

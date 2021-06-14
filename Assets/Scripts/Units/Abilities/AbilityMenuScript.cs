@@ -62,8 +62,11 @@ namespace Units.Abilities
                 // Fill in information
                 AbilityButton btn = Instantiate(abilityButtonPrefab);
                 btn.SetAbility(id, this);
-                btn.Title.text = GlobalAbilityDictionary.GetAbility(id).Name;
+                Ability ability = GlobalAbilityDictionary.GetAbility(id);
+                btn.Title.text = ability.Name;
                 btn.transform.SetParent(abilityListLayout.transform);
+
+                btn.GetComponent<Button>().interactable = unit.Unit.Combat.Mana >= ability.ManaCost;
             }
         }
 

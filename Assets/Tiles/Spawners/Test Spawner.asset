@@ -16,8 +16,9 @@ MonoBehaviour:
   validTerrainNames:
   - Forest
   - Hills
-  count: 6
+  count: 7
   minDistance: 10
   maxDistance: 23
   growthMultiplier: 1
   spawnThreshold: 3
+  spawnLimit: 3

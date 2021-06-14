@@ -7,6 +7,8 @@ namespace Units.Combat
 {
     public interface IUnitEntityCombat
     {
+        int Mana { get; }
+
         int Attack { get; }
         int Piercing { get; }
         int Magic { get; }

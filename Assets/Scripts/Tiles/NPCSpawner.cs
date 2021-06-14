@@ -19,13 +19,14 @@ namespace Tiles
 
         private HashSet<UnitEntity> spawned;
 
-        public NPCSpawner(string unitID, Vector3Int position, int threshold)
+        public NPCSpawner(string unitID, Vector3Int position, int threshold, int limit)
         {
             UnitID = unitID;
             Position = position;
 
             spawnPoints = 0;
             spawnThreshold = threshold;
+            spawnLimit = limit;
 
             spawned = new HashSet<UnitEntity>();
         }

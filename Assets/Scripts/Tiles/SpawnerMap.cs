@@ -45,7 +45,7 @@ namespace Tiles
                         float distance = Vector3Int.Distance(validTiles[index], new Vector3Int(0, 0, 0));
                         if (distance >= spawner.minDistance && distance <= spawner.maxDistance)
                         {
-                            Spawners.Add(new NPCSpawner(spawner.unitID, validTiles[index], spawner.spawnThreshold));
+                            Spawners.Add(new NPCSpawner(spawner.unitID, validTiles[index], spawner.spawnThreshold, spawner.spawnLimit));
                             world.PlaceSpawnerTile(validTiles[index]);
                             count++;
                         }
