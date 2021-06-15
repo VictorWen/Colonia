@@ -22,3 +22,5 @@ MonoBehaviour:
   piercing: 0
   magic: 1
   resistance: 0
+  abilities:
+  - attack

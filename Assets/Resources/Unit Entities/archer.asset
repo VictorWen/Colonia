@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: archer
   m_EditorClassIdentifier: 
   isPlayerControlled: 0
-  maxHealth: 100
+  maxHealth: 7
   movementSpeed: 3
   sight: 4
-  maxMana: 100
-  attack: 10
-  defence: 5
-  piercing: 3
-  magic: 10
-  resistance: 3
+  maxMana: 5
+  attack: 2
+  defence: 0
+  piercing: 0
+  magic: 0
+  resistance: 1
+  abilities:
+  - bow_shot

@@ -15,10 +15,13 @@ MonoBehaviour:
   isPlayerControlled: 1
   maxHealth: 10
   movementSpeed: 3
-  sight: 4
-  maxMana: 1
+  sight: 3
+  maxMana: 10
   attack: 2
   defence: 1
   piercing: 1
-  magic: 10
+  magic: 1
   resistance: 0
+  abilities:
+  - attack
+  - fireball
