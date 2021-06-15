@@ -61,18 +61,20 @@ namespace Units.Movement {
         public void UpdateVision()
         {
             // Cover up previously viewable tiles
-            foreach (Vector3Int fog in visibleTiles)
-            {
-                graphics.World.AddFogOfWar(fog);
-            }
-            visibleTiles = new HashSet<Vector3Int>();
+            /*            foreach (Vector3Int fog in visibleTiles)
+                        {
+                            graphics.World.AddFogOfWar(fog);
+                        }
+                        visibleTiles = new HashSet<Vector3Int>();
 
-            // Reveal visible tiles
-            foreach (Vector3Int visible in graphics.Unit.Visibles)
-            {
-                graphics.World.RevealFogOfWar(visible);
-                visibleTiles.Add(visible);
-            }
+                        // Reveal visible tiles
+                        foreach (Vector3Int visible in graphics.Unit.Visibles)
+                        {
+                            graphics.World.RevealFogOfWar(visible);
+                            visibleTiles.Add(visible);
+                        }*/
+
+            graphics.World.UpdatePlayerVisionGrpahics();
         }
 
     }

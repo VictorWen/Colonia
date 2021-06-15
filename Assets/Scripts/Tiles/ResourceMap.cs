@@ -12,11 +12,14 @@ public class ResourceMap
     private readonly ResourceIconScript iconPrefab;
     private readonly bool enableVision;
 
+    private readonly HashSet<Vector3Int> revealed;
+
     public ResourceMap(World world, BiomeResources[] biomeResources, ResourceIconScript iconPrefab, bool enableVision = true)
     {
         this.world = world;
         this.iconPrefab = iconPrefab;
         this.enableVision = enableVision;
+        this.revealed = new HashSet<Vector3Int>();
 
         if (Icons != null) // leftover code?
             foreach (ResourceIconScript icon in Icons.Values)
@@ -28,6 +31,15 @@ public class ResourceMap
         // Iterate through each BiomeResources
         foreach (BiomeResources biome in biomeResources)
             SpawnBiomeResources(biome);
+    }
+
+    public void RevealResouceAtTile(Vector3Int tile)
+    {
+        if (!revealed.Contains(tile) && Icons.ContainsKey(tile))
+        {
+            Icons[tile].gameObject.SetActive(true);
+            revealed.Add(tile);
+        }
     }
 
     private void SpawnBiomeResources(BiomeResources biome)

@@ -76,6 +76,7 @@ namespace Units
                 new Abilities.HealAbilityEffect(10)
             }, new Abilities.HexAbilityAOE(0), true, false));
 
+            Visibles = new HashSet<Vector3Int>();
             UpdateVision();
             world.UnitManager.AddUnit(this);
         }
@@ -102,10 +103,16 @@ namespace Units
 
         public virtual void UpdateVision()
         {
+            HashSet<Vector3Int> newVisibles = new HashSet<Vector3Int>();
+
             if (IsAlive)
-                Visibles = world.GetLineOfSight(Position, sight);
-            else
-                Visibles.Clear();
+                newVisibles = world.GetLineOfSight(Position, sight);
+
+            if (IsPlayerControlled)
+                world.UpdatePlayerVision(Visibles, newVisibles);
+
+            Visibles = newVisibles;
+
             OnVisionUpdate?.Invoke();
         }
 

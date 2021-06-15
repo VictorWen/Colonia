@@ -10,6 +10,8 @@ namespace Tiles
 
         float GetCombatModifierAt(Vector3Int tile);
 
+        void UpdatePlayerVision(HashSet<Vector3Int> oldUnitVisibles, HashSet<Vector3Int> newUnitVisibles);
+
         HashSet<Vector3Int> GetLineOfSight(Vector3Int start, int range);
 
         List<Vector3Int> GetAdjacents(Vector3Int tile);
