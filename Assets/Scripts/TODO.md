@@ -24,7 +24,13 @@
 ## Turn One to Ten
 - [ ] Basic Construction
 - [ ] Redesign of Population mechanic
-- [ ] City vision
+- [X] City vision
+- [ ] Level up
+- [ ] Equipment
+- [ ] Loot
+
+## Turn Ten to Twenty-Five
+- [ ] Crafting
 
 ## Combat
 - [X] Basic AI

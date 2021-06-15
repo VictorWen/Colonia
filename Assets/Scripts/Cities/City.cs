@@ -2,6 +2,7 @@
 using UnityEngine;
 using Cities.Construction;
 using Items;
+using Tiles;
 
 namespace Cities
 {
@@ -30,7 +31,9 @@ namespace Cities
         public Vector3Int Position { get; private set; }
         private HashSet<Vector3Int> cityRange;
 
-        public City(string name, Vector3Int position)
+        private const int CITY_RADIUS = 4;
+
+        public City(string name, Vector3Int position, IWorld world)
         {
             Name = name;
             this.Position = position;
@@ -45,6 +48,11 @@ namespace Cities
             construction = new CityConstruction(this);
             nextTurnEffects = new List<CityNextTurnEffect>();
             Districts = new List<District>() { new District("city center", 5, new Dictionary<string, int>(), new string[0], "Test City Center")};
+
+            UpdateCityRange(world);
+            cityRange.Add(position);
+            world.UpdatePlayerVision(new HashSet<Vector3Int>(), cityRange);
+            cityRange.Remove(position);
         }
 
         public void OnNextTurn(GameMaster game)
@@ -89,67 +97,16 @@ namespace Cities
         }
 
         //TODO: Add CityRange visual
-        public void UpdateCityRange(World world)
+        public void UpdateCityRange(IWorld world)
         {
             cityRange = new HashSet<Vector3Int>();
-            //TODO: Formalize cityRadius
-            int cityRadius = 5;
-
-/*            Vector2[] checks = new Vector2[] { new Vector2(-1, 0), new Vector2(-0.5f, 0.75f), new Vector2(0.5f, 0.75f), new Vector2(1, 0), new Vector2(0.5f, -0.75f), new Vector2(-0.5f, -0.75f) };
-            Grid grid = world.grid;
-
-            List<Vector3> queue = new List<Vector3>();
-            List<float> moves = new List<float>();
-            Vector3 snap = grid.CellToWorld(grid.WorldToCell(Position));
-            cityRange.Add(grid.WorldToCell(Position));
-            queue.Add(snap);
-            moves.Add(0);
-
-            while (queue.Count > 0)
-            {
-                foreach (Vector2 v in checks)
-                {
-                    Vector3 tilePos = queue[0] + (Vector3)v;
-                    float cost = world.IsReachable(cityRadius - moves[0], grid.WorldToCell(tilePos));
-                    Vector3Int gridTilePos = grid.WorldToCell(tilePos);
-                    if (!cityRange.Contains(gridTilePos) && cost >= 0)
-                    {
-                        //movement.SetTile(gridTilePos, cyan);
-                        cityRange.Add(gridTilePos);
-
-                        queue.Add(tilePos);
-                        moves.Add(cost + moves[0]);
-                    }
-                }
-                queue.RemoveAt(0);
-                moves.RemoveAt(0);
-            }
-            cityRange.Remove(grid.WorldToCell(Position));*/
-
-            for (int i = 1; i <= cityRadius; i++)
-            {
-                cityRange.Add(world.WorldToCell(i * new Vector3(-1, 0) + Position));
-                cityRange.Add(world.WorldToCell(i * new Vector3(1, 0) + Position));
-            }
-
-            Vector3 topEdge = new Vector3(0.5f - cityRadius, 0.75f) + Position;
-            Vector3 lowerEdge = new Vector3(0.5f - cityRadius, -0.75f) + Position;
-            for (int layer = 0; layer < cityRadius; layer++)
-            {
-                // Move to next layer and fill line
-                for (int i = 0; i < cityRadius * 2 - layer; i++)
-                {
-                    cityRange.Add(world.WorldToCell(i * new Vector3(1, 0) + topEdge));
-                    cityRange.Add(world.WorldToCell(i * new Vector3(1, 0) + lowerEdge));
-                }
-                topEdge += new Vector3(0.5f, 0.75f);
-                lowerEdge += new Vector3(0.5f, -0.75f);
-            }
+            cityRange = world.GetTilesInRange(Position, CITY_RADIUS);
+            cityRange.Remove(Position);
         }
 
         public HashSet<Vector3Int> GetCityRange(World world)
         {
-            UpdateCityRange(world);
+            //UpdateCityRange(world);
             return cityRange;
         }
 
