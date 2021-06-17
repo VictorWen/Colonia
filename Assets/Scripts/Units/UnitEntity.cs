@@ -145,5 +145,16 @@ namespace Units
                 OnStatusChanged?.Invoke();
             }
         }
+
+        public void AddExperience(int exp)
+        {
+            Experience += exp;
+            while (Experience >= 10)
+            {
+                Level++;
+                Experience -= 10;
+            }
+            Debug.Log(Name + ": " + Experience + ", " + Level);
+        }
     }
 }

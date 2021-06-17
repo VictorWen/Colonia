@@ -15,7 +15,7 @@ namespace Tiles
 
         private int spawnPoints;
         private int spawnThreshold;
-        private int spawnLimit = 3;
+        private int spawnLimit = 2;
 
         private HashSet<UnitEntity> spawned;
 

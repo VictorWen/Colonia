@@ -25,12 +25,17 @@
 - [ ] Basic Construction
 - [ ] Redesign of Population mechanic
 - [X] City vision
-- [ ] Level up
+- [X] Level up
+- [ ] Classes
+- [ ] Skill Unlocking
 - [ ] Equipment
 - [ ] Loot
+- [ ] Enemy target cities
+- [ ] Unit Fortify and Resting
 
 ## Turn Ten to Twenty-Five
 - [ ] Crafting
+- [ ] NPC Clans
 
 ## Combat
 - [X] Basic AI

@@ -46,6 +46,10 @@ namespace Units.Combat
         [SerializeField] private int magic = 10;
         [SerializeField] private int resistance = 3;
 
+        [Header("Experience")]
+        [SerializeField] private int baseExpDrop = 100;
+        [SerializeField] private float proficienyAdvantage = 0.20f;
+
         public event Action OnAttack;
 
         public int Mana { get { return mana; } }
@@ -54,6 +58,8 @@ namespace Units.Combat
         public int Piercing { get { return piercing; } }
         public int Magic { get { return magic; } }
         public bool CanAttack { get; private set; }
+
+        public float BaseExperienceDrop { get { return baseExpDrop; } }
 
         public List<string> Abilities { get; private set; }
 
@@ -71,6 +77,8 @@ namespace Units.Combat
             Abilities = new List<string>();
 
             CanAttack = true;
+
+            Unit.OnDeath += DistributeExperienceOnDeath;
         }
 
         public UnitEntityCombat(UnitEntity unit, IWorld world, IUnitEntityMovement movement, UnitEntityCombatData data) : this(unit, world, movement)
@@ -119,12 +127,34 @@ namespace Units.Combat
 
             float combatModifier = world.GetCombatModifierAt(Unit.Position);
 
-            int damage;
+            float damage;
             if (isPhysicalDamage)
                 damage = CalculatePhysicalDamage((int)baseDamage, attacker, combatModifier);
             else
                 damage = CalculateMagicalDamage(baseDamage, combatModifier);
-            Unit.Damage(damage);
+
+            int levelDiff = attacker.Unit.Level - Unit.Level;
+            float proficienyMultiplier = 1 + levelDiff * proficienyAdvantage;
+            damage *= proficienyMultiplier;
+
+            Unit.Damage((int)damage);
+        }
+
+        private void DistributeExperienceOnDeath()
+        {
+            const int DISTRIBUTION_RADIUS = 7;
+
+            foreach (Vector3Int position in world.GetTilesInRange(Unit.Position, DISTRIBUTION_RADIUS)) {
+                UnitEntity unitAt = world.UnitManager.GetUnitAt<UnitEntity>(position);
+                if (unitAt != null && unitAt.Combat.IsEnemy(this))
+                    unitAt.Combat.GainExperience(Unit);
+            }
+        }
+
+        public void GainExperience(UnitEntity fallen)
+        {
+            float gainMultiplier = Mathf.Pow(1.5f, fallen.Level - Unit.Level);
+            Unit.AddExperience((int)(gainMultiplier * fallen.Combat.BaseExperienceDrop));
         }
 
         public HashSet<Vector3Int> GetAttackables()
@@ -163,10 +193,9 @@ namespace Units.Combat
                 Debug.LogError(Unit.Name + " overused mana, cost: " + manaCost);
         }
 
-        private int CalculatePhysicalDamage(int damage, IUnitEntityCombat attacker, float combatModifier)
+        private float CalculatePhysicalDamage(float damage, IUnitEntityCombat attacker, float combatModifier)
         {
-            damage -= defence;
-            return (int) ((Mathf.Max(damage, 0) + attacker.Piercing) / combatModifier);
+            return (Mathf.Max(damage - defence, 0) + attacker.Piercing) / combatModifier;
 
             //float reduction = Mathf.Max(0, combatModifier * (defence - attacker.Piercing));
             //reduction *= (float)combatModifier * defence / (attacker.Piercing + 1);
@@ -174,11 +203,10 @@ namespace Units.Combat
             //return damage;
         }
 
-        private int CalculateMagicalDamage(float baseDamage, float combatModifier)
+        private float CalculateMagicalDamage(float damage, float combatModifier)
         {
             float reduction = combatModifier * resistance;
-            int damage = (int)(baseDamage - reduction);
-            return damage; 
+            return damage - reduction; 
         }
     }
 }

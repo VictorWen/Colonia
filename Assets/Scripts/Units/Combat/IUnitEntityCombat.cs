@@ -12,6 +12,8 @@ namespace Units.Combat
         int Attack { get; }
         int Piercing { get; }
         int Magic { get; }
+        float BaseExperienceDrop { get; }
+
         bool CanAttack { get; }
         UnitEntity Unit { get; }
 
@@ -26,6 +28,8 @@ namespace Units.Combat
         void BasicAttackOnPosition(Vector3Int position);
 
         void DealDamage(float baseDamage, IUnitEntityCombat attacker, bool isPhysicalDamage = true);
+
+        void GainExperience(UnitEntity fallen);
 
         bool IsEnemy(IUnitEntityCombat other);
 
