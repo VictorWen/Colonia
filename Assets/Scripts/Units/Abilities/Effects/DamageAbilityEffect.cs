@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using Tiles;
+using UnityEngine;
 
 namespace Units.Abilities
 {
     public class DamageAbilityEffect : AbilityEffect
     {
-        private readonly int baseDamage;
-        private readonly bool isPhysicalDamage;
-        private readonly float attackMultiplier;
+        public override string EffectTypeName { get { return "Damage Effect"; } }
+
+        [SerializeField] private int baseDamage;
+        [SerializeField] private bool isPhysicalDamage;
+        [SerializeField] private float attackMultiplier = 1;
+
+        public DamageAbilityEffect() { }
 
         public DamageAbilityEffect(int baseDamage, bool isPhysicalDamage, float attackMultiplier = 1f)
         {
