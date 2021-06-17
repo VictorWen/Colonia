@@ -10,7 +10,7 @@ namespace Units.Abilities
         public override string EffectTypeName { get { return "Damage Effect"; } }
 
         [SerializeField] private int baseDamage;
-        [SerializeField] private bool isPhysicalDamage;
+        [SerializeField] private bool isPhysicalDamage = true;
         [SerializeField] private float attackMultiplier = 1;
 
         public DamageAbilityEffect() { }

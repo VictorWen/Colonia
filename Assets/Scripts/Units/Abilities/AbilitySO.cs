@@ -3,20 +3,28 @@ using System.Collections.Generic;
 
 namespace Units.Abilities
 {
-    [CreateAssetMenu(fileName = "Ability", menuName = "Abilities/Ability", order = 1)]
+    [CreateAssetMenu(fileName = "abilityID", menuName = "Ability", order = 1)]
     public class AbilitySO : ScriptableObject
     {
-        public string id;
-        public string title;
+        [SerializeField] private string title;
 
-        public int manaCost;
+        [SerializeField] private int manaCost;
 
-        public int range;
-        public bool ignoreLineOfSight;
+        [SerializeField] private int range;
+        [SerializeField] private bool ignoreLineOfSight;
 
-        public bool targetFriends = false;
-        public bool targetEnemies = true;
+        [SerializeField] private bool targetFriends = false;
+        [SerializeField] private bool targetEnemies = true;
 
-        [SerializeReference] public List<AbilityEffect> effects = new List<AbilityEffect>();
+        [SerializeReference] private List<AbilityEffect> effects = new List<AbilityEffect>();
+        [SerializeReference] private AbilityAOE aoe = new HexAbilityAOE();
+
+        public List<AbilityEffect> Effects { get { return effects; } }
+        public AbilityAOE AOE { get { return aoe; } set { aoe = value; } }
+
+        public Ability GetAbility()
+        {
+            return new Ability(name, title, manaCost, range, ignoreLineOfSight, effects.ToArray(), aoe, targetFriends, targetEnemies);
+        }
     }
 }

@@ -6,8 +6,10 @@ using Tiles;
 namespace Units.Abilities
 {
     class HexAbilityAOE : AbilityAOE
-    {
-        private readonly int range;
+    { 
+        [SerializeField] private int range;
+
+        public HexAbilityAOE() { }
 
         public HexAbilityAOE(int range)
         {

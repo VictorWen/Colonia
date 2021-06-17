@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Units.Abilities
 {
     public class AbilitySODictionarySingleton : IAbilityDictionary
     {
         private static AbilitySODictionarySingleton singleInstance;
+        private static Dictionary<string, Ability> abilities;
 
         private AbilitySODictionarySingleton() { }
 
@@ -17,7 +19,15 @@ namespace Units.Abilities
 
         public Ability GetAbility(string id)
         {
-            return null;
+            if (abilities.ContainsKey(id))
+                return abilities[id];
+
+            AbilitySO so = Resources.Load<AbilitySO>("Abilities/" + id);
+            if (so == null)
+                return null;
+            Ability ability = so.GetAbility();
+            abilities.Add(id, ability);
+            return ability;
         }
     }
 }
