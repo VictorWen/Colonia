@@ -48,7 +48,7 @@ namespace Units.Intelligence
             {
                 string id = scores[0].Key;
                 Debug.Log(self.Name + " casting " + id);
-                Ability ability = GlobalAbilityDictionary.GetAbility(id);
+                Ability ability = AbilityDictionarySingleton.Instance.GetAbility(id);
                 self.Combat.CastAbility(ability, targets[id]);
             }
         }
@@ -81,7 +81,7 @@ namespace Units.Intelligence
 
             if (self.Combat.Abilities.Contains("fireball"))
             {
-                Ability fireball = GlobalAbilityDictionary.GetAbility("fireball");
+                Ability fireball = AbilityDictionarySingleton.Instance.GetAbility("fireball");
                 foreach (Vector3Int tile in fireball.GetWithinRange(self, world))
                 {
                     int count = 0;

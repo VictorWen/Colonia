@@ -3,18 +3,13 @@ using UnityEngine;
 
 namespace Units.Abilities
 {
-    public class AbilitySODictionarySingleton : IAbilityDictionary
+    public class AbilitySODictionary : IAbilityDictionary
     {
-        private static AbilitySODictionarySingleton singleInstance;
         private static Dictionary<string, Ability> abilities;
 
-        private AbilitySODictionarySingleton() { }
-
-        public static AbilitySODictionarySingleton GetInstance()
+        public AbilitySODictionary()
         {
-            if (singleInstance == null)
-                singleInstance = new AbilitySODictionarySingleton();
-            return singleInstance;
+            abilities = new Dictionary<string, Ability>();
         }
 
         public Ability GetAbility(string id)

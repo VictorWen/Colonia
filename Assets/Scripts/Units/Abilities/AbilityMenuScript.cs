@@ -36,13 +36,13 @@ namespace Units.Abilities
         public void SelectAbility(string abilityID)
         {
             selectedAbilityID = abilityID;
-            abilityDescriptionText.text = GlobalAbilityDictionary.GetAbility(abilityID).GetDescription();
+            abilityDescriptionText.text = AbilityDictionarySingleton.Instance.GetAbility(abilityID).GetDescription();
         }
 
         public void ConfirmSelection()
         {
             gameObject.SetActive(false);
-            unit.AbilityAction(GlobalAbilityDictionary.GetAbility(selectedAbilityID));
+            unit.AbilityAction(AbilityDictionarySingleton.Instance.GetAbility(selectedAbilityID));
         }
 
         private void ClearButtonLayout()
@@ -62,7 +62,7 @@ namespace Units.Abilities
                 // Fill in information
                 AbilityButton btn = Instantiate(abilityButtonPrefab);
                 btn.SetAbility(id, this);
-                Ability ability = GlobalAbilityDictionary.GetAbility(id);
+                Ability ability = AbilityDictionarySingleton.Instance.GetAbility(id);
                 btn.Title.text = ability.Name;
                 btn.transform.SetParent(abilityListLayout.transform);
 

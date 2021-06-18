@@ -10,27 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6d007f4e6ef9ac845973280383bdd946, type: 3}
-  m_Name: fireball
+  m_Name: abilityID
   m_EditorClassIdentifier: 
-  title: Fireball
-  manaCost: 3
+  title: 
+  manaCost: 0
   range: 0
   ignoreLineOfSight: 0
   targetFriends: 0
   targetEnemies: 1
-  effects:
-  - id: 0
+  effects: []
   aoe:
-    id: 1
+    id: 0
   references:
     version: 1
     00000000:
-      type: {class: DamageAbilityEffect, ns: Units.Abilities, asm: Assembly-CSharp}
-      data:
-        baseDamage: 2
-        isPhysicalDamage: 0
-        attackMultiplier: 1
-    00000001:
       type: {class: HexAbilityAOE, ns: Units.Abilities, asm: Assembly-CSharp}
       data:
         range: 0
