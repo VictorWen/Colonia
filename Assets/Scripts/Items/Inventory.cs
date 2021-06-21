@@ -55,10 +55,21 @@ namespace Items
             }
         }
 
+        public void RemoveZeroCountItems()
+        {
+            for (int i = 0; i < Items.Count; i++)
+            {
+                if (Items[i].Count <= 0)
+                    RemoveItem(i);
+            }
+        }
+
         public void RemoveItem(int index)
         {
             Item item = Items[index];
             Items.Remove(item);
+            if (item.IsStackable)
+                stackableItems.Remove(item.ID);
             currentWeight -= item.Weight;
         }
 

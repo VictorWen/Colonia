@@ -36,6 +36,7 @@ namespace Items
             }
 
             // Fill gridLayout with new Items
+            selectedUnit.Unit.Inventory.RemoveZeroCountItems();
             foreach (Item i in selectedUnit.Unit.Inventory.Items)
             {
                 GameObject itemObject = Instantiate(itemPrefab.gameObject);

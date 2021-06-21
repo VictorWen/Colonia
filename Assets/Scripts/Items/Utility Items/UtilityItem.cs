@@ -30,7 +30,7 @@ namespace Items.UtilityItems
         {
             get
             {
-                return initialValue * (float) Uses / Hardness;
+                return initialValue * Uses / Hardness;
             }
         }
 
