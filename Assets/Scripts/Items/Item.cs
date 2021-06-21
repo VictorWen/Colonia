@@ -8,7 +8,7 @@ namespace Items
 {
     public abstract class Item
     {
-        public string Type { get; private set; }
+        public string TypeName { get; private set; }
         public int Count { get; set; }
         public abstract string Name { get; }
         public abstract int Tier { get; }
@@ -17,17 +17,19 @@ namespace Items
         public abstract float Value { get; }
         public abstract string ID { get; }
 
+        public abstract bool IsStackable { get; }
+
         //TODO: added Item sprite color
 
         public Item(string type, int count = 1)
         {
-            Type = type;
+            TypeName = type;
             Count = count;
         }
 
         public override string ToString()
         {
-            return GetAttributes() + "\n<b>" + Type + "</b>";
+            return GetAttributes() + "\n<b>" + TypeName + "</b>";
         }
 
         public virtual List<ItemAction> GetItemActions()
@@ -43,6 +45,13 @@ namespace Items
             text += "Weight: " + Weight + "\n";
             text += "Value: " + Value + "\n";
             return text;
+        }
+
+        public virtual void AddCount(int add)
+        { 
+            Count += add;
+            if (Count < 0)
+                Count = 0;
         }
     }
 }

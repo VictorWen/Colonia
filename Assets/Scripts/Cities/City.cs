@@ -69,7 +69,7 @@ namespace Cities
 
             //TODO: TEMPORARY POPULATION GROWTH IMPLEMENTATION, REMOVE
             int foodCost = Mathf.RoundToInt(population / 10f);
-            if (game.GlobalInventory.GetResourceCount("food") >= foodCost)
+            if (game.GlobalInventory.GetItemCount("food") >= foodCost)
             {
                 game.GlobalInventory.AddItem(new ResourceItem("food", -foodCost));
                 int delta = Mathf.RoundToInt(population * popGrowthRate);
@@ -119,8 +119,8 @@ namespace Cities
             output += "Working Population: " + workingPop + "\n";
             output += "Wealth: WIP" + "\n";
             output += "<b>Construction Resources</b>\n";
-            output += "Wood: " + game.GlobalInventory.GetResourceCount("wood") + "\n";
-            output += "Stone: " + game.GlobalInventory.GetResourceCount("stone") + "\n";
+            output += "Wood: " + game.GlobalInventory.GetItemCount("wood") + "\n";
+            output += "Stone: " + game.GlobalInventory.GetItemCount("stone") + "\n";
             return output;
         }
     }

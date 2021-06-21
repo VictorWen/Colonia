@@ -12,6 +12,7 @@ namespace Items
         public override float Weight => throw new System.NotImplementedException();
         public override float Value => throw new System.NotImplementedException();
         public override string ID => throw new System.NotImplementedException();
+        public override bool IsStackable => throw new System.NotImplementedException();
 
         public float Durability { get; private set; }
 

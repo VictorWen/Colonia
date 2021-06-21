@@ -5,56 +5,35 @@
 - [ ] Decouple parts of the GUI?
 - [ ] Decouple parts of the GameMaster
 - [ ] Create Unit Tests
+- [X] Serialize Abilities into files
+- [X] Decouple Ability Database from specific implementation
+- [ ] Redesign of Iventory/Items (remove dependecy on Type string checking)
 
-## UnitEntity Post Refactorization
-- [X] Abilities
-- [X] NPC AI
-  - [X] Surveyer
-  - [X] Planner
-  - [X] Extracting certain calculations
-- [X] UnitEntity Inventory
-- [ ] Better Visuals
-
-## Turn Zero
-- [X] World Generation
-- [X] Enemy spawner
-- [X] Starter hero(es) spawn
-- [X] Starter tile improvements
+## Better Visuals?
+- [ ] Improve Ability indicators
 
 ## Turn One to Ten
-- [ ] Basic Construction
-- [ ] Redesign of Population mechanic
 - [X] City vision
 - [X] Level up
-- [ ] Classes
-- [ ] Skill Unlocking
-- [ ] Equipment
-- [ ] Loot
-- [ ] Enemy target cities
 - [ ] Unit Fortify and Resting
-
-## Turn Ten to Twenty-Five
-- [ ] Crafting
-- [ ] NPC Clans
-
-## Combat
-- [X] Basic AI
-- [X] Basic Combat
-- [X] Death
-- [X] Terrain Modifiers
-- [ ] Faction identification
-- [ ] Natural Regen
-- [ ] Status Effects
-- [ ] Spawning
-  - [ ] Fix UnitInfoPanel
-  - [ ] Automatic spawn mechanism
-- [ ] Cleanup UI
-  - [X] Cancel Abilities
-  - [ ] Fix bug when selecting multiple actions at once
-- [ ] More Abilities
 - [ ] Equipment
   - [X] Unit Inventory
   - [X] Utility Items
   - [ ] Weapons
   - [ ] Armor
-- [ ] NPC Drops
+- [ ] Loot
+- [ ] Enemy target cities
+- [ ] Classes
+- [ ] Skill Unlocking
+- [ ] Redesign of Population mechanic
+- [ ] Basic Construction
+
+## Turn Ten to Twenty-Five
+- [ ] Crafting
+- [ ] NPC Clans
+
+## Other
+- [ ] Faction identification
+- [ ] Natural Regen
+- [ ] Status Effects
+- [ ] More Abilities

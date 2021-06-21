@@ -23,6 +23,8 @@ namespace Items.UtilityItems
         private readonly float weight;
         public override float Weight { get { return weight; } }
 
+        public override bool IsStackable { get { return false; } }
+
         private readonly float initialValue;
         public override float Value
         {

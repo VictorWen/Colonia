@@ -13,6 +13,7 @@ namespace Items
         public float Shape { get { return GlobalResourceDictionary.GetResourceData(id).shape; } }
         public override float Weight { get { return GlobalResourceDictionary.GetResourceData(id).weight; } }
         public override float Value { get { return GlobalResourceDictionary.GetResourceData(id).value; } }
+        public override bool IsStackable { get { return true; } }
 
         private readonly string id;
         public override string ID { get { return id; } }

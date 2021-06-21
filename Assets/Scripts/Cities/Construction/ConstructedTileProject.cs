@@ -56,7 +56,7 @@ namespace Cities.Construction
             bool normalCost = true;
             foreach (KeyValuePair<string, int> resource in GetResourceCost(city, game))
             {
-                if (game.GlobalInventory.GetResourceCount(resource.Key) < resource.Value)
+                if (game.GlobalInventory.GetItemCount(resource.Key) < resource.Value)
                 {
                     normalCost = false;
                     break;
@@ -75,7 +75,7 @@ namespace Cities.Construction
                         bool upgradeCost = true;
                         foreach (KeyValuePair<string, int> resource in GetResourceCost(city, game))
                         {
-                            if (game.GlobalInventory.GetResourceCount(resource.Key) < resource.Value)
+                            if (game.GlobalInventory.GetItemCount(resource.Key) < resource.Value)
                             {
                                 upgradeCost = false;
                                 break;

@@ -8,75 +8,75 @@ namespace Items
 {
     public class Inventory
     {
-        public float MaxWeight { get; private set; }
+        private readonly float maxWeight;
+        private float currentWeight;
 
+        private readonly Dictionary<string, Item> stackableItems;
         public List<Item> Items { get; private set; }
 
         public Inventory(float maxWeight)
         {
+            stackableItems = new Dictionary<string, Item>();
             Items = new List<Item>();
-            MaxWeight = maxWeight;
+            this.maxWeight = maxWeight;
+            currentWeight = 0;
         }
 
         // Returns true if successful, false otherwise
-        public bool AddItem(Item i)
+        public bool AddItem(Item item)
         {
-            if (MaxWeight == -1 || GetWeight() + i.Weight <= MaxWeight)
+            if (maxWeight == -1 || currentWeight + item.Weight <= maxWeight)
             {
-                if (i.Type.Equals("Resource") && GetResourceCount(((ResourceItem)i).ID) > 0)
-                {
-                    foreach (Item item in Items)
-                    {
-                        if (item.Type.Equals("Resource") && ((ResourceItem)item).ID.Equals(i.ID))
-                        {
-                            item.Count += i.Count;
-                            if (item.Count <= 0)
-                            {
-                                Items.Remove(item);
-                            }
-                            break;
-                        }
-                    }
-                }
+                if (item.IsStackable)
+                    AddStackableItemToCollections(item);
                 else
-                {
-                    Items.Add(i);
-                }
+                    Items.Add(item);
+                
+                currentWeight += item.Weight;
                 return true;
             }
             return false;
         }
 
-        // Returns true if successful, false otherwise
-        public bool MoveItem(int index, Inventory receiver)
+        private void AddStackableItemToCollections(Item item)
         {
-            if (receiver.AddItem(Items[index]))
+            if (!stackableItems.ContainsKey(item.ID))
             {
-                Items.RemoveAt(index);
-                return true;
+                stackableItems.Add(item.ID, item);
+                Items.Add(item);
             }
-            return false;
+            else
+                stackableItems[item.ID].AddCount(item.Count);
+
+            if (stackableItems[item.ID].Count <= 0)
+            {
+                Items.Remove(stackableItems[item.ID]);
+                stackableItems.Remove(item.ID);
+            }
         }
 
-        public float GetWeight()
+        public void RemoveItem(int index)
         {
-            float sum = 0;
-            foreach (Item i in Items)
-            {
-                sum += i.Weight;
-            }
-            return sum;
+            Item item = Items[index];
+            Items.Remove(item);
+            currentWeight -= item.Weight;
         }
 
-        public int GetResourceCount(string id)
+        public void AddItemCount(string id, int count)
         {
-            foreach (Item i in Items)
+            if (stackableItems.ContainsKey(id))
             {
-                if (i.Type.Equals("Resource") && ((ResourceItem)i).ID.Equals(id))
-                {
-                    return i.Count;
-                }
+                Item item = stackableItems[id];
+                currentWeight -= item.Weight;
+                item.AddCount(count);
+                currentWeight += item.Weight;
             }
+        }
+
+        public int GetItemCount(string id)
+        {
+            if (stackableItems.ContainsKey(id))
+                return stackableItems[id].Count;
             return 0;
         }
 
@@ -94,6 +94,5 @@ namespace Items
         {
             NAME
         }
-
     }
 }
