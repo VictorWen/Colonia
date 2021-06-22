@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Units.Abilities;
+using Items;
 
 namespace Units.Combat
 {
@@ -36,5 +37,13 @@ namespace Units.Combat
         HashSet<Vector3Int> GetAttackables();
 
         string GetStatusDescription();
+
+        /// <summary>
+        /// Equips the EquipmentItem into the appropriate equipment slot
+        /// </summary>
+        /// <param name="equipment">The EquipmentItem to be equipped</param>
+        /// <returns>If the equipment slot which equipment is being equipped into is not empty, 
+        /// returns the slot's occupant. Otherwise, returns null</returns>
+        EquipmentItem EquipItem(EquipmentItem equipment);
     }
 }

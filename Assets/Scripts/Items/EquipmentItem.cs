@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Items.ItemActions;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,13 +17,7 @@ namespace Items
 
         public float Durability { get; private set; }
 
-        // Combat Attributes
-        public float Attack { get; private set; }
-        public float Piercing { get; private set; }
-        public float MagicAttack { get; private set; }
-        public float Armor { get; private set; }
-        public float Defence { get; private set; }
-        public float MagicArmor { get; private set; }
+        Dictionary<CombatAttributeID, int> additives;
 
         public EquipmentItem(ResourceItem[] materials, float level, EquipmentSlotID slot) : base("Equipment")
         {
@@ -34,6 +29,18 @@ namespace Items
         {
             // TODO: Spawn loot equipment
             throw new System.NotImplementedException();
+        }
+
+        public EquipmentItem(Dictionary<CombatAttributeID, int> effects) : base("Equipment")
+        {
+            additives = effects;
+        }
+
+        public override List<ItemAction> GetItemActions()
+        {
+            List<ItemAction> actions = base.GetItemActions();
+            actions.Add(new EquipItemAction(inventory, this));
+            return actions;
         }
     }
 }

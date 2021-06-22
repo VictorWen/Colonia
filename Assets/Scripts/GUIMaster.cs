@@ -65,7 +65,6 @@ public class GUIMaster : MonoBehaviour
 
         Game.PlaceStarterTileImprovements(capital);
         Game.SpawnStarterHeroes();
-
     }
 
     //Called by End Turn Button

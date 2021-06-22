@@ -4,6 +4,7 @@ using Tiles;
 using Units.Abilities;
 using Units.Movement;
 using UnityEngine;
+using Items;
 
 namespace Units.Combat
 {
@@ -51,6 +52,15 @@ namespace Units.Combat
         [SerializeField] private float proficienyAdvantage = 0.20f;
 
         public event Action OnAttack;
+
+        // Equipment Slots
+        EquipmentItem headSlot;
+        EquipmentItem bodySlot;
+        EquipmentItem bootsSlot;
+        EquipmentItem primaryHandSlot;
+        EquipmentItem secondaryHandSlot;
+        EquipmentItem amuletSlot;
+        EquipmentItem artifactSlot;
 
         public int Mana { get { return mana; } }
 
@@ -138,6 +148,12 @@ namespace Units.Combat
             damage *= proficienyMultiplier;
 
             Unit.Damage((int)damage);
+        }
+
+        public EquipmentItem EquipItem(EquipmentItem equipment)
+        {
+            Debug.Log(Unit.Name + " equipping: " + equipment.ToString());
+            return null;
         }
 
         private void DistributeExperienceOnDeath()

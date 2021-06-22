@@ -32,7 +32,7 @@ namespace Items
                 else
                     Items.Add(item);
 
-                item.AttachInventory(this);
+                item.AttachInventoryListener(this);
                 currentWeight += item.Weight;
                 return true;
             }
@@ -82,7 +82,7 @@ namespace Items
             Items.Remove(item);
             if (item.IsStackable)
                 stackableItems.Remove(item.ID);
-            item.AttachInventory(null);
+            item.AttachInventoryListener(null);
             currentWeight -= item.Weight;
         }
 
@@ -95,6 +95,11 @@ namespace Items
                 item.AddCount(count);
                 currentWeight += item.Weight;
             }
+        }
+
+        public bool ContainsItem(Item item)
+        {
+            return Items.Contains(item);
         }
 
         public int GetItemCount(string id)

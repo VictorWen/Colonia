@@ -6,6 +6,6 @@ namespace Items
 {
     public enum EquipmentSlotID
     {
-        HEAD, CHEST, LEGS, FEET, ONE_HANDED, TWO_HANDED, RING
+        HEAD, BODY, FEET, ONE_HANDED, TWO_HANDED, RING
     }
 }

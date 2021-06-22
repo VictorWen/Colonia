@@ -9,7 +9,7 @@ namespace Items
     public abstract class Item
     {
         public string TypeName { get; private set; }
-        public int Count { get; set; }
+        public int Count { get; private set; }
         public abstract string Name { get; }
         public abstract int Tier { get; }
         public abstract float Hardness { get; }
@@ -19,7 +19,7 @@ namespace Items
 
         public abstract bool IsStackable { get; }
 
-        private Inventory inventory;
+        protected Inventory inventory;
 
         //TODO: added Item sprite color
 
@@ -29,9 +29,12 @@ namespace Items
             Count = count;
         }
 
-        public void AttachInventory(Inventory inventory)
+        public void AttachInventoryListener(Inventory inventory)
         {
-            this.inventory.RemoveItem(this);
+            if (!inventory.ContainsItem(this))
+                return;
+            if (this.inventory != null)
+                this.inventory.RemoveItem(this);
             this.inventory = inventory;
         }
 

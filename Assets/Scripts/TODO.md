@@ -7,7 +7,8 @@
 - [ ] Create Unit Tests
 - [X] Serialize Abilities into files
 - [X] Decouple Ability Database from specific implementation
-- [ ] Redesign of Iventory/Items (remove dependecy on Type string checking)
+- [X] Redesign of Iventory/Items (remove dependecy on Type string checking)
+- [ ] Decouple PlayerUnitEntityController from ItemActions
 
 ## Better Visuals?
 - [ ] Improve Ability indicators
