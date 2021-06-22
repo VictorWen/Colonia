@@ -19,12 +19,20 @@ namespace Items
 
         public abstract bool IsStackable { get; }
 
+        private Inventory inventory;
+
         //TODO: added Item sprite color
 
         public Item(string type, int count = 1)
         {
             TypeName = type;
             Count = count;
+        }
+
+        public void AttachInventory(Inventory inventory)
+        {
+            this.inventory.RemoveItem(this);
+            this.inventory = inventory;
         }
 
         public override string ToString()
@@ -52,6 +60,13 @@ namespace Items
             Count += add;
             if (Count < 0)
                 Count = 0;
+            UpdateInventory();
+        }
+
+        protected virtual void UpdateInventory()
+        {
+            if (inventory != null)
+                inventory.UpdateItem(this);
         }
     }
 }

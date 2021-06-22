@@ -58,7 +58,8 @@ namespace Items.UtilityItems
             {
                 Count--;
                 if (Count > 0)
-                    Uses = (int) hardness;
+                    Uses = (int)hardness;
+                UpdateInventory();
             }
         }
 

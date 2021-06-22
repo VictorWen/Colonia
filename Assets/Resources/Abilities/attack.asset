@@ -10,20 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6d007f4e6ef9ac845973280383bdd946, type: 3}
-  m_Name: abilityID
+  m_Name: attack
   m_EditorClassIdentifier: 
-  title: 
-  manaCost: 0
-  range: 0
-  ignoreLineOfSight: 0
+  title: Basic Melee Attack
+  manaCost: 1
+  range: 1
+  ignoreLineOfSight: 1
   targetFriends: 0
   targetEnemies: 1
-  effects: []
+  effects:
+  - id: 0
   aoe:
-    id: 0
+    id: 1
   references:
     version: 1
     00000000:
+      type: {class: DamageAbilityEffect, ns: Units.Abilities, asm: Assembly-CSharp}
+      data:
+        baseDamage: 0
+        isPhysicalDamage: 1
+        attackMultiplier: 1
+    00000001:
       type: {class: HexAbilityAOE, ns: Units.Abilities, asm: Assembly-CSharp}
       data:
         range: 0

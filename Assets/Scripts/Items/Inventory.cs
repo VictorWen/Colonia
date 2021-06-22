@@ -31,7 +31,8 @@ namespace Items
                     AddStackableItemToCollections(item);
                 else
                     Items.Add(item);
-                
+
+                item.AttachInventory(this);
                 currentWeight += item.Weight;
                 return true;
             }
@@ -64,12 +65,24 @@ namespace Items
             }
         }
 
+        public void UpdateItem(Item item)
+        {
+            if (item.Count <= 0)
+                RemoveItem(item);
+        }
+
         public void RemoveItem(int index)
         {
             Item item = Items[index];
+            RemoveItem(item);
+        }
+
+        public void RemoveItem(Item item)
+        {
             Items.Remove(item);
             if (item.IsStackable)
                 stackableItems.Remove(item.ID);
+            item.AttachInventory(null);
             currentWeight -= item.Weight;
         }
 
