@@ -53,8 +53,7 @@ namespace Units.Combat
 
         public event Action OnAttack;
 
-        // Equipment Slots
-        private Dictionary<UnitEntityEquipmentSlotID, EquipmentItem> equipmentSlots;
+        private readonly CombatEquipmentManager equipmentManager;
 
         public int Mana { get { return mana; } }
 
@@ -62,7 +61,7 @@ namespace Units.Combat
         { 
             get 
             {
-                return attack + CalculateEquipmentAttribute(CombatAttributeID.ATTACK); 
+                return attack + equipmentManager.CalculateEquipmentAttribute(CombatAttributeID.ATTACK); 
             } 
         }
         public int Piercing { get { return piercing; } }
@@ -90,11 +89,7 @@ namespace Units.Combat
 
             Unit.OnDeath += DistributeExperienceOnDeath;
 
-            equipmentSlots = new Dictionary<UnitEntityEquipmentSlotID, EquipmentItem>();
-            foreach (UnitEntityEquipmentSlotID id in Enum.GetValues(typeof(UnitEntityEquipmentSlotID)))
-            {
-                equipmentSlots.Add(id, null);
-            }
+            equipmentManager = new CombatEquipmentManager(unit.Inventory);
         }
 
         public UnitEntityCombat(UnitEntity unit, IWorld world, IUnitEntityMovement movement, UnitEntityCombatData data) : this(unit, world, movement)
@@ -158,49 +153,7 @@ namespace Units.Combat
 
         public void EquipItem(EquipmentItem equipment)
         {
-            switch (equipment.EquipmentType)
-            {
-                case EquipmentTypeID.HELMET:
-                    EquipEquipmentIntoSlot(equipment, UnitEntityEquipmentSlotID.HEAD);
-                    break;
-                case EquipmentTypeID.BODY_ARMOR:
-                    EquipEquipmentIntoSlot(equipment, UnitEntityEquipmentSlotID.BODY);
-                    break;
-                case EquipmentTypeID.BOOTS:
-                    EquipEquipmentIntoSlot(equipment, UnitEntityEquipmentSlotID.BOOTS);
-                    break;
-                case EquipmentTypeID.ARTIFACT:
-                    EquipEquipmentIntoSlot(equipment, UnitEntityEquipmentSlotID.ARTIFACT);
-                    break;
-                case EquipmentTypeID.ONE_HANDED:
-                    if (equipmentSlots[UnitEntityEquipmentSlotID.WEAPON1] != null &&
-                        equipmentSlots[UnitEntityEquipmentSlotID.WEAPON2] == null)
-                        equipmentSlots[UnitEntityEquipmentSlotID.WEAPON2] = equipment;
-                    else
-                        EquipEquipmentIntoSlot(equipment, UnitEntityEquipmentSlotID.WEAPON1);
-                    break;
-                case EquipmentTypeID.TWO_HANDED:
-                    EquipEquipmentIntoSlot(equipment, UnitEntityEquipmentSlotID.WEAPON1);
-                    EquipEquipmentIntoSlot(equipment, UnitEntityEquipmentSlotID.WEAPON2);
-                    break;
-            }
-        }
-
-        private void EquipEquipmentIntoSlot(EquipmentItem equipment, UnitEntityEquipmentSlotID slot)
-        {
-            UnequipEquipmentSlot(slot);
-            equipmentSlots[slot] = equipment;
-        }
-
-        private void UnequipEquipmentSlot(UnitEntityEquipmentSlotID slot)
-        {
-            EquipmentItem equipment = equipmentSlots[slot];
-            if (equipment == null)
-                return;
-            Unit.Inventory.AddItem(equipment);
-            equipmentSlots[slot] = null;
-            if (equipment.EquipmentType == EquipmentTypeID.TWO_HANDED)
-                equipmentSlots[UnitEntityEquipmentSlotID.WEAPON2] = null;
+            equipmentManager.EquipEquipmentItem(equipment);
         }
 
         private void DistributeExperienceOnDeath()
@@ -270,17 +223,6 @@ namespace Units.Combat
         {
             float reduction = combatModifier * resistance;
             return damage - reduction; 
-        }
-
-        private int CalculateEquipmentAttribute(CombatAttributeID attribute)
-        {
-            int sum = 0;
-            foreach (EquipmentItem equipment in equipmentSlots.Values)
-            {
-                if (equipment != null && equipment.Additives.ContainsKey(attribute))
-                    sum += equipment.Additives[attribute];
-            }
-            return sum;
         }
     }
 }
