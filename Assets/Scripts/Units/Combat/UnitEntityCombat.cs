@@ -54,13 +54,7 @@ namespace Units.Combat
         public event Action OnAttack;
 
         // Equipment Slots
-        EquipmentItem headSlot;
-        EquipmentItem bodySlot;
-        EquipmentItem bootsSlot;
-        EquipmentItem primaryHandSlot;
-        EquipmentItem secondaryHandSlot;
-        EquipmentItem amuletSlot;
-        EquipmentItem artifactSlot;
+        private Dictionary<UnitEntityEquipmentSlotID, EquipmentItem> equipmentSlots;
 
         public int Mana { get { return mana; } }
 
@@ -68,10 +62,7 @@ namespace Units.Combat
         { 
             get 
             {
-                int additional = 0;
-                if (headSlot != null && headSlot.Additives.ContainsKey(CombatAttributeID.ATTACK))
-                    additional += headSlot.Additives[CombatAttributeID.ATTACK];
-                return attack + additional; 
+                return attack + CalculateEquipmentAttribute(CombatAttributeID.ATTACK); 
             } 
         }
         public int Piercing { get { return piercing; } }
@@ -98,6 +89,12 @@ namespace Units.Combat
             CanAttack = true;
 
             Unit.OnDeath += DistributeExperienceOnDeath;
+
+            equipmentSlots = new Dictionary<UnitEntityEquipmentSlotID, EquipmentItem>();
+            foreach (UnitEntityEquipmentSlotID id in Enum.GetValues(typeof(UnitEntityEquipmentSlotID)))
+            {
+                equipmentSlots.Add(id, null);
+            }
         }
 
         public UnitEntityCombat(UnitEntity unit, IWorld world, IUnitEntityMovement movement, UnitEntityCombatData data) : this(unit, world, movement)
@@ -162,8 +159,8 @@ namespace Units.Combat
         public EquipmentItem EquipItem(EquipmentItem equipment)
         {
             Debug.Log(Unit.Name + " equipping: " + equipment.ToString());
-            EquipmentItem oldSlot = headSlot;
-            headSlot = equipment;
+            EquipmentItem oldSlot = equipmentSlots[UnitEntityEquipmentSlotID.HEAD];
+            equipmentSlots[UnitEntityEquipmentSlotID.HEAD] = equipment;
             return oldSlot;
         }
 
@@ -234,6 +231,17 @@ namespace Units.Combat
         {
             float reduction = combatModifier * resistance;
             return damage - reduction; 
+        }
+
+        private int CalculateEquipmentAttribute(CombatAttributeID attribute)
+        {
+            int sum = 0;
+            foreach (EquipmentItem equipment in equipmentSlots.Values)
+            {
+                if (equipment != null && equipment.Additives.ContainsKey(attribute))
+                    sum += equipment.Additives[attribute];
+            }
+            return sum;
         }
     }
 }
