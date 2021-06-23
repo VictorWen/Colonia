@@ -64,7 +64,16 @@ namespace Units.Combat
 
         public int Mana { get { return mana; } }
 
-        public int Attack { get { return attack; } }
+        public int Attack 
+        { 
+            get 
+            {
+                int additional = 0;
+                if (headSlot != null && headSlot.Additives.ContainsKey(CombatAttributeID.ATTACK))
+                    additional += headSlot.Additives[CombatAttributeID.ATTACK];
+                return attack + additional; 
+            } 
+        }
         public int Piercing { get { return piercing; } }
         public int Magic { get { return magic; } }
         public bool CanAttack { get; private set; }
@@ -153,7 +162,9 @@ namespace Units.Combat
         public EquipmentItem EquipItem(EquipmentItem equipment)
         {
             Debug.Log(Unit.Name + " equipping: " + equipment.ToString());
-            return null;
+            EquipmentItem oldSlot = headSlot;
+            headSlot = equipment;
+            return oldSlot;
         }
 
         private void DistributeExperienceOnDeath()

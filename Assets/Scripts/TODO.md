@@ -16,6 +16,7 @@
 ## Turn One to Ten
 - [X] City vision
 - [X] Level up
+- [ ] Display Level and EXP
 - [ ] Unit Fortify and Resting
 - [ ] Equipment
   - [X] Unit Inventory

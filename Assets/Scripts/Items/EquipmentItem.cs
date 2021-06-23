@@ -7,17 +7,17 @@ namespace Items
 {
     public class EquipmentItem : Item
     {
-        public override string Name => throw new System.NotImplementedException();
-        public override int Tier => throw new System.NotImplementedException();
-        public override float Hardness => throw new System.NotImplementedException(); //Max Durability
-        public override float Weight => throw new System.NotImplementedException();
-        public override float Value => throw new System.NotImplementedException();
-        public override string ID => throw new System.NotImplementedException();
-        public override bool IsStackable => throw new System.NotImplementedException();
+        public override string Name { get; }
+        public override int Tier { get; }
+        public override float Hardness { get; } //Max Durability
+        public override float Weight { get; }
+        public override float Value { get; }
+        public override string ID { get; }
+        public override bool IsStackable { get { return false; } }
 
         public float Durability { get; private set; }
 
-        Dictionary<CombatAttributeID, int> additives;
+        public Dictionary<CombatAttributeID, int> Additives { get; private set; }
 
         public EquipmentItem(ResourceItem[] materials, float level, EquipmentSlotID slot) : base("Equipment")
         {
@@ -25,15 +25,15 @@ namespace Items
             throw new System.NotImplementedException();
         }
 
-        public EquipmentItem() : base("Equipment")
-        {
-            // TODO: Spawn loot equipment
-            throw new System.NotImplementedException();
-        }
-
         public EquipmentItem(Dictionary<CombatAttributeID, int> effects) : base("Equipment")
         {
-            additives = effects;
+            Name = "TEST EQUIPMENT PLACEHOLDER NAME";
+            Tier = 1;
+            Hardness = 1;
+            Weight = 1;
+            Value = 1;
+            ID = "test_equipment";
+            Additives = effects;
         }
 
         public override List<ItemAction> GetItemActions()

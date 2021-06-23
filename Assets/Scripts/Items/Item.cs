@@ -31,10 +31,8 @@ namespace Items
 
         public void AttachInventoryListener(Inventory inventory)
         {
-            if (!inventory.ContainsItem(this))
+            if (inventory != null && !inventory.ContainsItem(this))
                 return;
-            if (this.inventory != null)
-                this.inventory.RemoveItem(this);
             this.inventory = inventory;
         }
 

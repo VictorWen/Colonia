@@ -5,6 +5,7 @@ using Tiles;
 using Units.Movement;
 using Units.Combat;
 using Items;
+using Items.UtilityItems;
 
 namespace Units
 {
@@ -72,9 +73,11 @@ namespace Units
             inventory = new Inventory(100); //TODO: placeholder UnitEntity inventory weight
 
             // TODO: placeholder UnitEntity initialization
-            inventory.AddItem(new Items.UtilityItems.UtilityItem("health_potion", "Health Potion", 1, 1, 1, "Potion", 1, 0, new Abilities.AbilityEffect[] {
+            inventory.AddItem(new UtilityItem("health_potion", "Health Potion", 1, 1, 1, "Potion", 1, 0, new Abilities.AbilityEffect[] {
                 new Abilities.HealAbilityEffect(10)
             }, new Abilities.HexAbilityAOE(0), true, false));
+
+            inventory.AddItem(new EquipmentItem(new Dictionary<CombatAttributeID, int>() { { CombatAttributeID.ATTACK, 100 } }));
 
             Visibles = new HashSet<Vector3Int>();
             UpdateVision();
@@ -154,7 +157,6 @@ namespace Units
                 Level++;
                 Experience -= 10;
             }
-            Debug.Log(Name + ": " + Experience + ", " + Level);
         }
     }
 }
