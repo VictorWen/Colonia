@@ -44,6 +44,6 @@ namespace Units.Combat
         /// <param name="equipment">The EquipmentItem to be equipped</param>
         /// <returns>If the equipment slot which equipment is being equipped into is not empty, 
         /// returns the slot's occupant. Otherwise, returns null</returns>
-        EquipmentItem EquipItem(EquipmentItem equipment);
+        void EquipItem(EquipmentItem equipment);
     }
 }

@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Items
 {
-    public enum EquipmentSlotID
+    public enum EquipmentTypeID
     {
-        HEAD, BODY, FEET, ONE_HANDED, TWO_HANDED, RING
+        HELMET, BODY_ARMOR, BOOTS, ONE_HANDED, TWO_HANDED, ARTIFACT
     }
 }

@@ -15,17 +15,19 @@ namespace Items
         public override string ID { get; }
         public override bool IsStackable { get { return false; } }
 
+        public EquipmentTypeID EquipmentType { get; protected set; }
+
         public float Durability { get; private set; }
 
         public Dictionary<CombatAttributeID, int> Additives { get; private set; }
 
-        public EquipmentItem(ResourceItem[] materials, float level, EquipmentSlotID slot) : base("Equipment")
+        public EquipmentItem(ResourceItem[] materials, float level, EquipmentTypeID slot) : base("Equipment")
         {
             // TODO: Craft equipment
             throw new System.NotImplementedException();
         }
 
-        public EquipmentItem(Dictionary<CombatAttributeID, int> effects) : base("Equipment")
+        public EquipmentItem(Dictionary<CombatAttributeID, int> effects, EquipmentTypeID slot) : base("Equipment")
         {
             Name = "TEST EQUIPMENT PLACEHOLDER NAME";
             Tier = 1;
@@ -34,6 +36,8 @@ namespace Items
             Value = 1;
             ID = "test_equipment";
             Additives = effects;
+
+            EquipmentType = slot;
         }
 
         public override List<ItemAction> GetItemActions()

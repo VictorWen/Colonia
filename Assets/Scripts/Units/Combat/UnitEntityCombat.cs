@@ -156,12 +156,51 @@ namespace Units.Combat
             Unit.Damage((int)damage);
         }
 
-        public EquipmentItem EquipItem(EquipmentItem equipment)
+        public void EquipItem(EquipmentItem equipment)
         {
-            Debug.Log(Unit.Name + " equipping: " + equipment.ToString());
-            EquipmentItem oldSlot = equipmentSlots[UnitEntityEquipmentSlotID.HEAD];
-            equipmentSlots[UnitEntityEquipmentSlotID.HEAD] = equipment;
-            return oldSlot;
+            switch (equipment.EquipmentType)
+            {
+                case EquipmentTypeID.HELMET:
+                    EquipEquipmentIntoSlot(equipment, UnitEntityEquipmentSlotID.HEAD);
+                    break;
+                case EquipmentTypeID.BODY_ARMOR:
+                    EquipEquipmentIntoSlot(equipment, UnitEntityEquipmentSlotID.BODY);
+                    break;
+                case EquipmentTypeID.BOOTS:
+                    EquipEquipmentIntoSlot(equipment, UnitEntityEquipmentSlotID.BOOTS);
+                    break;
+                case EquipmentTypeID.ARTIFACT:
+                    EquipEquipmentIntoSlot(equipment, UnitEntityEquipmentSlotID.ARTIFACT);
+                    break;
+                case EquipmentTypeID.ONE_HANDED:
+                    if (equipmentSlots[UnitEntityEquipmentSlotID.WEAPON1] != null &&
+                        equipmentSlots[UnitEntityEquipmentSlotID.WEAPON2] == null)
+                        equipmentSlots[UnitEntityEquipmentSlotID.WEAPON2] = equipment;
+                    else
+                        EquipEquipmentIntoSlot(equipment, UnitEntityEquipmentSlotID.WEAPON1);
+                    break;
+                case EquipmentTypeID.TWO_HANDED:
+                    EquipEquipmentIntoSlot(equipment, UnitEntityEquipmentSlotID.WEAPON1);
+                    EquipEquipmentIntoSlot(equipment, UnitEntityEquipmentSlotID.WEAPON2);
+                    break;
+            }
+        }
+
+        private void EquipEquipmentIntoSlot(EquipmentItem equipment, UnitEntityEquipmentSlotID slot)
+        {
+            UnequipEquipmentSlot(slot);
+            equipmentSlots[slot] = equipment;
+        }
+
+        private void UnequipEquipmentSlot(UnitEntityEquipmentSlotID slot)
+        {
+            EquipmentItem equipment = equipmentSlots[slot];
+            if (equipment == null)
+                return;
+            Unit.Inventory.AddItem(equipment);
+            equipmentSlots[slot] = null;
+            if (equipment.EquipmentType == EquipmentTypeID.TWO_HANDED)
+                equipmentSlots[UnitEntityEquipmentSlotID.WEAPON2] = null;
         }
 
         private void DistributeExperienceOnDeath()

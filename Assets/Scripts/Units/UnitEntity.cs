@@ -77,7 +77,7 @@ namespace Units
                 new Abilities.HealAbilityEffect(10)
             }, new Abilities.HexAbilityAOE(0), true, false));
 
-            inventory.AddItem(new EquipmentItem(new Dictionary<CombatAttributeID, int>() { { CombatAttributeID.ATTACK, 100 } }));
+            inventory.AddItem(new EquipmentItem(new Dictionary<CombatAttributeID, int>() { { CombatAttributeID.ATTACK, 100 } }, EquipmentTypeID.HELMET));
 
             Visibles = new HashSet<Vector3Int>();
             UpdateVision();

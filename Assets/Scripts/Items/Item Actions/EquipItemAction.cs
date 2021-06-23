@@ -23,9 +23,7 @@ namespace Items.ItemActions
         public override void Action(PlayerUnitEntityController actor)
         {
             inventory.RemoveItem(equipment);
-            EquipmentItem previousEquipment = actor.Unit.Combat.EquipItem(equipment);
-            if (previousEquipment != null)
-                inventory.AddItem(previousEquipment);
+            actor.Unit.Combat.EquipItem(equipment);
         }
     }
 }
