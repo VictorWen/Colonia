@@ -160,6 +160,11 @@ namespace Units.Combat
             equipmentManager.EquipEquipmentItem(equipment);
         }
 
+        public void UnequipItem(EquipmentItem equipment)
+        {
+            equipmentManager.UnequipEquipmentItem(equipment);
+        }
+
         private void DistributeExperienceOnDeath()
         {
             const int DISTRIBUTION_RADIUS = 7;

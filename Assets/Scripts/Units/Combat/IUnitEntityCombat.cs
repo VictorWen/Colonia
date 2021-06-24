@@ -40,6 +40,8 @@ namespace Units.Combat
 
         void EquipItem(EquipmentItem equipment);
 
+        void UnequipItem(EquipmentItem equipment);
+
         Dictionary<UnitEntityEquipmentSlotID, EquipmentItem> Equipment { get; }
     }
 }

@@ -41,15 +41,22 @@ namespace Units.Combat
         public void UnequipEquipmentFromSlot(UnitEntityEquipmentSlotID slotID)
         {
             EquipmentItem equipment = EquipmentSlots[slotID];
-            equipment.SlotEquipper.Unequip(this);
-            equipped.Remove(equipment);
-            inventory.AddItem(equipment);
+            UnequipEquipmentItem(equipment);
         }
 
         public void EquipEquipmentItem(EquipmentItem equipment)
         {
             equipment.SlotEquipper.Equip(equipment, this);
             equipped.Add(equipment);
+        }
+
+        public void UnequipEquipmentItem(EquipmentItem equipment)
+        {
+            if (!equipped.Contains(equipment))
+                return;
+            equipment.SlotEquipper.Unequip(this);
+            equipped.Remove(equipment);
+            inventory.AddItem(equipment);
         }
 
         public int CalculateEquipmentAttribute(CombatAttributeID attribute)

@@ -43,7 +43,10 @@ namespace Items.EquipmentItems
         public override List<ItemAction> GetItemActions()
         {
             List<ItemAction> actions = base.GetItemActions();
-            actions.Add(new EquipItemAction(inventory, this));
+            if (inventory == null)
+                actions.Add(new UnequipItemAction(true, this));
+            else
+                actions.Add(new EquipItemAction(inventory, this));
             return actions;
         }
     }

@@ -26,7 +26,8 @@
   - [X] Unit Inventory
   - [X] Utility Items
   - [X] Weapons & Armor
-  - [ ] Visual
+  - [X] Visual
+  - [ ] Unequip ItemAction
 - [ ] Loot
 - [ ] Enemy target cities
 - [ ] Classes

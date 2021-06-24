@@ -8,7 +8,7 @@ namespace Items.EquipmentItems
 
         void Equip(EquipmentItem equipment, CombatEquipmentManager manager);
 
-        void Unequip(CombatEquipmentManager manage);
+        void Unequip(CombatEquipmentManager manager);
     }
 
     /// <summary>
