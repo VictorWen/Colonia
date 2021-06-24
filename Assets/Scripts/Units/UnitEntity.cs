@@ -6,6 +6,7 @@ using Units.Movement;
 using Units.Combat;
 using Items;
 using Items.UtilityItems;
+using Items.EquipmentItems;
 
 namespace Units
 {
@@ -69,19 +70,34 @@ namespace Units
             IsPlayerControlled = isPlayerControlled;
 
             movement = new UnitEntityMovement(this, world, movementSpeed);
-            combat = new UnitEntityCombat(this, world, movement, combatData);
             inventory = new Inventory(100); //TODO: placeholder UnitEntity inventory weight
 
-            // TODO: placeholder UnitEntity initialization
+            // TODO: placeholder UnitEntity inventory initialization
             inventory.AddItem(new UtilityItem("health_potion", "Health Potion", 1, 1, 1, "Potion", 1, 0, new Abilities.AbilityEffect[] {
                 new Abilities.HealAbilityEffect(10)
             }, new Abilities.HexAbilityAOE(0), true, false));
 
-            inventory.AddItem(new EquipmentItem(new Dictionary<CombatAttributeID, int>() { { CombatAttributeID.ATTACK, 100 } }, EquipmentTypeID.HELMET));
+            inventory.AddItem(new EquipmentItem("Test Helment +100", new Dictionary<CombatAttributeID, int>() { { CombatAttributeID.ATTACK, 100 } }, 
+                new SingleSlotEquipper(UnitEntityEquipmentSlotID.HEAD)));
+            inventory.AddItem(new EquipmentItem("Test Helment +2,000", new Dictionary<CombatAttributeID, int>() { { CombatAttributeID.ATTACK, 2000 } },
+                new SingleSlotEquipper(UnitEntityEquipmentSlotID.HEAD)));
+            inventory.AddItem(new EquipmentItem("Test Two-hander -1,000", new Dictionary<CombatAttributeID, int>() { { CombatAttributeID.ATTACK, -1000 } },
+                new AllSlotEquipper(new SlotEquipper[] {
+                    new SingleSlotEquipper(UnitEntityEquipmentSlotID.WEAPON1),
+                    new SingleSlotEquipper(UnitEntityEquipmentSlotID.WEAPON2)
+                })));
+            inventory.AddItem(new EquipmentItem("Test Two-hander -10,000", new Dictionary<CombatAttributeID, int>() { { CombatAttributeID.ATTACK, -10000 } },
+                new AllSlotEquipper(new SlotEquipper[] {
+                    new SingleSlotEquipper(UnitEntityEquipmentSlotID.WEAPON1),
+                    new SingleSlotEquipper(UnitEntityEquipmentSlotID.WEAPON2)
+                })));
+
 
             Visibles = new HashSet<Vector3Int>();
             UpdateVision();
             world.UnitManager.AddUnit(this);
+            
+            combat = new UnitEntityCombat(this, world, movement, combatData);
         }
 
         public string GetStatus()

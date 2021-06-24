@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Items
+namespace Items.EquipmentItems
 {
     public class EquipmentItem : Item
     {
@@ -15,21 +15,21 @@ namespace Items
         public override string ID { get; }
         public override bool IsStackable { get { return false; } }
 
-        public EquipmentTypeID EquipmentType { get; protected set; }
-
         public float Durability { get; private set; }
+
+        public SlotEquipper SlotEquipper { get; private set; }
 
         public Dictionary<CombatAttributeID, int> Additives { get; private set; }
 
-        public EquipmentItem(ResourceItem[] materials, float level, EquipmentTypeID slot) : base("Equipment")
+        public EquipmentItem(ResourceItem[] materials, float level) : base("Equipment")
         {
             // TODO: Craft equipment
             throw new System.NotImplementedException();
         }
 
-        public EquipmentItem(Dictionary<CombatAttributeID, int> effects, EquipmentTypeID slot) : base("Equipment")
+        public EquipmentItem(string name, Dictionary<CombatAttributeID, int> effects, SlotEquipper slotEquipper) : base("Equipment")
         {
-            Name = "TEST EQUIPMENT PLACEHOLDER NAME";
+            Name = name;
             Tier = 1;
             Hardness = 1;
             Weight = 1;
@@ -37,7 +37,7 @@ namespace Items
             ID = "test_equipment";
             Additives = effects;
 
-            EquipmentType = slot;
+            SlotEquipper = slotEquipper;
         }
 
         public override List<ItemAction> GetItemActions()

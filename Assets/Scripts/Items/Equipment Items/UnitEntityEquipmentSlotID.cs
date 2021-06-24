@@ -1,4 +1,4 @@
-﻿namespace Items
+﻿namespace Items.EquipmentItems
 {
     public enum UnitEntityEquipmentSlotID
     {

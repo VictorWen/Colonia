@@ -5,6 +5,7 @@ using Units.Abilities;
 using Units.Movement;
 using UnityEngine;
 using Items;
+using Items.EquipmentItems;
 
 namespace Units.Combat
 {
@@ -135,7 +136,6 @@ namespace Units.Combat
         {
             if (baseDamage < 0)
                 return;
-
             float combatModifier = world.GetCombatModifierAt(Unit.Position);
 
             float damage;
@@ -212,11 +212,6 @@ namespace Units.Combat
         private float CalculatePhysicalDamage(float damage, IUnitEntityCombat attacker, float combatModifier)
         {
             return (Mathf.Max(damage - defence, 0) + attacker.Piercing) / combatModifier;
-
-            //float reduction = Mathf.Max(0, combatModifier * (defence - attacker.Piercing));
-            //reduction *= (float)combatModifier * defence / (attacker.Piercing + 1);
-            //int damage = (int)(damage - reduction);
-            //return damage;
         }
 
         private float CalculateMagicalDamage(float damage, float combatModifier)

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Units.Abilities;
-using Items;
+using Items.EquipmentItems;
 
 namespace Units.Combat
 {
