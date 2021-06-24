@@ -5,13 +5,12 @@ namespace Items.ItemActions
 {
     public class UnequipItemAction : ItemAction
     {
-        public override bool Enabled { get; }
+        public override bool Enabled { get { return item.IsEquipped; } }
 
         private readonly EquipmentItem item;
 
-        public UnequipItemAction(bool enabled, EquipmentItem item) : base("Unequip")
+        public UnequipItemAction(EquipmentItem item) : base("Unequip")
         {
-            Enabled = enabled;
             this.item = item;
         }
 

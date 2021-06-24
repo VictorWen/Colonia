@@ -48,6 +48,7 @@ namespace Units.Combat
         {
             equipment.SlotEquipper.Equip(equipment, this);
             equipped.Add(equipment);
+            equipment.IsEquipped = true;
         }
 
         public void UnequipEquipmentItem(EquipmentItem equipment)
@@ -56,6 +57,7 @@ namespace Units.Combat
                 return;
             equipment.SlotEquipper.Unequip(this);
             equipped.Remove(equipment);
+            equipment.IsEquipped = false;
             inventory.AddItem(equipment);
         }
 

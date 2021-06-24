@@ -15,6 +15,8 @@ namespace Items.EquipmentItems
         public override string ID { get; }
         public override bool IsStackable { get { return false; } }
 
+        public bool IsEquipped { get; set; }
+
         public float Durability { get; private set; }
 
         public SlotEquipper SlotEquipper { get; private set; }
@@ -27,7 +29,7 @@ namespace Items.EquipmentItems
             throw new System.NotImplementedException();
         }
 
-        public EquipmentItem(string name, Dictionary<CombatAttributeID, int> effects, SlotEquipper slotEquipper) : base("Equipment")
+        public EquipmentItem(string name, Dictionary<CombatAttributeID, int> effects, SlotEquipper slotEquipper, bool isEquipped = false) : base("Equipment")
         {
             Name = name;
             Tier = 1;
@@ -38,13 +40,14 @@ namespace Items.EquipmentItems
             Additives = effects;
 
             SlotEquipper = slotEquipper;
+            IsEquipped = isEquipped;
         }
 
         public override List<ItemAction> GetItemActions()
         {
             List<ItemAction> actions = base.GetItemActions();
-            if (inventory == null)
-                actions.Add(new UnequipItemAction(true, this));
+            if (IsEquipped)
+                actions.Add(new UnequipItemAction(this));
             else
                 actions.Add(new EquipItemAction(inventory, this));
             return actions;
