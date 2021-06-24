@@ -13,6 +13,9 @@
 ## Better Visuals?
 - [ ] Improve Ability indicators
 - [ ] Improve automatic unit panel/info update
+- [ ] Improve tooltips
+- [ ] Drag windows
+- [ ] Fix resizing
 
 ## Turn One to Ten
 - [X] City vision

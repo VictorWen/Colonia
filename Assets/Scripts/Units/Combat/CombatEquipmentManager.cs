@@ -7,39 +7,40 @@ namespace Units.Combat
 {
     public class CombatEquipmentManager
     {
+        public Dictionary<UnitEntityEquipmentSlotID, EquipmentItem> EquipmentSlots { get; private set; }
+
         private readonly Inventory inventory;
-        private readonly Dictionary<UnitEntityEquipmentSlotID, EquipmentItem> equipmentSlots;
         private readonly HashSet<EquipmentItem> equipped;
 
         public CombatEquipmentManager(Inventory inventory)
         {
             this.inventory = inventory;
-            equipmentSlots = new Dictionary<UnitEntityEquipmentSlotID, EquipmentItem>();
+            EquipmentSlots = new Dictionary<UnitEntityEquipmentSlotID, EquipmentItem>();
             foreach (UnitEntityEquipmentSlotID id in Enum.GetValues(typeof(UnitEntityEquipmentSlotID)))
             {
-                equipmentSlots.Add(id, null);
+                EquipmentSlots.Add(id, null);
             }
             equipped = new HashSet<EquipmentItem>();
         }
 
         public bool SlotIsOccupied(UnitEntityEquipmentSlotID slotID)
         {
-            return equipmentSlots[slotID] != null;
+            return EquipmentSlots[slotID] != null;
         }
 
         public void PutEquipmentIntoSlot(EquipmentItem equipment, UnitEntityEquipmentSlotID slotID)
         {
-            equipmentSlots[slotID] = equipment;
+            EquipmentSlots[slotID] = equipment;
         }
 
         public void ClearEquipmentSlot(UnitEntityEquipmentSlotID slotID)
         {
-            equipmentSlots[slotID] = null;
+            EquipmentSlots[slotID] = null;
         }
 
         public void UnequipEquipmentFromSlot(UnitEntityEquipmentSlotID slotID)
         {
-            EquipmentItem equipment = equipmentSlots[slotID];
+            EquipmentItem equipment = EquipmentSlots[slotID];
             equipment.SlotEquipper.Unequip(this);
             equipped.Remove(equipment);
             inventory.AddItem(equipment);

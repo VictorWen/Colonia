@@ -54,6 +54,7 @@ namespace Units.Combat
 
         public event Action OnAttack;
 
+        public Dictionary<UnitEntityEquipmentSlotID, EquipmentItem> Equipment { get { return equipmentManager.EquipmentSlots; } }
         private readonly CombatEquipmentManager equipmentManager;
 
         public int Mana { get { return mana; } }

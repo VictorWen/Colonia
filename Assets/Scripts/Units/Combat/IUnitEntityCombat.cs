@@ -38,12 +38,8 @@ namespace Units.Combat
 
         string GetStatusDescription();
 
-        /// <summary>
-        /// Equips the EquipmentItem into the appropriate equipment slot
-        /// </summary>
-        /// <param name="equipment">The EquipmentItem to be equipped</param>
-        /// <returns>If the equipment slot which equipment is being equipped into is not empty, 
-        /// returns the slot's occupant. Otherwise, returns null</returns>
         void EquipItem(EquipmentItem equipment);
+
+        Dictionary<UnitEntityEquipmentSlotID, EquipmentItem> Equipment { get; }
     }
 }

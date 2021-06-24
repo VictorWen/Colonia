@@ -10,7 +10,7 @@ namespace Items.ItemActions
 {
     public class EquipItemAction : ItemAction
     {
-        public override bool Enabled { get { return true; } }
+        public override bool Enabled { get { return inventory != null; } }
 
         private readonly Inventory inventory;
         private readonly EquipmentItem equipment;
