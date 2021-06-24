@@ -102,7 +102,7 @@ namespace Units
 
         public string GetStatus()
         {
-            return combat.GetStatusDescription();
+            return "Level: " + Level + " (" + Experience/100f + "%)\n" + combat.GetStatusDescription();
         }
 
         public void OnNextTurn(GameMaster game)

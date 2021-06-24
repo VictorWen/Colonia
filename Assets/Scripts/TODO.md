@@ -12,11 +12,12 @@
 
 ## Better Visuals?
 - [ ] Improve Ability indicators
+- [ ] Improve automatic unit panel/info update
 
 ## Turn One to Ten
 - [X] City vision
 - [X] Level up
-- [ ] Display Level and EXP
+- [X] Display Level and EXP
 - [ ] Unit Fortify and Resting
 - [ ] Equipment
   - [X] Unit Inventory
