@@ -1,6 +1,6 @@
 ﻿# TODO
 
-## Extra Refactorization
+## Extra Refactoring
 - [ ] Extract World data and graphics
 - [ ] Decouple parts of the GUI?
 - [ ] Decouple parts of the GameMaster
