@@ -60,13 +60,16 @@ namespace Units.Combat
 
         public int Attack 
         { 
-            get 
-            {
-                return attack + equipmentManager.CalculateEquipmentAttribute(CombatAttributeID.ATTACK); 
-            } 
+            get { return attack + equipmentManager.CalculateEquipmentAttribute(CombatAttributeID.ATTACK); } 
         }
-        public int Piercing { get { return piercing; } }
-        public int Magic { get { return magic; } }
+        public int Piercing 
+        { 
+            get { return piercing + equipmentManager.CalculateEquipmentAttribute(CombatAttributeID.PIERCING); } 
+        }
+        public int Magic
+        { 
+            get { return magic + equipmentManager.CalculateEquipmentAttribute(CombatAttributeID.MAGIC); } 
+        }
         public bool CanAttack { get; private set; }
 
         public float BaseExperienceDrop { get { return baseExpDrop; } }
@@ -128,7 +131,7 @@ namespace Units.Combat
         {
             CanAttack = false;
             movement.CanMove = false;
-            world.UnitManager.GetUnitAt<UnitEntity>(position).Combat.DealDamage(attack, this, true);
+            world.UnitManager.GetUnitAt<UnitEntity>(position).Combat.DealDamage(Attack, this, true);
             OnAttack?.Invoke();
         }
 

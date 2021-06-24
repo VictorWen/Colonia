@@ -4,13 +4,16 @@ namespace Items.EquipmentItems
 {
     public interface SlotEquipper
     {
-        bool IsTrivialEquip(CombatEquipmentManager manager);
+        bool SlotEquipIsAvailable(CombatEquipmentManager manager);
 
         void Equip(EquipmentItem equipment, CombatEquipmentManager manager);
 
         void Unequip(CombatEquipmentManager manage);
     }
 
+    /// <summary>
+    /// Will try to equip equipment into a single slot
+    /// </summary>
     public class SingleSlotEquipper : SlotEquipper
     {
         private readonly UnitEntityEquipmentSlotID slotID;
@@ -20,7 +23,7 @@ namespace Items.EquipmentItems
             this.slotID = slotID;
         }
 
-        public bool IsTrivialEquip(CombatEquipmentManager manager)
+        public bool SlotEquipIsAvailable(CombatEquipmentManager manager)
         {
             return !manager.SlotIsOccupied(slotID);
         }

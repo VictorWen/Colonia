@@ -2,6 +2,9 @@
 
 namespace Items.EquipmentItems
 {
+    /// <summary>
+    /// Equip using the first equipper that is available
+    /// </summary>
     public class AnySlotEquipper : SlotEquipper
     {
         private readonly SlotEquipper[] equippers;
@@ -12,11 +15,11 @@ namespace Items.EquipmentItems
             this.equippers = equippers;
         }
 
-        public bool IsTrivialEquip(CombatEquipmentManager manager)
+        public bool SlotEquipIsAvailable(CombatEquipmentManager manager)
         {
             foreach (SlotEquipper equipper in equippers)
             {
-                if (equipper.IsTrivialEquip(manager))
+                if (equipper.SlotEquipIsAvailable(manager))
                     return true;
             }
             return false;
@@ -26,7 +29,7 @@ namespace Items.EquipmentItems
         {
             foreach (SlotEquipper equipper in equippers)
             {
-                if (equipper.IsTrivialEquip(manager))
+                if (equipper.SlotEquipIsAvailable(manager))
                 {
                     equipper.Equip(equipment, manager);
                     equipped = equipper;

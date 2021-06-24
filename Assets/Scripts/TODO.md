@@ -21,8 +21,8 @@
 - [ ] Equipment
   - [X] Unit Inventory
   - [X] Utility Items
-  - [ ] Weapons
-  - [ ] Armor
+  - [X] Weapons & Armor
+  - [ ] Visual
 - [ ] Loot
 - [ ] Enemy target cities
 - [ ] Classes
