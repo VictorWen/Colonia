@@ -6,6 +6,8 @@ using Items.EquipmentItems;
 
 namespace Units.Combat
 {
+    public delegate void ChooseTargetAndCastAbility(Ability ability);
+    
     public interface IUnitEntityCombat
     {
         int Mana { get; }
@@ -23,6 +25,10 @@ namespace Units.Combat
         event Action OnAttack;
 
         void OnNextTurn(GameMaster game);
+
+        ChooseTargetAndCastAbility CastAbilityDelegate { get; set; }
+
+        void DelegateCastAbility(Ability ability);
 
         void CastAbility(Ability ability, Vector3Int target);
 

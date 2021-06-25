@@ -27,6 +27,7 @@ namespace Units
             if (unitEntity == null)
                 CreateUnitEntity(true);
             unitEntity.OnDeath += OnDeath;
+            unitEntity.Combat.CastAbilityDelegate += AbilityAction;
             graphics = new UnitEntityGraphics(gameObject, unitEntity, config, world);
 
             panel = gui.unitPanel;

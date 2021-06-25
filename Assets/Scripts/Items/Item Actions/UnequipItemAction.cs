@@ -14,9 +14,9 @@ namespace Items.ItemActions
             this.item = item;
         }
 
-        public override void Action(PlayerUnitEntityController actor)
+        public override void Action(UnitEntity actor)
         {
-            actor.Unit.Combat.UnequipItem(item);
+            actor.Combat.UnequipItem(item);
         }
     }
 }

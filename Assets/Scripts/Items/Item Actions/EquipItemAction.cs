@@ -21,10 +21,10 @@ namespace Items.ItemActions
             this.equipment = equipment;
         }
 
-        public override void Action(PlayerUnitEntityController actor)
+        public override void Action(UnitEntity actor)
         {
             inventory.RemoveItem(equipment);
-            actor.Unit.Combat.EquipItem(equipment);
+            actor.Combat.EquipItem(equipment);
         }
     }
 }

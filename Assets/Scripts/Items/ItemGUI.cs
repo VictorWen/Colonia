@@ -106,7 +106,7 @@ namespace Items
                 btn.transform.SetParent(actionMenu.transform);
                 btn.GetComponentInChildren<Text>().text = action.Name;
                 btn.interactable = action.Enabled;
-                btn.onClick.AddListener(() => action.Action(actor));
+                btn.onClick.AddListener(() => action.Action(actor.Unit));
                 btn.onClick.AddListener(() => actionMenu.gameObject.SetActive(false));
                 btn.onClick.AddListener(() => inventoryPanel.SetActive(false));
             }

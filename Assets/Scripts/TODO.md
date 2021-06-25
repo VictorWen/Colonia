@@ -8,7 +8,7 @@
 - [X] Serialize Abilities into files
 - [X] Decouple Ability Database from specific implementation
 - [X] Redesign of Iventory/Items (remove dependecy on Type string checking)
-- [ ] Decouple PlayerUnitEntityController from ItemActions
+- [X] Decouple PlayerUnitEntityController from ItemActions
 
 ## Better Visuals?
 - [ ] Improve Ability indicators
@@ -22,12 +22,12 @@
 - [X] Level up
 - [X] Display Level and EXP
 - [ ] Unit Fortify and Resting
-- [ ] Equipment
+- [X] Equipment
   - [X] Unit Inventory
   - [X] Utility Items
   - [X] Weapons & Armor
   - [X] Visual
-  - [ ] Unequip ItemAction
+  - [X] Unequip ItemAction
 - [ ] Loot
 - [ ] Enemy target cities
 - [ ] Classes

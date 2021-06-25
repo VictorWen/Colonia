@@ -13,6 +13,6 @@ namespace Items.ItemActions
             Name = name;
         }
 
-        public abstract void Action(PlayerUnitEntityController actor);
+        public abstract void Action(UnitEntity actor);
     }
 }

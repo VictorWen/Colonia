@@ -119,6 +119,13 @@ namespace Units.Combat
             CanAttack = true;
         }
 
+        public ChooseTargetAndCastAbility CastAbilityDelegate { get; set; }
+
+        public void DelegateCastAbility(Ability ability)
+        {
+            CastAbilityDelegate?.Invoke(ability);
+        }
+
         public void CastAbility(Ability ability, Vector3Int target)
         {
             ability.Cast(Unit, target, world);
