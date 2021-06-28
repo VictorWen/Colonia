@@ -7,7 +7,6 @@ namespace Units
     public class NPCUnitEntityController : BaseUnitEntityController
     {
         [SerializeField] private NPCIntelligence intelligence;
-        [SerializeField] private LootTableSO loot;
 
         override protected void Start()
         {
@@ -24,8 +23,6 @@ namespace Units
                 intelligence = new NPCIntelligence(gui.Game, sm, surveyer, planner, unitEntity.Position);
                 intelligence.AssignUnitEntity(unitEntity);
             }
-            if (loot != null)
-                unitEntity.AssignLootTable(loot.ToLootTable());
         }
 
         private void UpdateVisibility()

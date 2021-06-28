@@ -49,6 +49,8 @@ public class GameMaster
         UnitEntityData unitData = GlobalUnitEntityDictionary.GetUnitEntityData("Unit Entities", id); // This might be too tightly coupled to Unity?
         UnitEntityCombatData combatData = UnitEntityCombatData.LoadFromSO(unitData);
         UnitEntity unitEntity = new UnitEntity(name, position, unitData.maxHealth, unitData.sight, unitData.isPlayerControlled, unitData.movementSpeed, World, combatData);
+        if (unitData.lootTable != null)
+            unitEntity.AssignLootTable(unitData.lootTable.ToLootTable());
         OnUnitSpawn?.Invoke(unitEntity, id);
         return unitEntity;
     }

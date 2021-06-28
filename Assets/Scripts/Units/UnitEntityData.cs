@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Units.Loot;
 
 namespace Units
 {
@@ -22,5 +23,6 @@ namespace Units
         public int resistance = 3;
 
         public string[] abilities;
+        public LootTableSO lootTable;
     }
 }
