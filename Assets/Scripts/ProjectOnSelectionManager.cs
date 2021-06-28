@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using Cities.Construction.Projects;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cities.Construction 
+namespace Cities.Construction
 {
     public class ProjectOnSelectionManager : MonoBehaviour
     {

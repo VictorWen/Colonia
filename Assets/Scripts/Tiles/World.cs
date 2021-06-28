@@ -5,7 +5,7 @@ using Units;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Cities;
-using Cities.Construction;
+using Cities.Construction.Projects;
 
 // The interface for the terrain map
 // Generates and accesses the terrain

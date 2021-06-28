@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Items;
 
-namespace Cities.Construction
+namespace Cities.Construction.Projects
 {
     public class BasicTileImprovement : ConstructedTileProject, CityNextTurnEffect
     {
@@ -35,7 +35,7 @@ namespace Cities.Construction
             }
         }
 
-        private BasicTileImprovement(BasicTileImprovement copy) : base (copy.ID, copy.baseResourceCost)
+        private BasicTileImprovement(BasicTileImprovement copy) : base(copy.ID, copy.baseResourceCost)
         {
             resourceID = copy.resourceID;
             UseFertility = copy.UseFertility;
@@ -97,7 +97,7 @@ namespace Cities.Construction
 
         public override bool IsUpgradeableTile(Vector3Int position, World world)
         {
-            return (world.GetConstructedTile(position)).Completed && validUpgrades.Contains((world.GetConstructedTile(position)).Project.ID);
+            return world.GetConstructedTile(position).Completed && validUpgrades.Contains(world.GetConstructedTile(position).Project.ID);
         }
     }
 }

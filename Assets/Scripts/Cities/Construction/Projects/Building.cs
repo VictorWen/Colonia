@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Items;
 
-namespace Cities.Construction
+namespace Cities.Construction.Projects
 {
     public class Building : IProject
     {
@@ -51,12 +51,12 @@ namespace Cities.Construction
         public Dictionary<string, int> GetResourceCost(City city, GameMaster game)
         {
             Dictionary<string, int> modifiedCosts = new Dictionary<string, int>();
-            foreach(KeyValuePair<string, int> resource in baseCost)
+            foreach (KeyValuePair<string, int> resource in baseCost)
             {
                 float cost = resource.Value * game.GetResourceModifier(ModifierAttributeID.CONSTRUCTION, resource.Key, city);
                 if (destIndex != -1)
                     cost *= 0.75f;
-                modifiedCosts.Add(resource.Key, (int) cost);
+                modifiedCosts.Add(resource.Key, (int)cost);
             }
             return modifiedCosts;
         }
@@ -92,7 +92,7 @@ namespace Cities.Construction
         {
             finishedSelection = true;
             this.destination = destination;
-            this.destIndex = index;
+            destIndex = index;
         }
 
         public bool IsSelected()
@@ -119,7 +119,7 @@ namespace Cities.Construction
             else
             {
                 destination.Buildings[destIndex] = this;
-            } 
+            }
         }
 
         public void OnNextTurn(City city, GameMaster game)

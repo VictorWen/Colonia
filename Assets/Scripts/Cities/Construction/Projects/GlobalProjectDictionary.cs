@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cities.Construction
+namespace Cities.Construction.Projects
 {
     /*
      * Used to store and create all projects available for the capital.

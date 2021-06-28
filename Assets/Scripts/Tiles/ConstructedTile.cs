@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Cities;
-using Cities.Construction;
+using Cities.Construction.Projects;
 
 [CreateAssetMenu(fileName = "Tile", menuName = "ScriptableObjects/Constructed Tile", order = 1)]
 public class ConstructedTile : Tile

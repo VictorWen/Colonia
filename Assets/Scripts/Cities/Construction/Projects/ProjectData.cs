@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.PlayerLoop;
 using Items;
 
-namespace Cities.Construction
+namespace Cities.Construction.Projects
 {
     public class ProjectData
     {
@@ -20,12 +20,12 @@ namespace Cities.Construction
 
         public ProjectData(string name, int employment, int workPopPreReq, string[] projPreReq, IProject project)
         {
-            this.Name = name;
-            this.Employment = employment;
-            this.WorkingPopPreReq = workPopPreReq;
-            this.ProjectPreReqs = projPreReq;
+            Name = name;
+            Employment = employment;
+            WorkingPopPreReq = workPopPreReq;
+            ProjectPreReqs = projPreReq;
             this.project = project;
-            this.Type = project.ProjectType;
+            Type = project.ProjectType;
         }
 
         public bool IsConstructable(City city, GameMaster game)

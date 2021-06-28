@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Items;
 
-namespace Cities.Construction
+namespace Cities.Construction.Projects
 {
     public class ResourceTileImprovement : ConstructedTileProject, CityNextTurnEffect
     {
@@ -43,7 +43,7 @@ namespace Cities.Construction
         public void OnNextTurn(City city, GameMaster game)
         {
             string id = game.World.ResourceMap.ResourceLocations[position];
-            
+
             float tilePower = useFertility ? game.World.GetFertilityAtTile(position) : game.World.GetRichnessAtTile(position);
             float hardnessModifier = game.GetResourceModifier(ModifierAttributeID.HARDNESS, id, city);
             float efficienyModifier = game.GetResourceModifier(ModifierAttributeID.EFFICIENCY, id, city);
@@ -52,9 +52,9 @@ namespace Cities.Construction
 
         private ResourceTileImprovement(ResourceTileImprovement copy) : base(copy.ID, copy.baseResourceCost)
         {
-            this.resources = copy.resources;
-            this.useFertility = copy.useFertility;
-            this.validUpgrades = copy.validUpgrades;
+            resources = copy.resources;
+            useFertility = copy.useFertility;
+            validUpgrades = copy.validUpgrades;
         }
 
         public override void OnUpgrade(ConstructedTileProject upgradee)
@@ -86,7 +86,7 @@ namespace Cities.Construction
 
         public override bool IsUpgradeableTile(Vector3Int position, World world)
         {
-            return (world.GetConstructedTile(position)).Completed && validUpgrades.Contains((world.GetConstructedTile(position)).Project.ID);
+            return world.GetConstructedTile(position).Completed && validUpgrades.Contains(world.GetConstructedTile(position).Project.ID);
         }
 
         public override bool IsValidTile(Vector3Int position, World world, City city)

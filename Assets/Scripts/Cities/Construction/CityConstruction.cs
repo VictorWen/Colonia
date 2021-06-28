@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Cities;
+using Cities.Construction.Projects;
 using Items;
 
 namespace Cities.Construction

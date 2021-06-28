@@ -8,6 +8,7 @@ using Units;
 using Units.Intelligence;
 using Items;
 using Units.Abilities;
+using Cities.Construction.Projects;
 
 // Handles foreground game state (client). Also used for testing purposes
 // Global client side, instantized server side

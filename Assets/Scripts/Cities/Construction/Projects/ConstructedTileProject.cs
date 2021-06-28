@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Items;
 
-namespace Cities.Construction
+namespace Cities.Construction.Projects
 {
     public abstract class ConstructedTileProject : IProject
-    { 
+    {
         public string ID { get; protected set; }
         public abstract string ProjectType { get; }
 
@@ -71,7 +71,7 @@ namespace Cities.Construction
                     // If the valid tile is not empty, check if it can be upgraded and afforded
                     if (game.World.GetConstructedTile(position) != null && IsUpgradeableTile(position, game.World))
                     {
-                        upgradee = (game.World.GetConstructedTile(position)).Project;
+                        upgradee = game.World.GetConstructedTile(position).Project;
                         bool upgradeCost = true;
                         foreach (KeyValuePair<string, int> resource in GetResourceCost(city, game))
                         {
@@ -120,7 +120,7 @@ namespace Cities.Construction
             world.PlaceConstructedTile(position, null);
             //TODO: Manage deselect constructed tile upgrade case
         }
-        
+
         public virtual void Complete(City city, World world)
         {
             world.FinishConstructionOfCityTile(city, this, position, upgradee);

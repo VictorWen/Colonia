@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Cities;
+using Cities.Construction.Projects;
 
 namespace Cities.Construction
 {

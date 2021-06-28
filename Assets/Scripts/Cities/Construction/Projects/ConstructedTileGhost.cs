@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Cities.Construction
+namespace Cities.Construction.Projects
 {
     public class ConstructedTileGhost : MonoBehaviour
     {
@@ -74,7 +74,7 @@ namespace Cities.Construction
 
             ConstructedTile tile = Resources.Load<ConstructedTile>("Projects" + sepChar + "Constructed Tiles" + sepChar + project.ID);
             if (world.GetConstructedTile(gridPos) != null)
-                project.OnPlacement(gridPos, (world.GetConstructedTile(gridPos)).Project);
+                project.OnPlacement(gridPos, world.GetConstructedTile(gridPos).Project);
             else
                 project.OnPlacement(gridPos);
 
@@ -93,7 +93,7 @@ namespace Cities.Construction
         private bool IsValidTile(Vector3Int pos, City city, World world, ConstructedTileProject project)
         {
             bool upgradeable = world.GetConstructedTile(pos) == null || project.IsUpgradeableTile(pos, world);
-            return city.WithinCityRange(pos) && project.IsValidTile(pos, world, city) && upgradeable; 
+            return city.WithinCityRange(pos) && project.IsValidTile(pos, world, city) && upgradeable;
         }
     }
 }
