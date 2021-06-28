@@ -72,9 +72,9 @@ namespace Cities.Construction
             return "TEST RESOURCES TILE IMPROVEMENT DESCRIPTION";
         }
 
-        public override string GetSelectionInfo(GUIMaster gui)
+        public override string GetSelectionInfo(World world)
         {
-            float aspect = useFertility ? gui.Game.World.GetFertilityAtTile(position) : gui.Game.World.GetRichnessAtTile(position);
+            float aspect = useFertility ? world.GetFertilityAtTile(position) : world.GetRichnessAtTile(position);
             return (useFertility ? "Fertility: " : "Richness: ") + System.Math.Round(aspect, 2);
         }
 

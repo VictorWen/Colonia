@@ -12,7 +12,6 @@ namespace Cities.Construction
         private IProject project;
         private string selectedProjectID;
         private Dictionary<string, int> allocatedResources;
-        //TODO: Change to auto update property
         private float requiredConstructionProgress;
         private float constructionProgress;
 
@@ -26,7 +25,6 @@ namespace Cities.Construction
             selectedProjectID = null;
         }
 
-        // TODO: formalize construction tick
         public void UpdateConstruction(GameMaster game)
         {
             if (selectedProjectID != null)
@@ -55,9 +53,6 @@ namespace Cities.Construction
             List<string> list = new List<string>();
             foreach (KeyValuePair<string, ProjectData> pair in GlobalProjectDictionary.GetAllProjects())
             {
-                //TODO: Fix selected project availability question
-                //if (pair.Key != selectedProjectID)
-                //{
                 bool available = pair.Value.WorkingPopPreReq <= city.workingPop && pair.Value.Employment <= city.idlePop;
                 foreach (string req in pair.Value.ProjectPreReqs)
                 {
@@ -67,30 +62,29 @@ namespace Cities.Construction
                         break;
                     }
                 }
+
                 if (available)
-                {
                     list.Add(pair.Key);
-                }
-                //}
             }
             return list;
         }
 
-        public void SetProject(IProject selectedProject, GUIMaster gui)
+        public void SetProject(IProject selectedProject, GameMaster game)
         {
-            CancelProject(gui);
+            if (project != null)
+                CancelProject(game);
+            CloseProject();
 
             // Update values
             selectedProjectID = selectedProject.ID;
             project = selectedProject;
-            UpdateConstructionProgressCost(gui.Game);
+            UpdateConstructionProgressCost(game);
 
             // Take needed resources
-            //TODO: Incorporate modifiers
-            //Assumes enough resources in inventory
-            foreach (KeyValuePair<string, int> resource in selectedProject.GetResourceCost(city, gui.Game))
+            // Assumes enough resources in inventory
+            foreach (KeyValuePair<string, int> resource in selectedProject.GetResourceCost(city, game))
             {
-                gui.Game.GlobalInventory.AddItem(new ResourceItem(resource.Key, -resource.Value));
+                game.GlobalInventory.AddItem(new ResourceItem(resource.Key, -resource.Value));
                 allocatedResources.Add(resource.Key, resource.Value);
             }
         }
@@ -104,33 +98,27 @@ namespace Cities.Construction
             project = null;
         }
 
-        public void CancelProject(GUIMaster gui)
+        public void CancelProject(GameMaster game)
         {
-            if (project != null)
-            {
-                project.OnCancel(city, gui);
-                foreach (KeyValuePair<string, int> resource in allocatedResources)
-                {
-                    gui.Game.GlobalInventory.AddItem(new ResourceItem(resource.Key, resource.Value));
-                }
-            }
-            CloseProject();
+            project.OnCancel(city, game.World);
+            foreach (KeyValuePair<string, int> resource in allocatedResources)
+                game.GlobalInventory.AddItem(new ResourceItem(resource.Key, resource.Value));
         }
 
         private void UpdateConstructionProgressCost(GameMaster game)
         {
             requiredConstructionProgress = 0;
             foreach (KeyValuePair<string, int> cost in project.GetResourceCost(city, game))
-            {
                 requiredConstructionProgress += GlobalResourceDictionary.GetResourceData(cost.Key).weight * cost.Value;
-            }
         }
 
-        public string GetDescription(GUIMaster gui)
+        public string GetDescription(GameMaster game)
         {
-            string output = (selectedProjectID == null ? "No Selected Construction Project" : GlobalProjectDictionary.GetProjectData(selectedProjectID).GetDescription(city, gui.Game)) + "\n";
+            string output = (selectedProjectID == null ? 
+                "No Selected Construction Project" : 
+                GlobalProjectDictionary.GetProjectData(selectedProjectID).GetDescription(city, game)) + "\n";
             if (project != null)
-                output += "\n" + project.GetSelectionInfo(gui);
+                output += "\n" + project.GetSelectionInfo(game.World);
             output += "\n<b>Progress:</b> " + constructionProgress + "/" + requiredConstructionProgress;
             return output;
         }

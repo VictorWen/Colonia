@@ -100,7 +100,7 @@ namespace Cities.Construction
             return destination != null;
         }
 
-        public void OnCancel(City city, GUIMaster gui)
+        public void OnCancel(City city, World world)
         {
             destination = null;
         }
@@ -130,7 +130,7 @@ namespace Cities.Construction
             }
         }
 
-        public string GetSelectionInfo(GUIMaster gui)
+        public string GetSelectionInfo(World world)
         {
             return "District: " + (destination != null ? destination.Name : "No District Selected");
         }

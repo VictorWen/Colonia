@@ -115,9 +115,9 @@ namespace Cities.Construction
             return placed;
         }
 
-        public virtual void OnCancel(City city, GUIMaster gui)
+        public virtual void OnCancel(City city, World world)
         {
-            gui.Game.World.PlaceConstructedTile(position, null);
+            world.PlaceConstructedTile(position, null);
             //TODO: Manage deselect constructed tile upgrade case
         }
         
@@ -139,7 +139,7 @@ namespace Cities.Construction
 
         public abstract string GetDescription();
 
-        public abstract string GetSelectionInfo(GUIMaster gui);
+        public abstract string GetSelectionInfo(World world);
 
         public abstract bool IsUpgradeableTile(Vector3Int position, World world);
 

@@ -28,13 +28,20 @@
   - [X] Weapons & Armor
   - [X] Visual
   - [X] Unequip ItemAction
-- [ ] Loot
+- [X] Loot
 - [ ] Enemy target cities
 - [ ] Classes
 - [ ] Skill Unlocking
 - [ ] Redesign of Population mechanic
 - [ ] Basic Construction
   - [ ] Construction Slots
+
+## Refactor Cities/Construction
+- [ ] Move Project data to ScriptableObject and a interfaced singleton
+- [ ] Change ProjectSelectionManager to the CityScript
+- [ ] Split Project details into two (controller for selection and data for game logic)
+- [ ] Refactor ConstructedTileGhost
+- [ ] 
 
 ## Turn Ten to Twenty-Five
 - [ ] Crafting

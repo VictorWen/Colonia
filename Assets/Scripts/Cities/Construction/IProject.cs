@@ -21,7 +21,7 @@ namespace Cities.Construction
         // Return whether the Project has completed the selection process
         bool IsSelected();
 
-        void OnCancel(City city, GUIMaster gui);
+        void OnCancel(City city, World gui);
 
         void Complete(City city, World world);
 
@@ -29,6 +29,6 @@ namespace Cities.Construction
 
         string GetDescription();
 
-        string GetSelectionInfo(GUIMaster gui);
+        string GetSelectionInfo(World world);
     }
 }

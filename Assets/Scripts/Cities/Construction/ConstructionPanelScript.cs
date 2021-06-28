@@ -98,7 +98,7 @@ namespace Cities.Construction
             if (selection.IsSelected())
             {
                 Debug.Log("Project Selected");
-                selectedCity.construction.SetProject(selection, gui);
+                selectedCity.construction.SetProject(selection, gui.Game);
             }
             UpdateGUI();
             Debug.Log("Project Selection Finished");
@@ -106,7 +106,7 @@ namespace Cities.Construction
 
         public override void UpdateGUI()
         {
-            currentDesc.text = selectedCity.construction.GetDescription(gui);
+            currentDesc.text = selectedCity.construction.GetDescription(gui.Game);
         }
 
     }

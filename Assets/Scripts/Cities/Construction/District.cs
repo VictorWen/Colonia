@@ -63,7 +63,7 @@ namespace Cities.Construction
             return "District";
         }
 
-        public override string GetSelectionInfo(GUIMaster gui)
+        public override string GetSelectionInfo(World world)
         {
             return "Name: " + Name;
         }

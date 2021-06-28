@@ -14,7 +14,7 @@ namespace Cities
         {
             base.Enable(city, gui);
             cityInfoText.text = city.GetDescription(gui.Game);
-            currentConstructionText.text = city.construction.GetDescription(this.gui);
+            currentConstructionText.text = city.construction.GetDescription(gui.Game);
         }
 
     }

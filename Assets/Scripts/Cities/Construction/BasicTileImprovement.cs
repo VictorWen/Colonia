@@ -89,9 +89,9 @@ namespace Cities.Construction
             return (UseFertility ? "Fertility: " : "Richness: ") + System.Math.Round(aspect, 2);
         }
 
-        public override string GetSelectionInfo(GUIMaster gui)
+        public override string GetSelectionInfo(World world)
         {
-            float aspect = UseFertility ? gui.Game.World.GetFertilityAtTile(position) : gui.Game.World.GetRichnessAtTile(position);
+            float aspect = UseFertility ? world.GetFertilityAtTile(position) : world.GetRichnessAtTile(position);
             return (UseFertility ? "Fertility: " : "Richness: ") + System.Math.Round(aspect, 2);
         }
 
