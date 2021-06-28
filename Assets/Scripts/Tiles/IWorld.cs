@@ -21,5 +21,7 @@ namespace Tiles
         HashSet<Vector3Int> GetTilesInRange(Vector3Int start, int range);
 
         UnitEntityManager UnitManager { get; }
+
+        System.Random RNG { get; }
     }
 }

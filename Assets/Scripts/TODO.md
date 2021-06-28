@@ -34,9 +34,14 @@
 - [ ] Skill Unlocking
 - [ ] Redesign of Population mechanic
 - [ ] Basic Construction
+  - [ ] Construction Slots
 
 ## Turn Ten to Twenty-Five
 - [ ] Crafting
+  - [ ] Forging
+  - [ ] Enchanting
+  - [ ] Refining
+  - [ ] Alchemy
 - [ ] NPC Clans
 
 ## Other
@@ -44,3 +49,4 @@
 - [ ] Natural Regen
 - [ ] Status Effects
 - [ ] More Abilities
+- [ ] Make Unity editor work during playtime

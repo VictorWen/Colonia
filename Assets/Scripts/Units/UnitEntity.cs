@@ -1,12 +1,13 @@
-﻿using UnityEngine;
+﻿using Items;
+using Items.EquipmentItems;
+using Items.UtilityItems;
 using System;
 using System.Collections.Generic;
 using Tiles;
-using Units.Movement;
 using Units.Combat;
-using Items;
-using Items.UtilityItems;
-using Items.EquipmentItems;
+using Units.Movement;
+using UnityEngine;
+using Units.Loot;
 
 namespace Units
 {
@@ -48,6 +49,8 @@ namespace Units
         [SerializeReference] private IUnitEntityMovement movement;
         [SerializeReference] private IUnitEntityCombat combat;
         [SerializeReference] private Inventory inventory;
+
+        private LootTable loot;
 
         private readonly IWorld world;
 
@@ -98,6 +101,20 @@ namespace Units
             world.UnitManager.AddUnit(this);
             
             combat = new UnitEntityCombat(this, world, movement, combatData);
+        }
+
+        public void AssignLootTable(LootTable loot)
+        {
+            this.loot = loot;
+        }
+
+        public void DropLoot(UnitEntity receiver)
+        {
+            if (loot != null)
+            {
+                Debug.Log("Dropping Loot");
+                loot.DropLoot(world, receiver);
+            }
         }
 
         public string GetStatus()

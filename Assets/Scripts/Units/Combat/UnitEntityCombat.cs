@@ -160,6 +160,11 @@ namespace Units.Combat
             damage *= proficienyMultiplier;
 
             Unit.Damage((int)damage);
+
+            if (!Unit.IsAlive)
+            {
+                Unit.DropLoot(attacker.Unit);
+            }
         }
 
         public void EquipItem(EquipmentItem equipment)
