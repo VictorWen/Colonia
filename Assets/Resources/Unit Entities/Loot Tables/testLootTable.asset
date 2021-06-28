@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef96963783126be4489b0b0a7ca0fbd2, type: 3}
   m_Name: testLootTable
   m_EditorClassIdentifier: 
-  table: []
+  table:
+  - chance: 0.5
+    itemID: wood
+  - chance: 0.5
+    itemID: wood
+  - chance: 0.5
+    itemID: wood

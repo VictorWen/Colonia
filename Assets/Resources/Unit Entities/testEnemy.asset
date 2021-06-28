@@ -24,3 +24,4 @@ MonoBehaviour:
   resistance: 0
   abilities:
   - attack
+  lootTable: {fileID: 11400000, guid: f35535ee81164274488307ea78524e3f, type: 2}
