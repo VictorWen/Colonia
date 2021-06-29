@@ -60,14 +60,14 @@ namespace Cities.Construction.Projects
             //TODO: check if validTile reference matters
             BasicTileImprovement copy = new BasicTileImprovement(this)
             {
-                position = position
+                Position = Position
             };
             return copy;
         }
 
         public void OnNextTurn(City city, GameMaster game)
         {
-            float tilePower = UseFertility ? game.World.GetFertilityAtTile(position) : game.World.GetRichnessAtTile(position);
+            float tilePower = UseFertility ? game.World.GetFertilityAtTile(Position) : game.World.GetRichnessAtTile(Position);
             float hardnessModifier = game.GetResourceModifier(ModifierAttributeID.HARDNESS, resourceID, city);
             float efficienyModifier = game.GetResourceModifier(ModifierAttributeID.EFFICIENCY, resourceID, city);
             game.AddPendingResource(resourceID, tilePower * efficienyModifier / (GlobalResourceDictionary.GetResourceData(resourceID).hardness * hardnessModifier));
@@ -91,7 +91,7 @@ namespace Cities.Construction.Projects
 
         public override string GetSelectionInfo(World world)
         {
-            float aspect = UseFertility ? world.GetFertilityAtTile(position) : world.GetRichnessAtTile(position);
+            float aspect = UseFertility ? world.GetFertilityAtTile(Position) : world.GetRichnessAtTile(Position);
             return (UseFertility ? "Fertility: " : "Richness: ") + System.Math.Round(aspect, 2);
         }
 

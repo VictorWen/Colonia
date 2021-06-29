@@ -11,7 +11,7 @@ namespace Cities.Construction.Projects
         public abstract string ProjectType { get; }
 
         protected bool placed;
-        protected Vector3Int position;
+        public Vector3Int Position { get; protected set; }
         protected ConstructedTileProject upgradee;
 
         protected Dictionary<string, int> baseResourceCost;
@@ -45,7 +45,7 @@ namespace Cities.Construction.Projects
         public virtual void OnPlacement(Vector3Int position, ConstructedTileProject upgradee = null)
         {
             placed = true;
-            this.position = position;
+            this.Position = position;
             this.upgradee = upgradee;
         }
 
@@ -117,13 +117,13 @@ namespace Cities.Construction.Projects
 
         public virtual void OnCancel(City city, World world)
         {
-            world.PlaceConstructedTile(position, null);
+            world.PlaceConstructedTile(Position, null);
             //TODO: Manage deselect constructed tile upgrade case
         }
 
         public virtual void Complete(City city, World world)
         {
-            world.FinishConstructionOfCityTile(city, this, position, upgradee);
+            world.FinishConstructionOfCityTile(city, this, Position, upgradee);
         }
 
         public abstract void OnUpgrade(ConstructedTileProject upgradee);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Tiles;
 
 namespace Cities.Construction.Projects
 {
@@ -15,6 +16,12 @@ namespace Cities.Construction.Projects
         {
             gameObject.SetActive(true);
             return StartCoroutine(WaitForPlacement(city, world, project, state));
+        }
+
+        public void Place2(City city, World world, ConstructedTileProject project, GUIStateManager state)
+        {
+            gameObject.SetActive(true);
+            StartCoroutine(WaitForPlacement(city, world, project, state));
         }
 
         private IEnumerator WaitForPlacement(City city, World world, ConstructedTileProject project, GUIStateManager state)
@@ -87,6 +94,7 @@ namespace Cities.Construction.Projects
 
             Debug.Log("Tile Selected");
             state.SetState(GUIStateManager.CITY);
+            Destroy(gameObject);
             yield break;
         }
 

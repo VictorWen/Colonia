@@ -42,9 +42,9 @@ namespace Cities.Construction.Projects
 
         public void OnNextTurn(City city, GameMaster game)
         {
-            string id = game.World.ResourceMap.ResourceLocations[position];
+            string id = game.World.ResourceMap.ResourceLocations[Position];
 
-            float tilePower = useFertility ? game.World.GetFertilityAtTile(position) : game.World.GetRichnessAtTile(position);
+            float tilePower = useFertility ? game.World.GetFertilityAtTile(Position) : game.World.GetRichnessAtTile(Position);
             float hardnessModifier = game.GetResourceModifier(ModifierAttributeID.HARDNESS, id, city);
             float efficienyModifier = game.GetResourceModifier(ModifierAttributeID.EFFICIENCY, id, city);
             game.AddPendingResource(id, tilePower * efficienyModifier / (GlobalResourceDictionary.GetResourceData(id).hardness * hardnessModifier));
@@ -74,7 +74,7 @@ namespace Cities.Construction.Projects
 
         public override string GetSelectionInfo(World world)
         {
-            float aspect = useFertility ? world.GetFertilityAtTile(position) : world.GetRichnessAtTile(position);
+            float aspect = useFertility ? world.GetFertilityAtTile(Position) : world.GetRichnessAtTile(Position);
             return (useFertility ? "Fertility: " : "Richness: ") + System.Math.Round(aspect, 2);
         }
 

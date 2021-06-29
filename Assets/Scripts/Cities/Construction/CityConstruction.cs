@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 using Cities;
 using Cities.Construction.Projects;
 using Items;
@@ -8,6 +9,9 @@ namespace Cities.Construction
     // Tracks project completion progress and manages project event handling
     public class CityConstruction
     {
+        public event Action OnCancel;
+        public event Action OnComplete;
+
         private readonly List<string> completedProjects;
         private readonly int constructionDev = 2;
         private IProject project;

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Items;
-using Cities.Construction.Projects;
 
-namespace Cities.Construction
+namespace Cities.Construction.Projects
 {
     public class District : ConstructedTileProject
     {
@@ -18,7 +17,7 @@ namespace Cities.Construction
 
         public int BuildingSlots { get; private set; }
 
-        public District(string tier, int buildingSlots, Dictionary<string, int> baseCost, string[] InvalidTiles, string name = null) : base (tier, baseCost)
+        public District(string tier, int buildingSlots, Dictionary<string, int> baseCost, string[] InvalidTiles, string name = null) : base(tier, baseCost)
         {
             ResourceMods = new ResourceModifiers();
             Buildings = new List<Building>();
@@ -52,7 +51,7 @@ namespace Cities.Construction
         {
             return new District(ID, BuildingSlots, baseResourceCost, new string[0])
             {
-                position = position,
+                Position = Position,
                 ResourceMods = ResourceMods,
                 Buildings = Buildings,
                 invalidTiles = invalidTiles
@@ -89,7 +88,7 @@ namespace Cities.Construction
             {
                 Vector3Int checkPos = world.WorldToCell(world.CellToWorld(gridPos) + check);
                 ConstructedTile tile = world.GetConstructedTile(checkPos);
-                if (checkPos.Equals(city.Position) || (tile != null && tile.City == city && tile.Type.Equals("District")))
+                if (checkPos.Equals(city.Position) || tile != null && tile.City == city && tile.Type.Equals("District"))
                 {
                     validBorder = true;
                     break;
@@ -123,9 +122,9 @@ namespace Cities.Construction
 
         public override bool IsUpgradeableTile(Vector3Int position, World world)
         {
-            if ((world.GetConstructedTile(position)).Completed)
+            if (world.GetConstructedTile(position).Completed)
             {
-                ConstructedTileProject old = (world.GetConstructedTile(position)).Project;
+                ConstructedTileProject old = world.GetConstructedTile(position).Project;
                 //TODO: move district levels to a higher level class
                 string[] levels = { "lower district", "middle district", "upper district" };
                 if (old.ProjectType == "District")
