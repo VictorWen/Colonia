@@ -15,9 +15,6 @@ namespace Cities.Construction.Projects
         // Returns if there is any availability to construct this Project in the given City
         bool IsConstructable(City city, GameMaster game);
 
-        // Coroutine started when the Project is selected by the ConstructionPanelScript
-        IEnumerator OnSelect(City city, GUIMaster gui);
-
         void AcceptProjectVisitor(City city, IProjectVisitor vistor);
 
         // Return whether the Project has completed the selection process

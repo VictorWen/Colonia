@@ -22,12 +22,14 @@ namespace Cities.Construction
         private District selectedDistrict;
 
         private CityGUIPanelScript cityGUI;
+        private bool waiting;
 
         public void Enable(City city, Building building, CityGUIPanelScript cityGUI)
         {
             //this.city = city;
             this.building = building;
             this.cityGUI = cityGUI;
+            this.waiting = true;
 
             // Clear lists
             foreach (VerticalLayoutGroup districtPanel in districtList.GetComponentsInChildren<VerticalLayoutGroup>()){
@@ -72,6 +74,10 @@ namespace Cities.Construction
 
         public IEnumerator StartSelection()
         {
+            while (waiting)
+            {
+                yield return null;
+            }
             yield break;
         }
 
@@ -94,15 +100,20 @@ namespace Cities.Construction
         public void ConfirmSelection()
         {
             building.FinishSelection(selectedDistrict);
-            cityGUI.UpdateGUI();
-            gameObject.SetActive(false);
+            Close();
         }
 
         public void CancelSelection()
         {
             building.FinishSelection(null);
+            Close();
+        }
+
+        private void Close()
+        {
             cityGUI.UpdateGUI();
             gameObject.SetActive(false);
+            waiting = false;
         }
     }
 }

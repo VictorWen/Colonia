@@ -22,9 +22,9 @@ namespace Cities.Construction.Projects
         private ConstructedTileGhost ghostPrefab;
         private DistrictSelectorScript districtSelectorScript;
         private CityGUIPanelScript cityGUI;
+        private ConstructionPanelScript construction;
 
         public GUIMaster gui;
-        public ConstructionPanelScript construction;
 
         private void Start()
         {
@@ -33,6 +33,11 @@ namespace Cities.Construction.Projects
             ghostPrefab = gui.ghostPrefab;
             districtSelectorScript = gui.districtSelectorScript;
             cityGUI = gui.cityGUI;
+        }
+
+        public void SetConstructionPanel(ConstructionPanelScript panel)
+        {
+            this.construction = panel;
         }
 
         public void VisitConstructionTile(City city, IProject constructedTileProject)

@@ -26,7 +26,7 @@ namespace Cities.Construction
         public Text selectionDesc;
         public Text currentDesc;
 
-        public ProjectOnSelectionManager selectionManager;
+        public ProjectSelectionManager selectionManager;
 
         [Header("Prefabs")]
         public ProjectButton projectButtonPrefab;
@@ -39,6 +39,7 @@ namespace Cities.Construction
             this.selectedCity = city;
             this.selectedButton = null;
             base.Enable(city, gui);
+            selectionManager.SetConstructionPanel(this);
 
             //Clear List Entries and Texts
             selectionTitle.text = "";
@@ -90,7 +91,7 @@ namespace Cities.Construction
                 Debug.Log("Project Selection Started");
                 ProjectData data = GlobalProjectDictionary.GetProjectData(selectedButton.ProjectID);
                 IProject selection = data.Project;
-                selectionManager.StartSelection(selection, this, selectedCity, gui);
+                selection.AcceptProjectVisitor(selectedCity, selectionManager);
             }
         }
 
