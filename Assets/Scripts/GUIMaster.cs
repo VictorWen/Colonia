@@ -17,7 +17,7 @@ public class GUIMaster : MonoBehaviour
 {
     [Obsolete("Should be created on new/load game. Use Game.World instead")]
     public World world;
-    public CityGUIScript cityGUI;
+    public CityGUIPanelScript cityGUI;
     //public static CapitalCity capital;
     //public InventoryGUI invManager;
     public CityScript cityPrefab;

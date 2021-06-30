@@ -6,7 +6,7 @@ using Tiles;
 
 namespace Cities.Construction.Projects
 {
-    public class ConstructedTileGhost : MonoBehaviour
+    public class ConstructedTileGhost : MonoBehaviour, ProjectSelectionController
     {
         public SpriteRenderer spriteRenderer;
         public Canvas canvas;
@@ -24,7 +24,26 @@ namespace Cities.Construction.Projects
             StartCoroutine(WaitForPlacement(city, world, project, state));
         }
 
-        private IEnumerator WaitForPlacement(City city, World world, ConstructedTileProject project, GUIStateManager state)
+        private City city;
+        private World world;
+        private ConstructedTileProject project;
+        private GUIStateManager state;
+
+        public void Enable(City city, World world, ConstructedTileProject project, GUIStateManager state)
+        {
+            gameObject.SetActive(true);
+            this.city = city;
+            this.world = world;
+            this.project = project;
+            this.state = state;
+        }
+
+        public IEnumerator StartSelection()
+        {
+            return WaitForPlacement(city, world, project, state);
+        }
+
+        public IEnumerator WaitForPlacement(City city, World world, ConstructedTileProject project, GUIStateManager state)
         {
             state.SetState(GUIStateManager.GHOST_TILE);
             char sepChar = System.IO.Path.DirectorySeparatorChar;

@@ -18,6 +18,8 @@ namespace Cities.Construction.Projects
         // Coroutine started when the Project is selected by the ConstructionPanelScript
         IEnumerator OnSelect(City city, GUIMaster gui);
 
+        void AcceptProjectVisitor(City city, IProjectVisitor vistor);
+
         // Return whether the Project has completed the selection process
         bool IsSelected();
 

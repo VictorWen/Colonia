@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Cities.Construction
 {
-    public class DistrictSelectorScript : MonoBehaviour
+    public class DistrictSelectorScript : MonoBehaviour, ProjectSelectionController
     {
         public VerticalLayoutGroup districtList;
         public Text districtTitle;
@@ -21,13 +21,13 @@ namespace Cities.Construction
         private Button selectedButton;
         private District selectedDistrict;
 
-        private GUIMaster gui;
+        private CityGUIPanelScript cityGUI;
 
-        public void Enable(City city, Building building, GUIMaster gui)
+        public void Enable(City city, Building building, CityGUIPanelScript cityGUI)
         {
             //this.city = city;
             this.building = building;
-            this.gui = gui;
+            this.cityGUI = cityGUI;
 
             // Clear lists
             foreach (VerticalLayoutGroup districtPanel in districtList.GetComponentsInChildren<VerticalLayoutGroup>()){
@@ -70,6 +70,11 @@ namespace Cities.Construction
             gameObject.SetActive(true);
         }
 
+        public IEnumerator StartSelection()
+        {
+            yield break;
+        }
+
         //TODO: Handle selecting taken building slot
         public void SelectDistrict(District district, Button button)
         {
@@ -89,14 +94,14 @@ namespace Cities.Construction
         public void ConfirmSelection()
         {
             building.FinishSelection(selectedDistrict);
-            gui.cityGUI.UpdateGUI();
+            cityGUI.UpdateGUI();
             gameObject.SetActive(false);
         }
 
         public void CancelSelection()
         {
             building.FinishSelection(null);
-            gui.cityGUI.UpdateGUI();
+            cityGUI.UpdateGUI();
             gameObject.SetActive(false);
         }
     }

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Cities
 {
-    public class CityGUIScript : MonoBehaviour
+    public class CityGUIPanelScript : MonoBehaviour
     {
         private City city;
 

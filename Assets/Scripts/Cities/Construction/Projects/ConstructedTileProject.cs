@@ -42,6 +42,11 @@ namespace Cities.Construction.Projects
             return modifiedCosts;
         }
 
+        public void AcceptProjectVisitor(City city, IProjectVisitor visitor)
+        {
+            visitor.VisitConstructionTile(city, this);
+        }
+
         public virtual void OnPlacement(Vector3Int position, ConstructedTileProject upgradee = null)
         {
             placed = true;

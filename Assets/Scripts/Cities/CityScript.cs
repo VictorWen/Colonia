@@ -12,7 +12,7 @@ namespace Cities
 
         private GUIStateManager state;
         public City city; //TODO: change back to private after testing
-        private CityGUIScript panel;
+        private CityGUIPanelScript panel;
 
         public static CityScript Create(string name, Vector3 position, GUIMaster gui)
         {

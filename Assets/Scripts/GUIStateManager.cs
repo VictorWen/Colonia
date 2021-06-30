@@ -17,7 +17,7 @@ public class GUIStateManager
     private readonly Canvas mapHUD;
     // Whether the cityPanel is displayed
     public bool CityPanel { get; private set; }
-    private readonly CityGUIScript cityPanel;
+    private readonly CityGUIPanelScript cityPanel;
 
 
     //----PRESETS-----
@@ -54,7 +54,7 @@ public class GUIStateManager
         }
     }
 
-    public GUIStateManager(CityGUIScript cityPanel, Canvas mapHUD)
+    public GUIStateManager(CityGUIPanelScript cityPanel, Canvas mapHUD)
     {
         this.cityPanel = cityPanel;
         this.mapHUD = mapHUD;
