@@ -27,10 +27,16 @@ namespace Cities.Construction.Projects
 
         public virtual Dictionary<string, int> GetResourceCost(City city, GameMaster game)
         {
-            Dictionary<string, int> modifiedCosts = new Dictionary<string, int>();
             Dictionary<string, int> upgradeeCosts = null;
             if (upgradee != null)
                 upgradeeCosts = upgradee.GetResourceCost(city, game);
+
+            return GetModifiedCosts(upgradeeCosts, city, game);
+        }
+
+        private Dictionary<string, int> GetModifiedCosts(Dictionary<string, int> upgradeeCosts, City city, GameMaster game)
+        {
+            Dictionary<string, int> modifiedCosts = new Dictionary<string, int>();
             foreach (KeyValuePair<string, int> resource in baseResourceCost)
             {
                 float cost = resource.Value;
@@ -58,15 +64,7 @@ namespace Cities.Construction.Projects
         {
             // TODO: Move to a IsAfforable(position, city, game) method
             // Determine if an empty valid tile is affordable
-            bool normalCost = true;
-            foreach (KeyValuePair<string, int> resource in GetResourceCost(city, game))
-            {
-                if (game.GlobalInventory.GetItemCount(resource.Key) < resource.Value)
-                {
-                    normalCost = false;
-                    break;
-                }
-            }
+            bool normalCost = IsNormalCost(city, game);
 
             // Iterate through City Range and return if there is a valid and afforable tile
             foreach (Vector3Int position in city.GetCityRange(game.World))
@@ -77,32 +75,36 @@ namespace Cities.Construction.Projects
                     if (game.World.GetConstructedTile(position) != null && IsUpgradeableTile(position, game.World))
                     {
                         upgradee = game.World.GetConstructedTile(position).Project;
-                        bool upgradeCost = true;
-                        foreach (KeyValuePair<string, int> resource in GetResourceCost(city, game))
-                        {
-                            if (game.GlobalInventory.GetItemCount(resource.Key) < resource.Value)
-                            {
-                                upgradeCost = false;
-                                break;
-                            }
-                        }
+                        bool upgradeCost = CanAffordUpgradeCost(city, game);
                         upgradee = null;
 
                         if (upgradeCost)
-                        {
                             return true;
-                        }
                     }
 
                     // If the valid tile is empty, check if the normal cost is affordable
                     else if (normalCost)
-                    {
                         return true;
-                    }
                 }
             }
 
             return false;
+        }
+
+        private bool CanAffordUpgradeCost(City city, GameMaster game)
+        {
+            foreach (KeyValuePair<string, int> resource in GetResourceCost(city, game))
+                if (game.GlobalInventory.GetItemCount(resource.Key) < resource.Value)
+                    return false;
+            return true;
+        }
+
+        private bool IsNormalCost(City city, GameMaster game)
+        {
+            foreach (KeyValuePair<string, int> resource in GetResourceCost(city, game))
+                if (game.GlobalInventory.GetItemCount(resource.Key) < resource.Value)
+                    return false;
+            return true;
         }
 
         public bool IsSelected()
