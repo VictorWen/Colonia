@@ -16,26 +16,19 @@ namespace Cities.Construction.Projects
     }
 
     public class ProjectSelectionManager : MonoBehaviour, IProjectVisitor
-    {
-        private World world;
-        private GUIStateManager guiState;
-        private CityGUIPanelScript cityGUI;
-        private ConstructionPanelScript construction;
+    { 
+        [SerializeField] private GUIMaster gui;
+        [SerializeField] private World world;
+        [SerializeField] private  CityGUIPanelScript cityGUI;
+        [SerializeField] private ConstructedTileGhost ghostPrefab;
+        [SerializeField] private DistrictSelectorScript districtSelectorScript;
+        [SerializeField] private ConstructionPanelScript construction;
 
-        public GUIMaster gui;
-        public ConstructedTileGhost ghostPrefab;
-        public DistrictSelectorScript districtSelectorScript;
+        private GUIStateManager guiState;
 
         private void Start()
         {
-            world = gui.Game.World;
             guiState = gui.GUIState;
-            cityGUI = gui.cityGUI;
-        }
-
-        public void SetConstructionPanel(ConstructionPanelScript panel)
-        {
-            this.construction = panel;
         }
 
         public void VisitConstructionTile(City city, IProject constructedTileProject)

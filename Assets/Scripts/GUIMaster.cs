@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using Cities;
-using Cities.Construction;
-using Units;
-using Units.Intelligence;
+﻿using Cities;
 using Items;
-using Units.Abilities;
-using Cities.Construction.Projects;
+using System;
+using Units;
+using UnityEngine;
 
 // Handles foreground game state (client). Also used for testing purposes
-// Global client side, instantized server side
-// TODO: determine Capital implementation
 public class GUIMaster : MonoBehaviour
 {
     [Obsolete("Should be created on new/load game. Use Game.World instead")]

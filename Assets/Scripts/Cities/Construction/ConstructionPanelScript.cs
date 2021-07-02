@@ -39,7 +39,6 @@ namespace Cities.Construction
             this.selectedCity = city;
             this.selectedButton = null;
             base.Enable(city, gui);
-            selectionManager.SetConstructionPanel(this);
 
             //Clear List Entries and Texts
             selectionTitle.text = "";

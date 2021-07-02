@@ -9,6 +9,8 @@
 - [X] Decouple Ability Database from specific implementation
 - [X] Redesign of Iventory/Items (remove dependecy on Type string checking)
 - [X] Decouple PlayerUnitEntityController from ItemActions
+- [ ] More formally define GUIMaster's responsiblility
+- [ ] Reduce unnecessary dependencies on GameMaster
 
 ## Better Visuals?
 - [ ] Improve Ability indicators
@@ -40,8 +42,9 @@
 - [ ] Move Project data to ScriptableObject and a interfaced singleton
 - [X] Refactor ProjectSelectionManager
 - [X] Split Project details into two (controller for selection and data for game logic)
-- [ ] Refactor ConstructedTileGhost
+- [ ] General refactoring/extracting of construction code
 - [ ] Refactor MonoBehaviours to be more decoupled
+- [ ] Get rid of unavailable projects
 
 ## Turn Ten to Twenty-Five
 - [ ] Crafting
