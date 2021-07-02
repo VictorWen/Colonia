@@ -19,19 +19,17 @@ namespace Cities.Construction.Projects
     {
         private World world;
         private GUIStateManager guiState;
-        private ConstructedTileGhost ghostPrefab;
-        private DistrictSelectorScript districtSelectorScript;
         private CityGUIPanelScript cityGUI;
         private ConstructionPanelScript construction;
 
         public GUIMaster gui;
+        public ConstructedTileGhost ghostPrefab;
+        public DistrictSelectorScript districtSelectorScript;
 
         private void Start()
         {
             world = gui.Game.World;
             guiState = gui.GUIState;
-            ghostPrefab = gui.ghostPrefab;
-            districtSelectorScript = gui.districtSelectorScript;
             cityGUI = gui.cityGUI;
         }
 

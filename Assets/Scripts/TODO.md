@@ -38,10 +38,10 @@
 
 ## Refactor Cities/Construction
 - [ ] Move Project data to ScriptableObject and a interfaced singleton
-- [ ] Change ProjectSelectionManager to the CityScript
-- [ ] Split Project details into two (controller for selection and data for game logic)
+- [X] Refactor ProjectSelectionManager
+- [X] Split Project details into two (controller for selection and data for game logic)
 - [ ] Refactor ConstructedTileGhost
-- [ ] 
+- [ ] Refactor MonoBehaviours to be more decoupled
 
 ## Turn Ten to Twenty-Five
 - [ ] Crafting

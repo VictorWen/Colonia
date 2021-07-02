@@ -79,15 +79,6 @@ namespace Cities.Construction.Projects
             return false;
         }
 
-        public IEnumerator OnSelect(City city, GUIMaster gui)
-        {
-            gui.districtSelectorScript.Enable(city, this, gui.cityGUI);
-            while (!finishedSelection)
-            {
-                yield return null;
-            }
-        }
-
         public void AcceptProjectVisitor(City city, IProjectVisitor visitor)
         {
             visitor.VisitBuilding(city, this);

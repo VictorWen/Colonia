@@ -156,8 +156,6 @@ MonoBehaviour:
   cityGUI: {fileID: 1301043379}
   cityPrefab: {fileID: 5800860275461235537, guid: 84062154ed29fa74ba54a3f5201e8fe9,
     type: 3}
-  ghostPrefab: {fileID: 1494170010283998198, guid: dd2f05a363cee0640aad201aaa0e58a4,
-    type: 3}
   districtSelectorScript: {fileID: 1167203838}
   mapHUD: {fileID: 1992668459}
   playerCam: {fileID: 519420031}
@@ -127236,6 +127234,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gui: {fileID: 5732125}
+  ghostPrefab: {fileID: 1494170010283998198, guid: dd2f05a363cee0640aad201aaa0e58a4,
+    type: 3}
+  districtSelectorScript: {fileID: 1167203838}
 --- !u!4 &938806706
 Transform:
   m_ObjectHideFlags: 0

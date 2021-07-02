@@ -105,16 +105,6 @@ namespace Cities.Construction.Projects
             return false;
         }
 
-        public virtual IEnumerator OnSelect(City city, GUIMaster gui)
-        {
-            ConstructedTileGhost ghost = Object.Instantiate(gui.ghostPrefab);
-
-            yield return ghost.Place(city, gui.Game.World, this, gui.GUIState);
-            Object.Destroy(ghost.gameObject);
-
-            yield break;
-        }
-
         public bool IsSelected()
         {
             return placed;

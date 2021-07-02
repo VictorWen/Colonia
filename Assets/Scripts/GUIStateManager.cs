@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Cities;
+using System;
 
 public class GUIStateManager
 {
@@ -14,10 +15,11 @@ public class GUIStateManager
     // -----GUI------
     // Whether the mapHUD is displayed
     public bool MapHUD { get; private set; }
-    private readonly Canvas mapHUD;
     // Whether the cityPanel is displayed
     public bool CityPanel { get; private set; }
-    private readonly CityGUIPanelScript cityPanel;
+
+    private readonly Action<bool> onCityPanelChange;
+    private readonly Action<bool> onMapHUDChange;
 
 
     //----PRESETS-----
@@ -54,10 +56,10 @@ public class GUIStateManager
         }
     }
 
-    public GUIStateManager(CityGUIPanelScript cityPanel, Canvas mapHUD)
+    public GUIStateManager(Action<bool> onCityPanelChange, Action<bool> onMapHUDChange)
     {
-        this.cityPanel = cityPanel;
-        this.mapHUD = mapHUD;
+        this.onCityPanelChange = onCityPanelChange;
+        this.onMapHUDChange = onMapHUDChange;
 
         SetState(MAP);
     }
@@ -68,10 +70,17 @@ public class GUIStateManager
         CameraControl = preset.camCtrl;
         UnitControl = preset.unitCtrl;
         TileInteraction = preset.tileIntr;
-        MapHUD = preset.mapHUD;
-        CityPanel = preset.cityPanel;
-        cityPanel.gameObject.SetActive(CityPanel);
-        mapHUD.gameObject.SetActive(MapHUD);
+
+        if (preset.mapHUD != MapHUD)
+        {
+            MapHUD = preset.mapHUD;
+            onMapHUDChange?.Invoke(MapHUD);
+        }
+        if (preset.cityPanel != CityPanel)
+        {
+            CityPanel = preset.cityPanel;
+            onCityPanelChange?.Invoke(CityPanel);
+        }
     }
 
 }

@@ -18,12 +18,7 @@ public class GUIMaster : MonoBehaviour
     [Obsolete("Should be created on new/load game. Use Game.World instead")]
     public World world;
     public CityGUIPanelScript cityGUI;
-    //public static CapitalCity capital;
-    //public InventoryGUI invManager;
     public CityScript cityPrefab;
-    public ConstructedTileGhost ghostPrefab;
-
-    public DistrictSelectorScript districtSelectorScript;
 
     public Canvas mapHUD;
     public Camera playerCam;
@@ -46,7 +41,7 @@ public class GUIMaster : MonoBehaviour
         Game = new GameMaster(world);
         Game.OnUnitSpawn += CreateUnitEntityController;
 
-        GUIState = new GUIStateManager(cityGUI, mapHUD);
+        GUIState = new GUIStateManager(cityGUI.gameObject.SetActive, mapHUD.gameObject.SetActive);
     }
 
     public void Start()
