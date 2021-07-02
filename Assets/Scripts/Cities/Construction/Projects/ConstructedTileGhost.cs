@@ -28,11 +28,6 @@ namespace Cities.Construction.Projects
 
         public IEnumerator StartSelection()
         {
-            return WaitForPlacement(city, world, project, state);
-        }
-
-        public IEnumerator WaitForPlacement(City city, World world, ConstructedTileProject project, GUIStateManager state)
-        {
             state.SetState(GUIStateManager.GHOST_TILE);
 
             GrabProjectSprite();
