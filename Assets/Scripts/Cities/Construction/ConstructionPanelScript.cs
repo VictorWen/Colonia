@@ -16,8 +16,11 @@ namespace Cities.Construction
         public World world;
 
         public GameObject availableProjectList;
-        public GameObject unavailableProjectsList;
+        //public GameObject unavailableProjectsList;
         public GameObject projectDescriptorPanel;
+
+        public Button constructionSlotButtonPrefab;
+        public VerticalLayoutGroup constructionSlotButtons;
 
         public Button confirmButton;
 
@@ -47,10 +50,6 @@ namespace Cities.Construction
             {
                 Destroy(b.transform.gameObject);
             }
-            foreach (ProjectButton b in unavailableProjectsList.GetComponentsInChildren<ProjectButton>())
-            {
-                Destroy(b.transform.gameObject);
-            }
 
             //TODO: Implement automatic buttons
             //Populate project lists
@@ -63,7 +62,31 @@ namespace Cities.Construction
                 pb.ProjectID = projectID;
             }
 
+            FillConstructionSlotButtons();
+
             UpdateGUI();
+        }
+        
+        private void FillConstructionSlotButtons()
+        {
+            foreach (Button btn in constructionSlotButtons.GetComponentsInChildren<Button>())
+            {
+                Destroy(btn.gameObject);
+            }
+
+            foreach (ConstructionSlot slot in selectedCity.construction.Slots)
+            {
+                Button slotButton = Instantiate(constructionSlotButtonPrefab);
+                slotButton.GetComponentInChildren<Text>().text = slot.GetProjectName();
+                ConstructionSlot copy = slot;
+                slotButton.onClick.AddListener(() => SelectConstructionSlot(copy));
+                slotButton.transform.SetParent(constructionSlotButtons.transform);
+            }
+        }
+
+        private void SelectConstructionSlot(ConstructionSlot slot)
+        {
+            Debug.Log(slot.GetProjectName());
         }
 
         public void SelectProject(ProjectButton b)

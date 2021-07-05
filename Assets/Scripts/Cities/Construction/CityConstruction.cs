@@ -9,11 +9,10 @@ namespace Cities.Construction
     // Tracks project completion progress and manages project event handling
     public class CityConstruction
     {
-        public event Action OnCancel;
-        public event Action OnComplete;
+        public int ConstructionDev { get { return constructionDev; } }
 
         private readonly List<string> completedProjects;
-        private readonly int constructionDev = 2;
+        private readonly int constructionDev;
         private IProject project;
         private string selectedProjectID;
         private Dictionary<string, int> allocatedResources;
@@ -22,34 +21,23 @@ namespace Cities.Construction
 
         private readonly City city;
 
+        public List<ConstructionSlot> Slots { get; private set; }
+
         public CityConstruction(City city)
         {
             this.city = city;
             completedProjects = new List<string>();
             constructionDev = 20;//4;
             selectedProjectID = null;
+            Slots = new List<ConstructionSlot>();
+            Slots.Add(new ConstructionSlot(city, this));
         }
 
         public void UpdateConstruction(GameMaster game)
         {
-            if (selectedProjectID != null)
+            foreach (ConstructionSlot slot in Slots)
             {
-                UpdateConstructionProgressCost(game);
-                constructionProgress += constructionDev;
-
-                //FOR TESTING---------------------------------------
-                //constructionProgress = requiredConstructionProgress;
-                //--------------------------------------------------
-
-                //Project is completed
-                if (constructionProgress >= requiredConstructionProgress)
-                {
-                    project.Complete(city, game.World);
-                    int pop = GlobalProjectDictionary.GetProjectData(selectedProjectID).Employment;
-                    city.idlePop -= pop;
-                    city.workingPop += pop;
-                    CloseProject();
-                }
+                slot.UpdateConstruction(game);
             }
         }
 

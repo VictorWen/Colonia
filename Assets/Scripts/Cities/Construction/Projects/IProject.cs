@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 namespace Cities.Construction.Projects
 {
@@ -20,7 +18,7 @@ namespace Cities.Construction.Projects
         // Return whether the Project has completed the selection process
         bool IsSelected();
 
-        void OnCancel(City city, World gui);
+        void OnCancel(City city, World world);
 
         void Complete(City city, World world);
 
