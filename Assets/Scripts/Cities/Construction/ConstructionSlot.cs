@@ -95,7 +95,7 @@ namespace Cities.Construction
         {
             if (selectedProjectID == null)
                 return "EMPTY";
-            return GlobalProjectDictionary.GetProjectData(selectedProjectID).Name;
+            return GlobalProjectDictionary.GetProjectData(selectedProjectID).Name.ToUpper();
         }
 
         public string GetDescription(GameMaster game)
@@ -109,7 +109,7 @@ namespace Cities.Construction
             return output;
         }
 
-        public string GetSlotDescription()
+        public string GetSlotOverview()
         {
             if (selectedProjectID == null)
                 return "NO PROJECT\nSelect a project to construct";
