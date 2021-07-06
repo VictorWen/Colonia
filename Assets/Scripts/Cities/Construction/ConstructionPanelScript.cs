@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using Cities;
 using Cities.Construction.Projects;
 
@@ -19,8 +20,11 @@ namespace Cities.Construction
         //public GameObject unavailableProjectsList;
         public GameObject projectDescriptorPanel;
 
-        public Button constructionSlotButtonPrefab;
+        public ConstructionSlotButton constructionSlotButtonPrefab;
         public VerticalLayoutGroup constructionSlotButtons;
+        public GameObject tooltip;
+        private ConstructionSlot selectedConstructionSlot;
+        private Button selectedConstructionSlotButton;
 
         public Button confirmButton;
 
@@ -76,17 +80,32 @@ namespace Cities.Construction
 
             foreach (ConstructionSlot slot in selectedCity.construction.Slots)
             {
-                Button slotButton = Instantiate(constructionSlotButtonPrefab);
-                slotButton.GetComponentInChildren<Text>().text = slot.GetProjectName();
-                ConstructionSlot copy = slot;
-                slotButton.onClick.AddListener(() => SelectConstructionSlot(copy));
+                ConstructionSlotButton slotButton = Instantiate(constructionSlotButtonPrefab);
+                slotButton.Initialize(slot, this);
                 slotButton.transform.SetParent(constructionSlotButtons.transform);
             }
         }
 
-        private void SelectConstructionSlot(ConstructionSlot slot)
+        public void SelectConstructionSlot(Button button, ConstructionSlot slot)
         {
+            if (selectedConstructionSlotButton != null)
+                selectedConstructionSlotButton.interactable = true;
+            button.interactable = false;
+            selectedConstructionSlotButton = button;
+            selectedConstructionSlot = slot;
             Debug.Log(slot.GetProjectName());
+        }
+
+        public void ShowTooltip(Vector3 position, string text)
+        {
+            tooltip.SetActive(true);
+            tooltip.GetComponentInChildren<Text>().text = text;
+            tooltip.transform.position = position + new Vector3(15, 0);
+        }
+
+        public void HideTooltip()
+        {
+            tooltip.SetActive(false);
         }
 
         public void SelectProject(ProjectButton b)
@@ -122,7 +141,7 @@ namespace Cities.Construction
             if (selection.IsSelected())
             {
                 Debug.Log("Project Selected");
-                selectedCity.construction.SetProject(selection, gui.Game);
+                selectedConstructionSlot.SetProject(selection, gui.Game);
             }
             UpdateGUI();
             Debug.Log("Project Selection Finished");
@@ -130,7 +149,9 @@ namespace Cities.Construction
 
         public override void UpdateGUI()
         {
-            currentDesc.text = selectedCity.construction.GetDescription(gui.Game);
+            if (selectedConstructionSlot == null)
+                return;
+            currentDesc.text = selectedConstructionSlot.GetDescription(gui.Game);
         }
 
     }

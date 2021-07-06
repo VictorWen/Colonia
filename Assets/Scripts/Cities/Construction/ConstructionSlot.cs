@@ -11,7 +11,7 @@ namespace Cities.Construction
     public class ConstructionSlot
     {
         private readonly City city;
-        private CityConstruction cityConstruction;
+        private readonly CityConstruction cityConstruction;
 
         private IProject project;
         private string selectedProjectID;
@@ -77,7 +77,7 @@ namespace Cities.Construction
             project = null;
         }
 
-        public void CancelProject(GameMaster game)
+        private void CancelProject(GameMaster game)
         {
             project.OnCancel(city, game.World);
             foreach (KeyValuePair<string, int> resource in allocatedResources)
@@ -106,6 +106,15 @@ namespace Cities.Construction
             if (project != null)
                 output += "\n" + project.GetSelectionInfo(game.World);
             output += "\n<b>Progress:</b> " + constructionProgress + "/" + requiredConstructionProgress;
+            return output;
+        }
+
+        public string GetSlotDescription()
+        {
+            if (selectedProjectID == null)
+                return "NO PROJECT\nSelect a project to construct";
+            ProjectData data = GlobalProjectDictionary.GetProjectData(selectedProjectID);
+            string output = data.Name.ToUpper() + "\n" + data.Type;
             return output;
         }
     }
