@@ -95,8 +95,7 @@ namespace Cities.Construction
             button.interactable = false;
             selectedConstructionSlotButton = button;
             selectedConstructionSlot = slot;
-            FillAvailableProjectButtons();
-            currentDesc.text = selectedConstructionSlot.GetDescription(gui.Game);
+            UpdateSelectedSlotInfo();
         }
 
         public void SelectProject(ProjectButton b)
@@ -143,7 +142,13 @@ namespace Cities.Construction
             FillConstructionSlotButtons();
             if (selectedConstructionSlot == null)
                 return;
+            UpdateSelectedSlotInfo();
+        }
+
+        private void UpdateSelectedSlotInfo()
+        {
             FillAvailableProjectButtons();
+            selectionTitle.text = selectedConstructionSlot.GetProjectName();
             currentDesc.text = selectedConstructionSlot.GetDescription(gui.Game);
         }
 

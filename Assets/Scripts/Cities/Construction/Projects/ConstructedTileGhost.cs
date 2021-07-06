@@ -56,6 +56,8 @@ namespace Cities.Construction.Projects
                 gridPos = ClickOnTile();
 
                 click = Input.GetMouseButtonUp(0);
+                if (Input.GetMouseButtonDown(1))
+                    yield break;
                 yield return null;
             }
 

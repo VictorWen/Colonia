@@ -23,7 +23,7 @@ namespace Cities.Construction
         {
             this.city = city;
             //completedProjects = new List<string>();
-            constructionDev = 20;//4;
+            constructionDev = 4;//4;
             Slots = new List<ConstructionSlot>();
             
             for (int i = 0; i < initialSlots; i++)

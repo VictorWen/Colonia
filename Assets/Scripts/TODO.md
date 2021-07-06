@@ -36,7 +36,7 @@
 - [ ] Skill Unlocking
 - [ ] Redesign of Population mechanic
 - [ ] Basic Construction
-  - [ ] Construction Slots
+  - [X] Construction Slots
 
 ## Refactor Cities/Construction
 - [ ] Move Project data to ScriptableObject and a interfaced singleton
@@ -44,7 +44,7 @@
 - [X] Split Project details into two (controller for selection and data for game logic)
 - [ ] General refactoring/extracting of construction code
 - [ ] Refactor MonoBehaviours to be more decoupled
-- [ ] Get rid of unavailable projects
+- [X] Get rid of unavailable projects
 
 ## Turn Ten to Twenty-Five
 - [ ] Crafting
