@@ -51,7 +51,7 @@ namespace Cities.Construction.Projects
             output += "Cost:\n";
             foreach (KeyValuePair<string, int> resource in project.GetResourceCost(city, game))
             {
-                output += "\t" + GlobalResourceDictionary.GetResourceData(resource.Key).name + " (" + resource.Value + ")\n";
+                output += "\t" + resource.Value + " " + GlobalResourceDictionary.GetResourceData(resource.Key).name + "\n";
             }
             output += "Employs: " + Employment + "\n";
             output += "<b>" + Type + "</b>\n";

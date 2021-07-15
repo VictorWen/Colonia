@@ -29,6 +29,7 @@ namespace Cities.Construction
         public Button confirmButton;
 
         //public Text cityName;
+        public Text cityDescription;
         public Text selectionTitle;
         public Text selectionDesc;
         public Text currentDesc;
@@ -139,6 +140,7 @@ namespace Cities.Construction
 
         public override void UpdateGUI()
         {
+            cityDescription.text = selectedCity.GetDescription(gui.Game);
             FillConstructionSlotButtons();
             if (selectedConstructionSlot == null)
                 return;

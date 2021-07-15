@@ -42,9 +42,8 @@ public class GUIMaster : MonoBehaviour
 
         //--TESTING--------
         Inventory inv = Game.GlobalInventory;
-        inv.AddItem(new ResourceItem("wood", 100));
-        inv.AddItem(new ResourceItem("food", 150));
-        inv.AddItem(new ResourceItem("stone", 25));
+        inv.AddItem(new ResourceItem("wood", 25));
+        inv.AddItem(new ResourceItem("food", 25));
         //inv.AddItem(new ResourceItem("steel", 100));
 
         capitalScript = CityScript.Create("Test", new Vector3(0, 0, 0), this);

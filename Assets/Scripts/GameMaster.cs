@@ -39,8 +39,7 @@ public class GameMaster
 
     public void SpawnStarterHeroes()
     {
-        SpawnUnitEntity("testPlayer", "The New Guy", new Vector3Int(2, 2, 0));
-        //SpawnUnitEntity("testEnemy", "Test Enemy", new Vector3Int(-2, -2, 0));
+
     }
 
     public UnitEntity SpawnUnitEntity(string id, string name, Vector3Int position)
@@ -62,13 +61,13 @@ public class GameMaster
         List<Vector3Int> sortedRichness = new List<Vector3Int>(tiles);
         sortedRichness.Sort((x1, x2) => CompareTileRichness(x1, x2));
 
-        int farms = 3;
-        int lumber = 2;
-        int quarries = 1;
+        int farms = 2;
+        //int lumber = 1;
+        //int quarries = 1;
 
         PlaceNTileImprovements(farms, "farm", sortedFertility, city);
-        PlaceNTileImprovements(lumber, "lumber mill", sortedFertility, city);
-        PlaceNTileImprovements(quarries, "quarry", sortedRichness, city);
+        //PlaceNTileImprovements(lumber, "lumber mill", sortedFertility, city);
+        //PlaceNTileImprovements(quarries, "quarry", sortedRichness, city);
     }
 
     // TODO: Move game control methods to a separate interface or class

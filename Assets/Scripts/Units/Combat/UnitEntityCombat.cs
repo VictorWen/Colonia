@@ -49,7 +49,7 @@ namespace Units.Combat
         [SerializeField] private int resistance = 3;
 
         [Header("Experience")]
-        [SerializeField] private int baseExpDrop = 100;
+        [SerializeField] private int baseExpDrop = 2;
         [SerializeField] private float proficienyAdvantage = 0.20f;
 
         public event Action OnAttack;

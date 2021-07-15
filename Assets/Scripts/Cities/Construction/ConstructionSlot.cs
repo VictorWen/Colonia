@@ -39,6 +39,7 @@ namespace Cities.Construction
                 //Project is completed
                 if (constructionProgress >= requiredConstructionProgress)
                 {
+                    cityConstruction.AddCompletedProject(selectedProjectID);
                     project.Complete(city, game.World);
                     int pop = GlobalProjectDictionary.GetProjectData(selectedProjectID).Employment;
                     city.idlePop -= pop;

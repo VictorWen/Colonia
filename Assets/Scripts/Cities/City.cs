@@ -40,7 +40,7 @@ namespace Cities
             this.Position = position;
 
             //TODO: TEMPORARY POPULATION IMPLEMENTATION, REMOVE
-            population = 150;
+            population = 100;
             idlePop = population;
             workingPop = 0;
             popGrowthRate = 0.01f;
