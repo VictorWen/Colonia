@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cloud: {fileID: 11400000, guid: 3ed3004e6432e914fbc93a78954c8a82, type: 2}
   fog: {fileID: 11400000, guid: 2e77e5b8870413146906527fe984dbd3, type: 2}
-  chunkRadius: 25
+  chunkRadius: 15
   worldRadius: 1
   scale: 2.5
   octaves: 8
