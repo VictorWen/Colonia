@@ -119,7 +119,7 @@ namespace Units
 
         public string GetStatus()
         {
-            return "Level: " + Level + " (" + Experience/100f + "%)\n" + combat.GetStatusDescription();
+            return "Level: " + Level + " (" + Experience + "%)\n" + combat.GetStatusDescription();
         }
 
         public void OnNextTurn(GameMaster game)
@@ -185,10 +185,10 @@ namespace Units
         public void AddExperience(int exp)
         {
             Experience += exp;
-            while (Experience >= 10)
+            while (Experience >= 100)
             {
                 Level++;
-                Experience -= 10;
+                Experience -= 100;
             }
         }
     }

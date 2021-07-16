@@ -43,17 +43,13 @@ namespace Items
         {
             if (!stackableItems.ContainsKey(item.ID))
             {
+                if (item.Count <= 0)
+                    return;
                 stackableItems.Add(item.ID, item);
                 Items.Add(item);
             }
             else
                 stackableItems[item.ID].AddCount(item.Count);
-
-            if (stackableItems[item.ID].Count <= 0)
-            {
-                Items.Remove(stackableItems[item.ID]);
-                stackableItems.Remove(item.ID);
-            }
         }
 
         public void RemoveZeroCountItems()

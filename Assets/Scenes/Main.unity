@@ -46734,8 +46734,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 236.89996, y: -37.5}
-  m_SizeDelta: {x: 155.26665, y: 69}
+  m_AnchoredPosition: {x: 178.29997, y: -37.5}
+  m_SizeDelta: {x: 116.19998, y: 69}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &346782304
 MonoBehaviour:
@@ -93142,7 +93142,7 @@ PrefabInstance:
     - target: {fileID: 1437875174735446143, guid: e5cee4632e0070040b68183c1870dae5,
         type: 3}
       propertyPath: m_Name
-      value: Test Player (1)
+      value: Footman
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5cee4632e0070040b68183c1870dae5, type: 3}
@@ -95457,8 +95457,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 80.63332, y: -37.5}
-  m_SizeDelta: {x: 155.26665, y: 69}
+  m_AnchoredPosition: {x: 61.09999, y: -37.5}
+  m_SizeDelta: {x: 116.19998, y: 69}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1047125875
 MonoBehaviour:
@@ -96826,6 +96826,7 @@ MonoBehaviour:
   moveButton: {fileID: 1047125875}
   attackButton: {fileID: 1785186705}
   abilityButton: {fileID: 346782304}
+  restButton: {fileID: 1622435298}
   itemsButton: {fileID: 1729274026}
   infoPanel: {fileID: 957765390}
   abilityMenu: {fileID: 943238287}
@@ -98153,7 +98154,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Defend
+  m_Text: Rest
 --- !u!222 &1441231221
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -99979,12 +99980,12 @@ GameObject:
   - component: {fileID: 1622435299}
   - component: {fileID: 1622435298}
   m_Layer: 5
-  m_Name: Defend Action Button
+  m_Name: Rest Action Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1622435297
 RectTransform:
   m_ObjectHideFlags: 0
@@ -100002,8 +100003,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 330.65997, y: -37.5}
-  m_SizeDelta: {x: 92.75999, y: 69}
+  m_AnchoredPosition: {x: 295.49994, y: -37.5}
+  m_SizeDelta: {x: 116.19998, y: 69}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1622435298
 MonoBehaviour:
@@ -101267,8 +101268,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 393.16663, y: -37.5}
-  m_SizeDelta: {x: 155.26665, y: 69}
+  m_AnchoredPosition: {x: 412.69995, y: -37.5}
+  m_SizeDelta: {x: 116.19998, y: 69}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1729274026
 MonoBehaviour:
@@ -105469,7 +105470,7 @@ PrefabInstance:
     - target: {fileID: 1437875174735446143, guid: e5cee4632e0070040b68183c1870dae5,
         type: 3}
       propertyPath: m_Name
-      value: Test Player
+      value: Archer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5cee4632e0070040b68183c1870dae5, type: 3}

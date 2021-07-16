@@ -42,7 +42,10 @@ namespace Units
 
         private void OnMouseOver()
         {
-            if (gui.GUIState.UnitControl && unitEntity.IsPlayerControlled && Input.GetMouseButtonUp(0))
+            if (gui.GUIState.UnitControl && 
+                unitEntity.IsPlayerControlled && 
+                Input.GetMouseButtonUp(0) && 
+                !EventSystem.current.IsPointerOverGameObject())
             {
                 if (!IsSelected)
                     Select();

@@ -32,7 +32,7 @@ namespace Cities
         public Vector3Int Position { get; private set; }
         private HashSet<Vector3Int> cityRange;
 
-        private const int CITY_RADIUS = 4;
+        private const int CITY_RADIUS = 2;
 
         public City(string name, Vector3Int position, IWorld world)
         {

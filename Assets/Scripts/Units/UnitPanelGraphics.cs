@@ -16,13 +16,14 @@ namespace Units
         private readonly Button moveButton;
         private readonly Button attackButton;
         private readonly Button abilityButton;
+        private readonly Button restButton;
         private readonly Button itemsButton;
 
         private UnitEntity selectedUnit;
         private Sprite unitSprite;
         private Color unitColor;
 
-        public UnitPanelGraphics(GameObject panel, Button moveButton, Button attackButton, Button abilityButton, Button itemsButton)
+        public UnitPanelGraphics(GameObject panel, Button moveButton, Button attackButton, Button abilityButton, Button restButton, Button itemsButton)
         { 
             selectedUnit = null;
 
@@ -30,6 +31,7 @@ namespace Units
             this.moveButton = moveButton;
             this.attackButton = attackButton;
             this.abilityButton = abilityButton;
+            this.restButton = restButton;
             this.itemsButton = itemsButton;
 
             foreach (Text t in panel.GetComponentsInChildren<Text>())
@@ -84,6 +86,8 @@ namespace Units
         {
             selectedUnit.OnMove += UpdateActionButtons;
             selectedUnit.Combat.OnAttack += UpdateActionButtons;
+            selectedUnit.Combat.OnCombatStatusChanged += UpdateActionButtons;
+            selectedUnit.Combat.OnCombatStatusChanged += UpdateUnitPanel;
             selectedUnit.OnStatusChanged += UpdateUnitPanel;
         }
 
@@ -93,6 +97,8 @@ namespace Units
             {
                 selectedUnit.OnMove -= UpdateActionButtons;
                 selectedUnit.Combat.OnAttack -= UpdateActionButtons;
+                selectedUnit.Combat.OnCombatStatusChanged -= UpdateActionButtons;
+                selectedUnit.Combat.OnCombatStatusChanged -= UpdateUnitPanel;
                 selectedUnit.OnStatusChanged -= UpdateUnitPanel;
             }
         }
@@ -109,6 +115,7 @@ namespace Units
             moveButton.interactable = selectedUnit.Movement.CanMove;
             attackButton.interactable = selectedUnit.Combat.CanAttack;
             abilityButton.interactable = selectedUnit.Combat.CanAttack;
+            restButton.interactable = selectedUnit.Movement.CanMove && selectedUnit.Combat.CanAttack;
             itemsButton.interactable = selectedUnit.Combat.CanAttack;
         }
 

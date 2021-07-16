@@ -21,7 +21,6 @@ public class GUIStateManager
     private readonly Action<bool> onCityPanelChange;
     private readonly Action<bool> onMapHUDChange;
 
-
     //----PRESETS-----
     // GameState for when player is viewin the map
     public static readonly GUIStatePreset MAP = new GUIStatePreset("map", true, true, true, true);

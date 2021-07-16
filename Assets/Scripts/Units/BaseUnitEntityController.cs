@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Units.Combat;
+using UnityEngine.EventSystems;
 
 namespace Units
 {
@@ -82,7 +83,7 @@ namespace Units
 
         private void OnMouseEnter()
         {
-            if (gui.GUIState.UnitControl && allowHovering)
+            if (gui.GUIState.MapHUD && allowHovering && !EventSystem.current.IsPointerOverGameObject())
             {
                 HoverInfo(true);
             }

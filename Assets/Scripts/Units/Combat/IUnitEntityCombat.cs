@@ -23,6 +23,7 @@ namespace Units.Combat
         List<string> Abilities { get; }
 
         event Action OnAttack;
+        event Action OnCombatStatusChanged;
 
         void OnNextTurn(GameMaster game);
 
@@ -31,6 +32,8 @@ namespace Units.Combat
         void DelegateCastAbility(Ability ability);
 
         void CastAbility(Ability ability, Vector3Int target);
+
+        void Rest();
 
         void BasicAttackOnPosition(Vector3Int position);
 

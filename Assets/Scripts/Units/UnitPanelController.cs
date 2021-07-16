@@ -13,6 +13,7 @@ namespace Units
         [SerializeField] private Button moveButton = null;
         [SerializeField] private Button attackButton = null;
         [SerializeField] private Button abilityButton = null;
+        [SerializeField] private Button restButton = null;
         [SerializeField] private Button itemsButton = null;
 
         [SerializeField] private GameObject infoPanel = null;
@@ -28,12 +29,13 @@ namespace Units
 
         private void Awake()
         {
-            graphics = new UnitPanelGraphics(actionPanel, moveButton, attackButton, abilityButton, itemsButton);
+            graphics = new UnitPanelGraphics(actionPanel, moveButton, attackButton, abilityButton, restButton, itemsButton);
             infoGraphics = new UnitInfoGraphics(infoPanel);
 
             moveButton.onClick.AddListener(MoveAction);
             attackButton.onClick.AddListener(AttackAction);
             abilityButton.onClick.AddListener(ShowAbilityMenu);
+            restButton.onClick.AddListener(Rest);
             itemsButton.onClick.AddListener(ShowInventory);
         }
 
@@ -73,6 +75,11 @@ namespace Units
         public void ShowInventory()
         {
             inventoryPanel.Enable(SelectedUnit);
+        }
+
+        public void Rest()
+        {
+            SelectedUnit.Unit.Combat.Rest();
         }
 
         public void ShowUnitInfo(BaseUnitEntityController unit)

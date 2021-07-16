@@ -49,10 +49,11 @@ namespace Units.Combat
         [SerializeField] private int resistance = 3;
 
         [Header("Experience")]
-        [SerializeField] private int baseExpDrop = 2;
+        [SerializeField] private int baseExpDrop = 15;
         [SerializeField] private float proficienyAdvantage = 0.20f;
 
         public event Action OnAttack;
+        public event Action OnCombatStatusChanged;
 
         public Dictionary<UnitEntityEquipmentSlotID, EquipmentItem> Equipment { get { return equipmentManager.EquipmentSlots; } }
         private readonly CombatEquipmentManager equipmentManager;
@@ -133,6 +134,15 @@ namespace Units.Combat
             movement.CanMove = false;
             CanAttack = false;
             OnAttack?.Invoke();
+        }
+
+        public void Rest()
+        {
+            CanAttack = false;
+            movement.CanMove = false;
+            Unit.Heal(Mathf.CeilToInt(Unit.MaxHealth * .1f));
+            IncreaseMana(Mathf.CeilToInt(maxMana * .1f));
+            OnCombatStatusChanged?.Invoke();
         }
 
         public void BasicAttackOnPosition(Vector3Int position)
@@ -228,6 +238,14 @@ namespace Units.Combat
                 mana -= manaCost;
             else
                 Debug.LogError(Unit.Name + " overused mana, cost: " + manaCost);
+            OnCombatStatusChanged?.Invoke();
+        }
+
+        private void IncreaseMana(int add)
+        {
+            mana += add;
+            if (mana > maxMana)
+                mana = maxMana;
         }
 
         private float CalculatePhysicalDamage(float damage, IUnitEntityCombat attacker, float combatModifier)
