@@ -35,8 +35,8 @@ public class World : MonoBehaviour, IWorld
     public Vector3Int[][] BiomeChunks { get; private set; }
     public System.Random RNG { get; private set; }
 
-    private Dictionary<Vector3Int, float> fertility;
-    private Dictionary<Vector3Int, float> richness;
+    private Dictionary<Vector3Int, int> fertility;
+    private Dictionary<Vector3Int, int> richness;
 
     public UnitEntityManager UnitManager { get; private set; }
     private SpawnerMap spawnerMap;
@@ -357,8 +357,8 @@ public class World : MonoBehaviour, IWorld
         int size = (config.worldRadius * 2 + 1) * (config.chunkRadius * 2 + 1);
 
         //TODO: better fertility and richness => create better biome terrain
-        fertility = new Dictionary<Vector3Int, float>();
-        richness = new Dictionary<Vector3Int, float>();
+        fertility = new Dictionary<Vector3Int, int>();
+        richness = new Dictionary<Vector3Int, int>();
 
         // Borrowed from Sebastian Lague
         float[,] heightLevels = new float[size, size];
@@ -549,17 +549,17 @@ public class World : MonoBehaviour, IWorld
         return tiles;
     }
 
-    private float GetRandomAspect(System.Random rand, float baseAspect)
+    private int GetRandomAspect(System.Random rand, float baseAspect)
     {
-        return baseAspect + (float)(rand.NextDouble() - 0.5) * baseAspect;
+        return (int) (baseAspect * (0.5f + (float) rand.NextDouble()));
     }
 
-    public float GetFertilityAtTile(Vector3Int tilePos)
+    public int GetFertilityAtTile(Vector3Int tilePos)
     {
         return fertility[tilePos];
     }
 
-    public float GetRichnessAtTile(Vector3Int tilePos)
+    public int GetRichnessAtTile(Vector3Int tilePos)
     {
         return richness[tilePos];
     }
