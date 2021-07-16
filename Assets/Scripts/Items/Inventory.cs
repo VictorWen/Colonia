@@ -25,7 +25,7 @@ namespace Items
         // Returns true if successful, false otherwise
         public bool AddItem(Item item)
         {
-            if (maxWeight == -1 || currentWeight + item.Weight <= maxWeight)
+            if (maxWeight < 0 || currentWeight + item.Weight <= maxWeight)
             {
                 if (item.IsStackable)
                     AddStackableItemToCollections(item);

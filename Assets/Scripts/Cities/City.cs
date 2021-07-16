@@ -72,11 +72,24 @@ namespace Cities
             int foodCost = Mathf.RoundToInt(population / 10f);
             if (game.GlobalInventory.GetItemCount("food") >= foodCost)
             {
-                game.GlobalInventory.AddItem(new ResourceItem("food", -foodCost));
                 int delta = Mathf.RoundToInt(population * popGrowthRate);
                 population += delta;
                 idlePop += delta;
             }
+            else
+            {
+                float fulfillment = game.GlobalInventory.GetItemCount("food") / (float) foodCost;
+                float decay = 0.01f * (1 - fulfillment);
+                int reduction = (int)(population * decay);
+                population -= reduction;
+                idlePop -= reduction;
+                if (idlePop < 0)
+                {
+                    workingPop += idlePop;
+                    idlePop = 0;
+                }
+            }
+            game.AddPendingResource("food", -foodCost);
             //--------------------------------------------------------
         }
 
