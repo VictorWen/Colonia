@@ -21,6 +21,8 @@ public class GameMaster
     public List<NPCIntelligence> npcList = new List<NPCIntelligence>();
     public event Action<UnitEntity, string> OnUnitSpawn;
 
+    public event Action<string> addAlert;
+
     public GameMaster(World world)
     {
         this.World = world;
@@ -29,6 +31,11 @@ public class GameMaster
         pendingResources = new Dictionary<string, float>();
         cities = new List<City>();
         globalModifiers = new ResourceModifiers();
+    }
+
+    public void Alert(string message)
+    {
+        addAlert?.Invoke(message);
     }
 
     private void SetupCapitalCity()
